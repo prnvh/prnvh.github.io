@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Code Graph Compiler — Pranav Harikumar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream:    #F2EEE4;
+    --cream-2:  #E8E3D6;
+    --rule:     #C8C2B4;
+    --mid:      #8A8478;
+    --muted:    #4A4640;
+    --ink:      #1E1C19;
+    --gold:     #A07820;
+    --gold-dim: #C49A3C;
+    --paper:    #FAF8F3;
+    --white:    #FFFFFF;
+    --code-bg:  #1A1816;
+    --code-fg:  #D4CFC4;
+    --green:    #5A8A5A;
+    --red:      #8A4A4A;
+
+    --display: 'Playfair Display', Georgia, serif;
+    --body:    'Source Serif 4', Georgia, serif;
+    --mono:    'IBM Plex Mono', 'Courier New', monospace;
+
+    --nav-h: 64px;
+    --prose: 700px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 17px; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--body); font-weight: 300; line-height: 1.8; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: rgba(160,120,32,0.15); }
+
+  /* ── NAV ──────────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+    background: var(--cream); border-bottom: 1px solid var(--rule);
+    z-index: 100; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 2.5rem;
+    transition: box-shadow 0.25s;
+  }
+  nav.scrolled { box-shadow: 0 1px 12px rgba(30,28,25,0.07); }
+  .nav-back { font-family: var(--body); font-size: 0.85rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
+  .nav-back:hover { color: var(--gold); }
+  .nav-back span { font-size: 1rem; line-height: 1; }
+  .nav-right { display: flex; gap: 1.2rem; }
+  .nav-right a { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); letter-spacing: 0.05em; border: 1px solid var(--rule); padding: 0.3rem 0.8rem; transition: all 0.2s; }
+  .nav-right a:hover { color: var(--gold); border-color: var(--gold); }
+
+  /* ── HERO ──────────────────────────────────────────── */
+  #top {
+    padding: calc(var(--nav-h) + 4.5rem) 2.5rem 4rem;
+    border-bottom: 1px solid var(--rule);
+    background: var(--cream);
+  }
+  .hero-inner { max-width: var(--prose); margin: 0 auto; }
+  .proj-label { font-family: var(--mono); font-size: 0.7rem; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 1.2rem; }
+  h1 { font-family: var(--display); font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; color: var(--ink); margin-bottom: 1rem; }
+  .hero-sub { font-size: 1.05rem; font-style: italic; color: var(--muted); margin-bottom: 2rem; }
+  .hero-meta-row { display: flex; gap: 2rem; flex-wrap: wrap; border-top: 1px solid var(--rule); padding-top: 1.2rem; margin-bottom: 2rem; }
+  .hmeta { }
+  .hmeta dt { font-family: var(--mono); font-size: 0.62rem; color: var(--mid); letter-spacing: 0.06em; margin-bottom: 0.2rem; }
+  .hmeta dd { font-size: 0.88rem; color: var(--ink); }
+  .hero-links { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .hero-btn { font-family: var(--body); font-size: 0.85rem; padding: 0.6rem 1.4rem; border: 1px solid; transition: all 0.22s; display: inline-block; }
+  .hero-btn.primary { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+  .hero-btn.primary:hover { background: var(--gold); border-color: var(--gold); }
+  .hero-btn.secondary { background: transparent; border-color: var(--rule); color: var(--muted); }
+  .hero-btn.secondary:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* ── STATS BAR ─────────────────────────────────────── */
+  .stats-bar {
+    background: var(--ink); padding: 2rem 2.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .stats-inner { max-width: var(--prose); margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .stat { text-align: center; }
+  .stat-num { font-family: var(--display); font-size: 2.2rem; font-weight: 700; color: var(--cream); line-height: 1; margin-bottom: 0.3rem; }
+  .stat-num em { color: var(--gold-dim); font-style: normal; }
+  .stat-label { font-family: var(--mono); font-size: 0.62rem; color: rgba(138,132,120,0.8); letter-spacing: 0.06em; }
+
+  /* ── CONTENT ───────────────────────────────────────── */
+  .content-wrap { max-width: var(--prose); margin: 0 auto; padding: 4rem 2.5rem; }
+
+  /* section headings */
+  .s-label { font-family: var(--mono); font-size: 0.68rem; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 0.4rem; margin-top: 3.5rem; display: block; }
+  .s-label:first-child { margin-top: 0; }
+  h2 { font-family: var(--display); font-size: 1.45rem; font-weight: 600; color: var(--ink); line-height: 1.3; margin-bottom: 1rem; }
+  h3 { font-family: var(--display); font-size: 1.1rem; font-weight: 500; color: var(--ink); margin-bottom: 0.7rem; margin-top: 2rem; }
+  p { font-size: 0.97rem; color: var(--muted); margin-bottom: 1rem; line-height: 1.82; }
+  p strong { color: var(--ink); font-weight: 600; }
+
+  /* horizontal rule */
+  hr { border: none; border-top: 1px solid var(--rule); margin: 3rem 0; }
+
+  /* callout */
+  .callout {
+    border-left: 3px solid var(--gold); background: rgba(160,120,32,0.06);
+    padding: 1rem 1.2rem; margin: 1.5rem 0; font-style: italic;
+    font-size: 0.93rem; color: var(--ink);
+  }
+  .callout strong { font-style: normal; font-weight: 600; }
+
+  /* code blocks */
+  pre {
+    background: var(--code-bg); color: var(--code-fg);
+    font-family: var(--mono); font-size: 0.78rem; line-height: 1.65;
+    padding: 1.4rem 1.6rem; overflow-x: auto; margin: 1.5rem 0;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  code { font-family: var(--mono); font-size: 0.82em; background: var(--cream-2); padding: 0.1em 0.35em; border: 1px solid var(--rule); }
+  pre code { background: none; padding: 0; border: none; font-size: 1em; }
+  .comment { color: #5A6A50; }
+  .kw  { color: #C49A3C; }
+  .str { color: #8AAF8A; }
+  .fn  { color: #8AAFCF; }
+  .num { color: #CF8A8A; }
+
+  /* diagram */
+  .diagram {
+    background: var(--code-bg); color: var(--code-fg);
+    font-family: var(--mono); font-size: 0.76rem; line-height: 1.6;
+    padding: 1.6rem 1.8rem; margin: 1.5rem 0; overflow-x: auto;
+    border: 1px solid rgba(255,255,255,0.06);
+    white-space: pre;
+  }
+
+  /* benchmark table */
+  .bench-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.86rem; }
+  .bench-table th { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em; color: var(--mid); text-align: left; padding: 0.6rem 1rem; border-bottom: 2px solid var(--rule); font-weight: 500; }
+  .bench-table td { padding: 0.65rem 1rem; border-bottom: 1px solid rgba(200,194,180,0.4); color: var(--muted); vertical-align: middle; }
+  .bench-table tr:last-child td { border-bottom: none; }
+  .bench-table .compiled { font-weight: 600; color: var(--ink); }
+  .score-bar { height: 6px; background: var(--cream-2); border: 1px solid var(--rule); position: relative; min-width: 80px; display: inline-block; vertical-align: middle; margin-left: 0.5rem; }
+  .score-fill { height: 100%; position: absolute; top: 0; left: 0; }
+  .fill-green { background: var(--green); }
+  .fill-mid   { background: var(--gold-dim); }
+  .fill-red   { background: var(--red); }
+  .score-label { font-family: var(--mono); font-size: 0.7em; }
+
+  /* finding box */
+  .finding {
+    border: 1px solid var(--rule); padding: 1.6rem 1.8rem; margin: 2rem 0;
+    background: var(--cream);
+  }
+  .finding-label { font-family: var(--mono); font-size: 0.62rem; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+  .finding h3 { margin-top: 0; font-size: 1rem; }
+  .finding p { font-size: 0.9rem; }
+
+  /* workflow steps */
+  .workflow { margin: 1.5rem 0; }
+  .wf-step { display: flex; gap: 1.2rem; padding: 1rem 0; border-bottom: 1px solid rgba(200,194,180,0.4); align-items: flex-start; }
+  .wf-step:last-child { border-bottom: none; }
+  .wf-num { font-family: var(--mono); font-size: 0.68rem; color: var(--gold); min-width: 28px; padding-top: 0.15rem; }
+  .wf-content h4 { font-family: var(--display); font-size: 0.95rem; font-weight: 500; color: var(--ink); margin-bottom: 0.25rem; }
+  .wf-content p { font-size: 0.87rem; margin-bottom: 0; }
+
+  /* checks list */
+  .checks { list-style: none; margin: 1rem 0; }
+  .checks li { font-size: 0.9rem; color: var(--muted); padding: 0.35rem 0; border-bottom: 1px solid rgba(200,194,180,0.35); display: flex; gap: 0.8rem; align-items: baseline; }
+  .checks li:last-child { border-bottom: none; }
+  .check-num { font-family: var(--mono); font-size: 0.65rem; color: var(--gold); min-width: 22px; }
+  .check-name { font-weight: 600; color: var(--ink); }
+
+  /* bottom nav */
+  .page-footer { border-top: 1px solid var(--rule); padding: 3rem 2.5rem; background: var(--cream); }
+  .page-footer-inner { max-width: var(--prose); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .pf-left p { font-family: var(--mono); font-size: 0.68rem; color: var(--mid); letter-spacing: 0.05em; }
+  .pf-right { display: flex; gap: 0.8rem; }
+  .pf-link { font-family: var(--body); font-size: 0.85rem; color: var(--gold); border-bottom: 1px solid rgba(160,120,32,0.3); padding-bottom: 1px; }
+  .pf-link:hover { border-color: var(--gold); }
+
+  /* ── ANIMATIONS ────────────────────────────────────── */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ────────────────────────────────────── */
+  @media (max-width: 620px) {
+    nav { padding: 0 1.2rem; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .content-wrap { padding: 3rem 1.2rem; }
+    #top { padding-left: 1.2rem; padding-right: 1.2rem; }
+    .hero-meta-row { gap: 1.2rem; }
+    .page-footer { padding: 2rem 1.2rem; }
+    .page-footer-inner { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="nav-back" href="index.html"><span>←</span> Pranav Harikumar</a>
+  <div class="nav-right">
+    <a href="Deterministic_Compilation_Architecture_v2.pdf" target="_blank">PDF ↗</a>
+    <a href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub ↗</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div id="top">
+  <div class="hero-inner">
+    <p class="proj-label">Project &nbsp;·&nbsp; Research Build &nbsp;·&nbsp; 2025–2026</p>
+    <h1>LLM Code Graph Compiler — Deterministic Workflow-to-Code</h1>
+    <p class="hero-sub">
+      A typed-node-registry architecture that removes the LLM from execution entirely.
+      Plan in JSON. Validate statically. Compile deterministically. Never patch at runtime.
+    </p>
+    <dl class="hero-meta-row">
+      <div class="hmeta"><dt>Type</dt><dd>Research build + paper</dd></div>
+      <div class="hmeta"><dt>Benchmark</dt><dd>300 tasks, 6 sets</dd></div>
+      <div class="hmeta"><dt>Result</dt><dd>284/300 compiled runs</dd></div>
+      <div class="hmeta"><dt>Stack</dt><dd>Python · OpenAI API · CLI</dd></div>
+    </dl>
+    <div class="hero-links">
+      <a class="hero-btn primary" href="Deterministic_Compilation_Architecture_v2.pdf" target="_blank">Read the Paper (PDF)</a>
+      <a class="hero-btn secondary" href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub ↗</a>
+    </div>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat">
+      <div class="stat-num">284<em>/300</em></div>
+      <div class="stat-label">COMPILED RUNS</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">~170<em>/300</em></div>
+      <div class="stat-label">GPT-4O BASELINE</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">88<em>%</em></div>
+      <div class="stat-label">SCHEMA DRIFT (vs 40%)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">7</div>
+      <div class="stat-label">STATIC CHECKS</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+
+  <!-- MOTIVATION -->
+  <span class="s-label reveal">// motivation</span>
+  <h2 class="reveal">The problem with free-form LLM code generation</h2>
+  <p class="reveal">
+    LLMs are reasonably good at single-step coding tasks. The harder problem is multi-step 
+    pipelines — ingest data, apply transformations, persist to a database, export an artifact. 
+    In these settings, free-form code generation has a characteristic failure mode: 
+    <strong>errors accumulate across steps</strong>. A hallucinated import in step two propagates 
+    through steps three and four. A mismatched column name introduced at ingestion causes 
+    silent failures at query time. Each step may look locally correct while the composed 
+    pipeline fails.
+  </p>
+  <p class="reveal">
+    Existing approaches — LangChain, LlamaIndex, smolagents — improve this somewhat but 
+    ultimately accept execution failure as a runtime concern. They normalize the pattern of 
+    generating a symbolic representation and executing it, but don't foreground the question 
+    of <strong>what guarantee the representation boundary actually provides</strong>.
+  </p>
+  <div class="callout reveal">
+    <strong>The central question:</strong> which failure modes does the architecture eliminate 
+    by construction, which does it defer to runtime, and which can it not catch at all?
+  </div>
+
+  <hr class="reveal">
+
+  <!-- ARCHITECTURE -->
+  <span class="s-label reveal">// architecture</span>
+  <h2 class="reveal">How the compiler works</h2>
+  <p class="reveal">
+    The system imposes a strict separation between planning and execution. The LLM is permitted 
+    to do exactly one thing: select nodes from a pre-verified registry and supply their required 
+    parameters, expressed as a typed JSON plan. Everything else is deterministic.
+  </p>
+
+  <div class="diagram reveal">┌─────────────────────────────────────────────────────────────────┐
+│  USER TASK                                                      │
+│  "ingest CSV → normalize columns → aggregate → export to SQL"   │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  LLM PLANNER  (single call, constrained output)                 │
+│                                                                 │
+│  Input:  Task description + node registry (typed)               │
+│  Output: JSON plan — node selections + parameter bindings       │
+│                                                                 │
+│  The LLM cannot invent new nodes. It cannot chain calls.        │
+│  It emits a plan. That's all.                                   │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │  JSON plan
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  STATIC VALIDATOR  (7 checks, deterministic)                    │
+│                                                                 │
+│  ✓ Node existence        ✓ Acyclicity                           │
+│  ✓ Edge validity         ✓ Orphan detection                     │
+│  ✓ Type compatibility    ✓ Input arity                          │
+│  ✓ Required parameter presence                                  │
+│                                                                 │
+│  Fails here → reject, log, return. No execution.               │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │  validated plan
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  COMPILER  (topological sort → Python assembly)                 │
+│                                                                 │
+│  Assembles executable Python from pre-verified node templates.  │
+│  The LLM is NOT called again after planning.                    │
+│  No repair loops. No output inspection. No runtime chaining.    │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │  executable Python
+                           ▼
+                    deterministic run</div>
+
+  <h3 class="reveal">The seven static checks</h3>
+  <ul class="checks reveal">
+    <li><span class="check-num">01</span><div><span class="check-name">Node existence</span> — every node name in the plan exists in the registry</div></li>
+    <li><span class="check-num">02</span><div><span class="check-name">Edge validity</span> — every declared edge connects two real nodes</div></li>
+    <li><span class="check-num">03</span><div><span class="check-name">Type compatibility</span> — output type of each upstream node matches input type of downstream</div></li>
+    <li><span class="check-num">04</span><div><span class="check-name">Acyclicity</span> — the plan graph is a DAG, no cycles</div></li>
+    <li><span class="check-num">05</span><div><span class="check-name">Orphan detection</span> — every node in the graph is reachable from an input node</div></li>
+    <li><span class="check-num">06</span><div><span class="check-name">Input arity</span> — each node receives exactly the number of inputs it expects</div></li>
+    <li><span class="check-num">07</span><div><span class="check-name">Required parameters</span> — all non-optional parameters are present and typed correctly</div></li>
+  </ul>
+  <p class="reveal">
+    If all seven pass, the compiler runs. If any fail, the plan is rejected before a single 
+    line of user-affecting code executes. First-pass success is the claim — the system 
+    either compiles correctly or rejects cleanly. No partial execution, no silent errors.
+  </p>
+
+  <hr class="reveal">
+
+  <!-- HOW A PLAN LOOKS -->
+  <span class="s-label reveal">// implementation</span>
+  <h2 class="reveal">What a plan actually looks like</h2>
+  <p class="reveal">
+    This is the full interface between the LLM and the rest of the system. The model produces 
+    a structured JSON object — node names, parameter bindings, and edge declarations. 
+    Nothing else passes through.
+  </p>
+<pre class="reveal"><span class="comment">// Example: LLM-emitted plan for a 4-node pipeline</span>
+{
+  <span class="str">"nodes"</span>: [
+    {
+      <span class="str">"id"</span>: <span class="str">"ingest_1"</span>,
+      <span class="str">"type"</span>: <span class="str">"CSVIngestor"</span>,
+      <span class="str">"params"</span>: { <span class="str">"path"</span>: <span class="str">"data/sales.csv"</span>, <span class="str">"delimiter"</span>: <span class="str">","</span> }
+    },
+    {
+      <span class="str">"id"</span>: <span class="str">"norm_1"</span>,
+      <span class="str">"type"</span>: <span class="str">"ColumnNormalizer"</span>,
+      <span class="str">"params"</span>: { <span class="str">"strategy"</span>: <span class="str">"snake_case"</span> }
+    },
+    {
+      <span class="str">"id"</span>: <span class="str">"agg_1"</span>,
+      <span class="str">"type"</span>: <span class="str">"Aggregator"</span>,
+      <span class="str">"params"</span>: { <span class="str">"group_by"</span>: <span class="str">"region"</span>, <span class="str">"agg_fn"</span>: <span class="str">"sum"</span>, <span class="str">"column"</span>: <span class="str">"revenue"</span> }
+    },
+    {
+      <span class="str">"id"</span>: <span class="str">"sql_1"</span>,
+      <span class="str">"type"</span>: <span class="str">"SQLExporter"</span>,
+      <span class="str">"params"</span>: { <span class="str">"table"</span>: <span class="str">"sales_summary"</span>, <span class="str">"if_exists"</span>: <span class="str">"replace"</span> }
+    }
+  ],
+  <span class="str">"edges"</span>: [
+    { <span class="str">"from"</span>: <span class="str">"ingest_1"</span>, <span class="str">"to"</span>: <span class="str">"norm_1"</span> },
+    { <span class="str">"from"</span>: <span class="str">"norm_1"</span>,  <span class="str">"to"</span>: <span class="str">"agg_1"</span>  },
+    { <span class="str">"from"</span>: <span class="str">"agg_1"</span>,   <span class="str">"to"</span>: <span class="str">"sql_1"</span>  }
+  ]
+}</pre>
+  <p class="reveal">
+    The validator runs all seven checks against this object. If it passes, the compiler 
+    assembles the corresponding Python by substituting each node ID with its pre-verified 
+    template and wiring outputs to inputs in topological order.
+  </p>
+
+  <hr class="reveal">
+
+  <!-- BENCHMARK -->
+  <span class="s-label reveal">// evaluation</span>
+  <h2 class="reveal">Benchmark results</h2>
+  <p class="reveal">
+    300 tasks across six benchmark sets, each targeting a distinct failure mode. 
+    Baselines: GPT-4.1 and Claude Sonnet 4.6 generating free-form Python.
+  </p>
+
+  <table class="bench-table reveal">
+    <thead>
+      <tr>
+        <th>Set</th>
+        <th>Description</th>
+        <th>Compiled</th>
+        <th>GPT-4.1</th>
+        <th>Claude Sonnet</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>A</code></td>
+        <td>Shallow depth (3–4 nodes)</td>
+        <td class="compiled">
+          <span class="score-label">50/50</span>
+          <span class="score-bar"><span class="score-fill fill-green" style="width:100%"></span></span>
+        </td>
+        <td>
+          <span class="score-label">38/50</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:76%"></span></span>
+        </td>
+        <td>
+          <span class="score-label">36/50</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:72%"></span></span>
+        </td>
+      </tr>
+      <tr>
+        <td><code>B</code></td>
+        <td>Medium depth (5–6 nodes)</td>
+        <td class="compiled">
+          <span class="score-label">50/50</span>
+          <span class="score-bar"><span class="score-fill fill-green" style="width:100%"></span></span>
+        </td>
+        <td>
+          <span class="score-label">38/50</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:76%"></span></span>
+        </td>
+        <td>
+          <span class="score-label">23/50</span>
+          <span class="score-bar"><span class="score-fill fill-red" style="width:46%"></span></span>
+        </td>
+      </tr>
+      <tr>
+        <td><code>C</code></td>
+        <td>Deep (7–9 nodes)</td>
+        <td class="compiled">
+          <span class="score-label">44/50</span>
+          <span class="score-bar"><span class="score-fill fill-green" style="width:88%"></span></span>
+        </td>
+        <td>
+          <span class="score-label">38/50</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:76%"></span></span>
+        </td>
+        <td>
+          <span class="score-label">26/50</span>
+          <span class="score-bar"><span class="score-fill fill-red" style="width:52%"></span></span>
+        </td>
+      </tr>
+      <tr>
+        <td><code>D</code></td>
+        <td>Very deep (10+ nodes)</td>
+        <td class="compiled">
+          <span class="score-label">48/50</span>
+          <span class="score-bar"><span class="score-fill fill-green" style="width:96%"></span></span>
+        </td>
+        <td>
+          <span class="score-label">38/50</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:76%"></span></span>
+        </td>
+        <td>
+          <span class="score-label">28/50</span>
+          <span class="score-bar"><span class="score-fill fill-red" style="width:56%"></span></span>
+        </td>
+      </tr>
+      <tr>
+        <td><code>E</code></td>
+        <td>Schema drift (column perturbations)</td>
+        <td class="compiled">
+          <span class="score-label">44/50</span>
+          <span class="score-bar"><span class="score-fill fill-green" style="width:88%"></span></span>
+        </td>
+        <td>
+          <span class="score-label">20/50</span>
+          <span class="score-bar"><span class="score-fill fill-red" style="width:40%"></span></span>
+        </td>
+        <td>
+          <span class="score-label">26/50</span>
+          <span class="score-bar"><span class="score-fill fill-red" style="width:52%"></span></span>
+        </td>
+      </tr>
+      <tr>
+        <td><code>F</code></td>
+        <td>SQL roundtrip (state persistence)</td>
+        <td class="compiled">
+          <span class="score-label">42/50</span>
+          <span class="score-bar"><span class="score-fill fill-green" style="width:84%"></span></span>
+        </td>
+        <td>
+          <span class="score-label">36/50</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:72%"></span></span>
+        </td>
+        <td>
+          <span class="score-label">45/50</span>
+          <span class="score-bar"><span class="score-fill fill-green" style="width:90%"></span></span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="reveal">
+    The compiled system's failures concentrate almost entirely in Set F — where the 
+    unconstrained SQL parameter is available. Sets A and B are 100%. Schema drift (Set E) 
+    shows the largest advantage: 88% vs. 40% for GPT-4.1. Claude Sonnet outperforms the 
+    compiled system on SQL roundtrip (90% vs. 84%), which is the exception and directly 
+    attributable to the constraint evasion dynamic described below.
+  </p>
+
+  <hr class="reveal">
+
+  <!-- KEY FINDING -->
+  <span class="s-label reveal">// key finding</span>
+  <h2 class="reveal">Constraint evasion under partial enforcement</h2>
+  <p class="reveal">
+    The node registry constrains all surfaces of the plan except one: the raw SQL string 
+    passed to the <code>QueryEngine</code> node. In complex tasks where the 
+    <code>Aggregator</code> node would be the structurally correct choice, the planner 
+    systematically routes computation into the SQL parameter instead — exploiting the only 
+    unconstrained surface available.
+  </p>
+
+  <div class="finding reveal">
+    <div class="finding-label">FINDING</div>
+    <h3>Constraint evasion is predictable, not random</h3>
+    <p>
+      When you impose constraints on most surfaces of a generation system while leaving 
+      others open, the LLM will route computation into whichever surface remains 
+      unconstrained — even when structurally inferior options exist. This isn't the model 
+      being adversarial. It's a direct consequence of the model optimising for task completion 
+      within whatever degrees of freedom are available.
+    </p>
+    <p>
+      This is a design-level concern, not a prompting problem. More specific prompts do not 
+      fix it. The only fix is closing the unconstrained surface — or accepting that whatever 
+      freedom you leave will be used.
+    </p>
+  </div>
+
+  <p class="reveal">
+    The SQL surface wasn't overlooked — it was intentionally left open because SQL is 
+    genuinely expressive and constraining it fully would have required a SQL parser. 
+    The finding is that this tradeoff has a measurable, predictable cost: it becomes 
+    the locus of all remaining failure in an otherwise highly constrained system.
+  </p>
+  <p class="reveal">
+    This generalises. Any system that relies on partial symbolic constraint as a correctness 
+    mechanism will exhibit constraint evasion proportional to the expressiveness of its 
+    unconstrained surfaces. The lesson isn't "constrain everything" — it's that you should 
+    know exactly where your open surfaces are and what the planner will do with them.
+  </p>
+
+  <hr class="reveal">
+
+  <!-- FAILURE TAXONOMY -->
+  <span class="s-label reveal">// failure modes</span>
+  <h2 class="reveal">How the baselines fail</h2>
+  <p class="reveal">
+    Analysing the baseline failures across all 300 tasks identified two systematic causes 
+    that account for the majority of free-form generation errors:
+  </p>
+
+  <div class="workflow reveal">
+    <div class="wf-step">
+      <div class="wf-num">F1</div>
+      <div class="wf-content">
+        <h4>Output length instability</h4>
+        <p>
+          Models generate variable-length outputs for functionally identical tasks. In 
+          multi-step pipelines this causes inconsistent function signatures, variable naming 
+          conventions that drift across steps, and import statements that appear in some 
+          generations but not others. The errors are non-deterministic and hard to reproduce.
+        </p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-num">F2</div>
+      <div class="wf-content">
+        <h4>Prompt underspecification</h4>
+        <p>
+          As pipeline depth increases, the model's attention to early-step constraints 
+          degrades. Column names introduced in step one are misreferenced in step four. 
+          Schema assumptions made at ingestion are silently violated at persistence. 
+          Prompting more carefully helps at shallow depth but does not eliminate the 
+          degradation curve.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="reveal">
+    The compiled system eliminates both by construction. Output length instability doesn't 
+    affect plan structure because the JSON schema is fixed. Prompt underspecification doesn't 
+    propagate because the validator catches type mismatches and schema drift before execution.
+  </p>
+
+  <hr class="reveal">
+
+  <!-- WHAT'S INTENTIONALLY OUT -->
+  <span class="s-label reveal">// scope</span>
+  <h2 class="reveal">What's intentionally out of scope</h2>
+  <p class="reveal">
+    This is v1. The following are documented exclusions, not oversights:
+  </p>
+  <ul class="checks reveal">
+    <li><span class="check-num">—</span><div>A SQL parser to constrain the <code>QueryEngine</code> parameter (the known open surface)</div></li>
+    <li><span class="check-num">—</span><div>Repair loops or retry logic — first-pass success is the explicit design goal</div></li>
+    <li><span class="check-num">—</span><div>A node registry beyond the 12 nodes used in the benchmark</div></li>
+    <li><span class="check-num">—</span><div>Multi-model planning (one LLM call, one plan)</div></li>
+    <li><span class="check-num">—</span><div>Streaming or incremental compilation</div></li>
+  </ul>
+
+</div><!-- /content-wrap -->
+
+<!-- PAGE FOOTER -->
+<div class="page-footer">
+  <div class="page-footer-inner">
+    <div class="pf-left">
+      <p>Pranav Harikumar &nbsp;·&nbsp; 2026</p>
+      <p style="margin-top:0.2rem;">prnvvh@gmail.com</p>
+    </div>
+    <div class="pf-right">
+      <a class="pf-link" href="Deterministic_Compilation_Architecture_v2.pdf" target="_blank">Full Paper (PDF) ↗</a>
+      <a class="pf-link" href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub ↗</a>
+      <a class="pf-link" href="index.html">← Back to site</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 10));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), 60);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

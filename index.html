@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pranav Harikumar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --parchment:   #F4F0E6;
+    --parchment-2: #EDE8D8;
+    --stone:       #D8D2C4;
+    --ash:         #9E9890;
+    --slate:       #5C5750;
+    --ink:         #2E2B26;
+    --gold:        #B4902A;
+    --gold-light:  #D4AE50;
+    --gold-bg:     #F7F2E2;
+    --white:       #FDFBF6;
+    --serif-display: 'IBM Plex Mono', monospace;
+    --serif-body:    'Playfair Display', Georgia, serif;
+    --serif-text:    'Source Serif 4', Georgia, serif;
+    --nav-h: 68px;
+    --max-w: 1080px;
+    --col: 660px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 18px; }
+  body { background: var(--parchment); color: var(--ink); font-family: var(--serif-text); font-weight: 300; line-height: 1.75; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+
+  .meander {
+    width: 100%; height: 16px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='18' viewBox='0 0 80 18'%3E%3Cpath fill='none' stroke='%23B4902A' stroke-width='1.5' d='M0,9 L8,9 L8,2 L22,2 L22,16 L14,16 L14,9 L28,9 L28,2 L42,2 L42,16 L34,16 L34,9 L48,9 L48,2 L62,2 L62,16 L54,16 L54,9 L68,9 L68,2 L80,2'/%3E%3C/svg%3E");
+    background-repeat: repeat-x; background-position: center; opacity: 0.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+    background: rgba(244,240,230,0.94); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--stone); z-index: 100;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem;
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: 0 2px 20px rgba(46,43,38,0.07); }
+  .nav-logo { font-family: var(--serif-display); font-size: 0.88rem; font-weight: 400; letter-spacing: 0.18em; color: var(--ink); }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+  .nav-links a { font-family: var(--serif-display); font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate); transition: color 0.2s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; right: 0; height: 1px; background: var(--gold); transform: scaleX(0); transition: transform 0.3s; }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  /* HERO */
+  #home {
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: calc(var(--nav-h) + 4rem) 2rem 5rem; position: relative; overflow: hidden;
+  }
+  #home::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 55% 45% at 50% 80%, rgba(180,144,42,0.05) 0%, transparent 70%),
+      repeating-linear-gradient(90deg, transparent 0px, transparent 118px, rgba(180,144,42,0.035) 118px, rgba(180,144,42,0.035) 122px);
+    pointer-events: none;
+  }
+  #home::after { content: ''; position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%); width: 480px; height: 480px; border-radius: 50%; border: 1px solid rgba(180,144,42,0.09); pointer-events: none; }
+  .hero-eyebrow { font-family: var(--serif-display); font-size: 0.65rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.4rem; animation: fadeUp 0.8s ease both; }
+  .hero-name { font-family: var(--serif-display); font-size: clamp(2.6rem, 6.5vw, 4.8rem); font-weight: 300; letter-spacing: 0.08em; line-height: 1.05; color: var(--ink); margin-bottom: 0.5rem; animation: fadeUp 0.8s 0.1s ease both; }
+  .hero-name em { font-style: italic; color: var(--gold); font-family: var(--serif-body); font-weight: 300; }
+  .hero-title { font-family: var(--serif-body); font-size: 1rem; font-weight: 300; font-style: italic; color: var(--ash); margin-bottom: 1.8rem; animation: fadeUp 0.8s 0.2s ease both; }
+  .hero-divider { display: flex; align-items: center; gap: 1rem; justify-content: center; margin-bottom: 1.8rem; animation: fadeUp 0.8s 0.3s ease both; }
+  .hero-divider::before, .hero-divider::after { content: ''; flex: 1; max-width: 70px; height: 1px; background: var(--gold); opacity: 0.45; }
+  .hero-divider span { color: var(--gold); font-size: 0.9rem; }
+  .hero-bio { max-width: 500px; font-size: 1rem; color: var(--slate); line-height: 1.85; margin-bottom: 2.2rem; animation: fadeUp 0.8s 0.4s ease both; }
+  .hero-tags { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2.2rem; animation: fadeUp 0.8s 0.45s ease both; }
+  .hero-tag { font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(180,144,42,0.32); padding: 0.28rem 0.7rem; }
+  .hero-ctas { display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.8s 0.5s ease both; }
+  .btn { font-family: var(--serif-display); font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.8rem 2rem; border: 1px solid; cursor: pointer; transition: all 0.28s; display: inline-block; }
+  .btn-primary { background: var(--gold); border-color: var(--gold); color: var(--parchment); }
+  .btn-primary:hover { background: transparent; color: var(--gold); }
+  .btn-outline { background: transparent; border-color: var(--stone); color: var(--slate); }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* SECTION COMMONS */
+  section { padding: 6.5rem 2rem; }
+  .container { max-width: var(--max-w); margin: 0 auto; }
+  .section-header { text-align: center; margin-bottom: 4.5rem; }
+  .section-label { font-family: var(--serif-display); font-size: 0.62rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.7rem; }
+  .section-title { font-family: var(--serif-display); font-size: clamp(1.7rem, 3.5vw, 2.6rem); font-weight: 300; letter-spacing: 0.06em; color: var(--ink); line-height: 1.2; }
+  .section-rule { display: flex; align-items: center; gap: 1rem; justify-content: center; margin-top: 1.1rem; }
+  .section-rule::before, .section-rule::after { content: ''; width: 55px; height: 1px; background: var(--gold); opacity: 0.45; }
+  .section-rule span { color: var(--gold); font-size: 0.65rem; }
+
+  /* ABOUT */
+  #about { background: var(--white); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1.7fr; gap: 5.5rem; align-items: start; }
+  .portrait-frame { width: 100%; aspect-ratio: 3/4; background: var(--parchment-2); border: 1px solid var(--stone); position: relative; display: flex; align-items: center; justify-content: center; }
+  .portrait-frame::before { content: ''; position: absolute; inset: 11px; border: 1px solid var(--gold); opacity: 0.28; pointer-events: none; }
+  .portrait-placeholder { font-family: var(--serif-display); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ash); }
+  .about-text h2 { font-family: var(--serif-display); font-size: 1.65rem; font-weight: 300; letter-spacing: 0.04em; color: var(--ink); margin-bottom: 1.4rem; line-height: 1.35; }
+  .about-text p { color: var(--slate); margin-bottom: 1.1rem; font-size: 0.97rem; }
+  .about-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 2.2rem; border-top: 1px solid var(--stone); padding-top: 1.8rem; }
+  .fact { padding: 0.85rem 0; border-bottom: 1px solid rgba(216,210,196,0.45); }
+  .fact:nth-child(odd) { border-right: 1px solid var(--stone); padding-right: 2rem; }
+  .fact:nth-child(even) { padding-left: 2rem; }
+  .fact-label { font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.22rem; }
+  .fact-value { font-size: 0.88rem; color: var(--ink); }
+  .fact-value a { color: var(--gold); border-bottom: 1px solid rgba(180,144,42,0.3); }
+
+  /* PROJECTS */
+  #case-studies { background: var(--parchment); }
+  .case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2px; }
+  .case-card { background: var(--white); border: 1px solid var(--stone); padding: 2.2rem; position: relative; overflow: hidden; transition: transform 0.28s, box-shadow 0.28s; }
+  .case-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--gold); transform: scaleY(0); transform-origin: bottom; transition: transform 0.35s; }
+  .case-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(46,43,38,0.07); }
+  .case-card:hover::before { transform: scaleY(1); }
+  .case-card.featured { border-color: rgba(180,144,42,0.38); background: var(--gold-bg); }
+  .case-tag { font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.85rem; }
+  .case-title { font-family: var(--serif-body); font-size: 1.25rem; font-weight: 500; color: var(--ink); line-height: 1.35; margin-bottom: 0.65rem; }
+  .case-desc { font-size: 0.88rem; color: var(--ash); line-height: 1.75; margin-bottom: 1.1rem; }
+  .case-stack { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1.1rem; }
+  .stack-pill { font-family: var(--serif-display); font-size: 0.52rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--slate); background: var(--parchment-2); border: 1px solid var(--stone); padding: 0.18rem 0.55rem; }
+  .case-meta { display: flex; flex-wrap: wrap; gap: 1rem; font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); }
+  .case-links { display: flex; gap: 1rem; margin-top: 1.3rem; flex-wrap: wrap; }
+  .case-link { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--serif-display); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); transition: gap 0.25s; }
+  .case-link.secondary { color: var(--ash); }
+  .case-card:hover .case-link { gap: 0.65rem; }
+  .case-number { position: absolute; top: 1.6rem; right: 1.8rem; font-family: var(--serif-display); font-size: 2.6rem; font-weight: 300; color: var(--stone); line-height: 1; pointer-events: none; }
+  .case-card.featured .case-number { color: rgba(180,144,42,0.18); }
+
+  /* PAPERS */
+  #papers { background: var(--gold-bg); }
+  .papers-list { max-width: var(--col); margin: 0 auto; }
+  .paper-item { display: grid; grid-template-columns: auto 1fr; gap: 1.8rem; padding: 1.8rem 0; border-bottom: 1px solid rgba(180,144,42,0.18); transition: padding-left 0.3s; }
+  .paper-item:hover { padding-left: 0.4rem; }
+  .paper-year { font-family: var(--serif-display); font-size: 0.62rem; letter-spacing: 0.1em; color: var(--gold); margin-top: 0.2rem; min-width: 48px; font-weight: 500; }
+  .paper-type { font-family: var(--serif-display); font-size: 0.55rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ash); margin-bottom: 0.35rem; }
+  .paper-title { font-family: var(--serif-body); font-size: 1.08rem; font-weight: 500; color: var(--ink); line-height: 1.38; margin-bottom: 0.38rem; }
+  .paper-authors { font-family: var(--serif-body); font-style: italic; font-size: 0.86rem; color: var(--ash); margin-bottom: 0.5rem; }
+  .paper-abstract { font-size: 0.88rem; color: var(--slate); line-height: 1.7; margin-bottom: 0.65rem; }
+  .paper-finding { font-size: 0.86rem; color: var(--ink); background: rgba(180,144,42,0.08); border-left: 2px solid var(--gold); padding: 0.45rem 0.75rem; margin-bottom: 0.7rem; font-family: var(--serif-body); font-style: italic; }
+  .paper-actions { display: flex; gap: 1.1rem; }
+  .paper-actions a { font-family: var(--serif-display); font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); border-bottom: 1px solid rgba(180,144,42,0.28); padding-bottom: 1px; transition: border-color 0.2s; }
+  .paper-actions a:hover { border-color: var(--gold); }
+
+  /* WRITING */
+  #blog { background: var(--white); }
+  .writing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .writing-card {
+    background: var(--parchment); border: 1px solid var(--stone);
+    padding: 2.5rem 2.2rem; display: flex; flex-direction: column;
+    transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
+    cursor: pointer;
+  }
+  .writing-card:hover { background: var(--white); transform: translateY(-3px); box-shadow: 0 10px 36px rgba(46,43,38,0.07); }
+  .writing-card-label { font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .writing-card-title { font-family: var(--serif-body); font-size: 1.4rem; font-weight: 500; color: var(--ink); margin-bottom: 0.75rem; line-height: 1.25; }
+  .writing-card-desc { font-size: 0.9rem; color: var(--ash); line-height: 1.75; flex: 1; margin-bottom: 1.5rem; }
+  .writing-card-link { font-family: var(--serif-display); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); transition: letter-spacing 0.25s; }
+  .writing-card:hover .writing-card-link { letter-spacing: 0.25em; }
+  @media (max-width: 700px) { .writing-grid { grid-template-columns: 1fr; } }
+
+  /* CONTACT */
+  #contact { background: var(--ink); padding: 5.5rem 2rem; text-align: center; }
+  .contact-label { font-family: var(--serif-display); font-size: 0.62rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.9rem; }
+  .contact-title { font-family: var(--serif-display); font-size: clamp(1.5rem, 3.5vw, 2.4rem); font-weight: 300; letter-spacing: 0.07em; color: var(--parchment); margin-bottom: 0.5rem; line-height: 1.3; }
+  .contact-sub { font-family: var(--serif-body); font-style: italic; color: var(--ash); margin-bottom: 2.2rem; font-size: 0.97rem; }
+  .contact-links { display: flex; gap: 1.4rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2.5rem; }
+  .contact-links a { font-family: var(--serif-display); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ash); border-bottom: 1px solid transparent; padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
+  .contact-links a:hover { color: var(--gold-light); border-color: var(--gold-light); }
+
+  /* FOOTER */
+  footer { background: var(--ink); border-top: 1px solid rgba(180,144,42,0.13); padding: 1.4rem 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  footer p { font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--slate); }
+  footer p span { color: var(--gold); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes scrollPulse { 0%, 100% { opacity: 0.35; transform: scaleY(0.8); } 50% { opacity: 1; transform: scaleY(1); } }
+  .reveal { opacity: 1; transform: none; }
+
+  /* MOBILE */
+  @media (max-width: 860px) { .about-grid { grid-template-columns: 1fr; gap: 2.5rem; } .about-portrait { display: none; } .case-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 580px) { nav { padding: 0 1.4rem; } .nav-links { gap: 1.2rem; } .nav-links a { font-size: 0.58rem; } footer { flex-direction: column; text-align: center; } }
+  @media (max-width: 440px) { .nav-links { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">Pranav <span>Harikumar</span></div>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#case-studies">Projects</a></li>
+    <li><a href="#papers">Papers</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <p class="hero-eyebrow">18 · Bangalore · Builder & Researcher</p>
+  <h1 class="hero-name">Pranav <em>Harikumar</em></h1>
+  <p class="hero-title">LLM systems, deterministic compilers, field economics</p>
+  <div class="hero-divider"><span>✦</span></div>
+  <p class="hero-bio">
+    I build things and write about them. Most of my recent work is about making AI systems 
+    more reliable — less prompt-wrangling, more structural guarantees. I also do field 
+    research on labour markets when I'm not at a keyboard.
+  </p>
+  <div class="hero-tags">
+    <span class="hero-tag">LLM Reliability</span>
+    <span class="hero-tag">Deterministic Compilation</span>
+    <span class="hero-tag">Multi-Tenant Systems</span>
+    <span class="hero-tag">Labour Economics</span>
+    <span class="hero-tag">Python · MongoDB · FastAPI</span>
+  </div>
+  <div class="hero-ctas">
+    <a class="btn btn-primary" href="#case-studies">See the Work</a>
+    <a class="btn btn-outline" href="#papers">Read the Paper</a>
+  </div>
+
+</section>
+
+<div class="meander"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="section-label">About</p>
+      <h2 class="section-title">A bit about me</h2>
+      <div class="section-rule"><span>✦</span></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-portrait reveal">
+        <div class="portrait-frame"><p class="portrait-placeholder">Your Photo</p></div>
+      </div>
+      <div class="about-text reveal">
+        <h2>I like building things that hold up when you stress-test them.</h2>
+        <p>
+          I'm 18, based in Bangalore, finishing school in April 2026. Most of my time right now 
+          goes into LLM systems work — specifically the question of how you build pipelines that 
+          fail in predictable, debuggable ways rather than silently misbehaving. That's what SVMP 
+          and the compiler paper came out of.
+        </p>
+        <p>
+          On the side, I've been doing independent field research on wage asymmetry between 
+          migrant and local workers in Kerala — 150+ structured interviews, working toward a paper. 
+          It started as curiosity and turned into something more serious.
+        </p>
+        <p>
+          Looking for fellowships, research internships, and early-stage teams where there's real 
+          work to do and room to figure things out.
+        </p>
+        <div class="about-facts">
+          <div class="fact">
+            <p class="fact-label">Education</p>
+            <p class="fact-value">CBSE (PCMB), Sri Chaitanya Techno School — April 2026</p>
+          </div>
+          <div class="fact">
+            <p class="fact-label">Working on</p>
+            <p class="fact-value">LLM reliability, labour economics research</p>
+          </div>
+          <div class="fact">
+            <p class="fact-label">Location</p>
+            <p class="fact-value">Bangalore, India</p>
+          </div>
+          <div class="fact">
+            <p class="fact-label">Stack</p>
+            <p class="fact-value">Python · MongoDB · FastAPI · OpenAI API</p>
+          </div>
+          <div class="fact">
+            <p class="fact-label">Open to</p>
+            <p class="fact-value">Fellowships · Research internships · Early-stage roles</p>
+          </div>
+          <div class="fact">
+            <p class="fact-label">Links</p>
+            <p class="fact-value">
+              <a href="https://github.com/prnvh" target="_blank">GitHub ↗</a>
+              &nbsp;·&nbsp;
+              <a href="https://www.linkedin.com/in/pranav-h2/" target="_blank">LinkedIn ↗</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="meander"></div>
+
+<!-- PROJECTS -->
+<section id="case-studies">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="section-label">Work</p>
+      <h2 class="section-title">Projects</h2>
+      <div class="section-rule"><span>✦</span></div>
+    </div>
+    <div class="case-grid">
+
+      <div class="case-card featured reveal">
+        <span class="case-number">01</span>
+        <p class="case-tag">Systems · 2025–2026</p>
+        <h3 class="case-title">SVMP — Multi-Tenant LLM Governance Layer</h3>
+        <p class="case-desc">
+          Production-grade customer-service AI for multi-tenant B2B deployment. Three async 
+          workflows — ingestor, processor, janitor — each doing one job. A 2.5s soft debounce 
+          and atomic lock queue merge fragmented messages and cut duplicate LLM calls by ~40%. 
+          Tenant isolation via a four-coordinate identity frame. 0.75 cosine-similarity gate 
+          routes uncertain queries to humans with Slack escalation. API keys encrypted at rest 
+          with Fernet AES-128. Ran 500+ adversarial tests for prompt injection and 
+          cross-tenant leakage.
+        </p>
+        <div class="case-stack">
+          <span class="stack-pill">Python</span>
+          <span class="stack-pill">FastAPI</span>
+          <span class="stack-pill">MongoDB Atlas</span>
+          <span class="stack-pill">Motor</span>
+          <span class="stack-pill">OpenAI API</span>
+          <span class="stack-pill">APScheduler</span>
+          <span class="stack-pill">Fernet</span>
+        </div>
+        <div class="case-meta">
+          <span>500+ adversarial tests</span>
+          <span>~40% LLM overhead reduction</span>
+        </div>
+        <div class="case-links">
+          <a class="case-link" href="https://github.com/svmp-systems/SVMP-Systems" target="_blank">GitHub ↗</a>
+        </div>
+      </div>
+
+      <div class="case-card featured reveal">
+        <span class="case-number">02</span>
+        <p class="case-tag">Research Build · 2025–2026</p>
+        <h3 class="case-title">LLM Code Graph Compiler — Deterministic Workflow-to-Code</h3>
+        <p class="case-desc">
+          Separates LLM planning from execution entirely. The model picks nodes from a 
+          pre-verified typed registry and outputs a JSON plan. A seven-check static validator 
+          runs before any code is generated — no repair loops, no runtime chaining. 
+          Benchmarked on 300 tasks: 284/300 compiled runs vs. ~170/300 for GPT-4o. 
+          The evaluation surfaced a "constraint evasion" failure mode — the planner routes 
+          computation into the one unconstrained surface when better-structured nodes are 
+          available. That ended up being the most interesting result.
+        </p>
+        <div class="case-stack">
+          <span class="stack-pill">Python</span>
+          <span class="stack-pill">OpenAI API</span>
+          <span class="stack-pill">DAG Execution</span>
+          <span class="stack-pill">Static Validation</span>
+          <span class="stack-pill">CLI Tooling</span>
+        </div>
+        <div class="case-meta">
+          <span>284/300 benchmark</span>
+          <span>Wrote a paper on it</span>
+        </div>
+        <div class="case-links">
+          <a class="case-link" href="compiler.html">Full Write-up →</a>
+          <a class="case-link secondary" href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub ↗</a>
+          <a class="case-link secondary" href="#papers">Paper →</a>
+        </div>
+      </div>
+
+      <div class="case-card reveal">
+        <span class="case-number">03</span>
+        <p class="case-tag">Field Research · 2025–2026</p>
+        <h3 class="case-title">Wage Asymmetry Study — Kerala Labour Markets</h3>
+        <p class="case-desc">
+          150+ structured interviews across Kerala on the wage gap between inter-state migrant 
+          workers and local labourers. Designed the interview protocol, ran the field data 
+          collection, writing it up as an economics paper with guidance from a retired 
+          economics professor. Short version: the gap is real, persistent, and institutional.
+        </p>
+        <div class="case-stack">
+          <span class="stack-pill">Field Research</span>
+          <span class="stack-pill">Labour Economics</span>
+          <span class="stack-pill">Structured Interviews</span>
+        </div>
+        <div class="case-meta">
+          <span>150+ interviews</span>
+          <span>Kerala, India</span>
+          <span>Paper in progress</span>
+        </div>
+      </div>
+
+      <div class="case-card reveal">
+        <span class="case-number">04</span>
+        <p class="case-tag">Operations · 2025–Present</p>
+        <h3 class="case-title">Niyomilan — Pre-Launch Labour Marketplace</h3>
+        <p class="case-desc">
+          Working on ops and growth for a marketplace built for daily-wage workers. 
+          Field-driven GTM work and early operational design. The Kerala research feeds 
+          directly into how I think about the problem here.
+        </p>
+        <div class="case-stack">
+          <span class="stack-pill">Operations</span>
+          <span class="stack-pill">GTM</span>
+          <span class="stack-pill">Labour Markets</span>
+        </div>
+        <div class="case-meta"><span>Pre-launch</span></div>
+      </div>
+
+      <div class="case-card reveal">
+        <span class="case-number">05</span>
+        <p class="case-tag">Venture · 2024–2025</p>
+        <h3 class="case-title">Student Marketing Venture</h3>
+        <p class="case-desc">
+          Co-ran a content and marketing operation serving international clients out of school. 
+          Handled clients, revisions, payments, and delivery across 20+ projects. ~₹3.5L in 
+          three months with a small team. Learned a lot about what "ops" actually means.
+        </p>
+        <div class="case-stack">
+          <span class="stack-pill">Client Management</span>
+          <span class="stack-pill">Content</span>
+          <span class="stack-pill">Operations</span>
+        </div>
+        <div class="case-meta"><span>₹3.5L · 3 months</span></div>
+      </div>
+
+      <div class="case-card reveal">
+        <span class="case-number">06</span>
+        <p class="case-tag">Side Project · 2024</p>
+        <h3 class="case-title">Matiks Breaker</h3>
+        <p class="case-desc">
+          Reverse-engineered the Matiks daily puzzle flow via its GraphQL endpoint, converted 
+          raw 7×7 state into structured constraints, built a permutation-based backtracking 
+          solver. The work later informed an independent public fan site for daily verified solutions.
+        </p>
+        <div class="case-stack">
+          <span class="stack-pill">Python</span>
+          <span class="stack-pill">GraphQL</span>
+          <span class="stack-pill">Backtracking</span>
+        </div>
+        <div class="case-links">
+          <a class="case-link" href="https://github.com/prnvh/matiks_breaker" target="_blank">GitHub ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="meander"></div>
+
+<!-- PAPERS -->
+<section id="papers">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="section-label">Research</p>
+      <h2 class="section-title">Papers &amp; Writing</h2>
+      <div class="section-rule"><span>✦</span></div>
+    </div>
+    <div class="papers-list">
+
+      <div class="paper-item reveal">
+        <p class="paper-year">2026</p>
+        <div class="paper-body">
+          <p class="paper-type">Research Paper</p>
+          <p class="paper-title">A Deterministic Compilation Architecture for Robust Multi-Step LLM Workflow Execution</p>
+          <p class="paper-authors">Pranav Harikumar</p>
+          <p class="paper-abstract">
+            A typed-node-registry compiler that separates LLM planning from execution. 
+            Seven-check static validator enforces correctness before any code runs — 
+            eliminates hallucinated imports, naming drift, and schema inconsistency by design.
+          </p>
+          <div class="paper-finding">
+            284/300 on depth-stratified benchmarks vs. ~170/300 for GPT-4o. Schema drift: 
+            88% compiled vs. 40% GPT-4.1. Key finding: constraint evasion under partial 
+            enforcement — leave one surface unconstrained and the planner finds it.
+          </div>
+          <div class="paper-actions">
+            <a href="Deterministic_Compilation_Architecture_v2.pdf" target="_blank">PDF ↗</a>
+            <a href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">Code ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="paper-item reveal">
+        <p class="paper-year">2026</p>
+        <div class="paper-body">
+          <p class="paper-type">Working Paper · In Progress</p>
+          <p class="paper-title">Wage Asymmetry in Informal Labour Markets: Evidence from Kerala</p>
+          <p class="paper-authors">Pranav Harikumar</p>
+          <p class="paper-abstract">
+            150+ structured field interviews across Kerala on persistent wage differentials 
+            between inter-state migrants and local workers. Focuses on contractor networks, 
+            information asymmetry, and social capital as mechanisms that sustain the gap.
+          </p>
+          <div class="paper-finding">Forthcoming. Available on request.</div>
+          <div class="paper-actions">
+            <a href="/cdn-cgi/l/email-protection#0272706c74746a42656f636b6e2c616d6f">Request Draft</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="paper-item reveal">
+        <p class="paper-year">2026</p>
+        <div class="paper-body">
+          <p class="paper-type">Architecture Document</p>
+          <p class="paper-title">SVMP v1.0.0 — Python Architecture: From Whitepaper to Production</p>
+          <p class="paper-authors">Pranav Harikumar</p>
+          <p class="paper-abstract">
+            Full technical spec for the SVMP multi-tenant AI governance layer — tri-workflow 
+            architecture, MongoDB schema, identity-frame model, Fernet key encryption, crash 
+            alerting, and a 20-step build order.
+          </p>
+          <div class="paper-actions">
+            <a href="https://github.com/svmp-systems/SVMP-Systems" target="_blank">GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="meander"></div>
+
+<!-- BLOG -->
+<section id="blog">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="section-label">Writing</p>
+      <h2 class="section-title">Writing</h2>
+      <div class="section-rule"><span>✦</span></div>
+    </div>
+    <div class="writing-grid reveal">
+
+      <a class="writing-card" href="case-studies.html">
+        <p class="writing-card-label">01</p>
+        <h3 class="writing-card-title">Case Studies</h3>
+        <p class="writing-card-desc">Deep dives into projects I've built — architecture decisions, what broke, what worked.</p>
+        <span class="writing-card-link">Browse →</span>
+      </a>
+
+      <a class="writing-card" href="technical-blog.html">
+        <p class="writing-card-label">02</p>
+        <h3 class="writing-card-title">Technical Blog</h3>
+        <p class="writing-card-desc">Shorter posts on systems, LLM reliability, and things I figured out the hard way.</p>
+        <span class="writing-card-link">Browse →</span>
+      </a>
+
+      <a class="writing-card" href="research-papers.html">
+        <p class="writing-card-label">03</p>
+        <h3 class="writing-card-title">Research Papers</h3>
+        <p class="writing-card-desc">Longer-form research — the compiler paper, the Kerala labour market study, and what comes next.</p>
+        <span class="writing-card-link">Browse →</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <p class="contact-label">Get in Touch</p>
+    <h2 class="contact-title">Open to fellowships,<br>research &amp; early-stage work</h2>
+    <p class="contact-sub">If you're working on something interesting, reach out.</p>
+    <div class="contact-links">
+      <a href="mailto:prnvvh@gmail.com">prnvvh@gmail.com</a>
+      <a href="https://www.linkedin.com/in/pranav-h2/" target="_blank">LinkedIn ↗</a>
+      <a href="https://github.com/prnvh" target="_blank">GitHub ↗</a>
+      <a href="Deterministic_Compilation_Architecture_v2.pdf" target="_blank">Paper PDF ↗</a>
+    </div>
+    <a class="btn btn-primary" href="mailto:prnvvh@gmail.com">Say hello</a>
+  </div>
+</section>
+
+<footer>
+  <p>© <span id="year"></span> <span>Pranav Harikumar</span>. Bangalore, India.</p>
+  <p><span>18</span> · Builder · Researcher</p>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+</script>
+</body>
+</html>
