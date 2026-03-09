@@ -110,6 +110,68 @@
   .fact-value { font-size: 0.88rem; color: var(--ink); }
   .fact-value a { color: var(--gold); border-bottom: 1px solid rgba(180,144,42,0.3); }
 
+  /* COMPILER FEATURE BANNER */
+  .compiler-feature {
+    display: grid; grid-template-columns: 1fr 280px; gap: 4rem;
+    background: var(--ink); border: 1px solid rgba(180,144,42,0.25);
+    padding: 3rem; margin-bottom: 2px; position: relative; overflow: hidden;
+  }
+  .compiler-feature::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+  .compiler-feature-title {
+    font-family: var(--serif-body); font-size: 1.7rem; font-weight: 500;
+    color: var(--parchment); line-height: 1.2; margin-bottom: 0.2rem;
+  }
+  .compiler-feature-sub {
+    font-family: var(--serif-body); font-style: italic; font-size: 1rem;
+    color: var(--gold); margin-bottom: 1.2rem;
+  }
+  .compiler-feature-desc {
+    font-size: 0.9rem; color: rgba(242,238,228,0.65); line-height: 1.8; margin-bottom: 1.4rem;
+  }
+  .compiler-feature .case-tag { color: var(--gold-light); }
+  .compiler-feature .stack-pill { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); color: rgba(242,238,228,0.6); }
+  .compiler-feature-ctas { display: flex; flex-direction: column; gap: 0; }
+  .compiler-writeup-strip {
+    display: flex; flex-direction: column; gap: 0.3rem;
+    border: 1px solid rgba(180,144,42,0.4); padding: 1.1rem 1.4rem;
+    background: rgba(180,144,42,0.07);
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .compiler-writeup-strip:hover { background: rgba(180,144,42,0.14); border-color: var(--gold); }
+  .compiler-writeup-label {
+    font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--gold);
+  }
+  .compiler-writeup-title {
+    font-family: var(--serif-body); font-size: 0.95rem; font-style: italic;
+    color: var(--parchment); line-height: 1.4;
+  }
+  .compiler-feature-right {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+    background: rgba(255,255,255,0.07); align-content: start;
+    border: 1px solid rgba(180,144,42,0.18);
+  }
+  .compiler-stat {
+    background: rgba(255,255,255,0.03); padding: 1.4rem 1.2rem;
+    display: flex; flex-direction: column; gap: 0.3rem;
+  }
+  .compiler-stat-num {
+    font-family: var(--serif-display); font-size: 1.5rem; font-weight: 300;
+    color: var(--parchment); letter-spacing: 0.04em; line-height: 1;
+  }
+  .compiler-stat-num em { font-style: normal; color: var(--gold); font-size: 0.9rem; }
+  .compiler-stat-label {
+    font-family: var(--serif-display); font-size: 0.52rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: rgba(138,132,120,0.8);
+  }
+  @media (max-width: 780px) {
+    .compiler-feature { grid-template-columns: 1fr; gap: 2rem; }
+    .compiler-feature-right { grid-template-columns: repeat(4, 1fr); }
+  }
+
   /* PROJECTS */
   #case-studies { background: var(--parchment); }
   .case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2px; }
@@ -269,11 +331,60 @@
       <h2 class="section-title">Projects</h2>
       <div class="section-rule"><span>✦</span></div>
     </div>
+
+    <!-- FEATURED: COMPILER -->
+    <div class="compiler-feature reveal">
+      <div class="compiler-feature-left">
+        <p class="case-tag">Research Build · 2025–2026</p>
+        <h3 class="compiler-feature-title">LLM Code Graph Compiler</h3>
+        <p class="compiler-feature-sub">Deterministic Workflow-to-Code</p>
+        <p class="compiler-feature-desc">
+          Separates LLM planning from execution entirely. The model selects nodes from a 
+          pre-verified typed registry and outputs a JSON plan. A seven-check static validator 
+          enforces correctness before any code runs — no repair loops, no runtime chaining, 
+          no silent failures. The evaluation surfaced a "constraint evasion" failure mode: 
+          leave one surface unconstrained and the planner always finds it. That turned out 
+          to be the most interesting result.
+        </p>
+        <div class="case-stack" style="margin-bottom:1.6rem;">
+          <span class="stack-pill">Python</span>
+          <span class="stack-pill">OpenAI API</span>
+          <span class="stack-pill">DAG Execution</span>
+          <span class="stack-pill">Static Validation</span>
+          <span class="stack-pill">CLI Tooling</span>
+        </div>
+        <div class="compiler-feature-ctas">
+          <a class="compiler-writeup-strip" href="compiler.html">
+            <span class="compiler-writeup-label">Technical Write-up</span>
+            <span class="compiler-writeup-title">Architecture, benchmarks &amp; the constraint evasion finding →</span>
+          </a>
+          <a class="case-link secondary" href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank" style="margin-top:0.8rem;">GitHub ↗</a>
+        </div>
+      </div>
+      <div class="compiler-feature-right">
+        <div class="compiler-stat">
+          <span class="compiler-stat-num">284<em>/300</em></span>
+          <span class="compiler-stat-label">Compiled runs</span>
+        </div>
+        <div class="compiler-stat">
+          <span class="compiler-stat-num">~170<em>/300</em></span>
+          <span class="compiler-stat-label">GPT-4o baseline</span>
+        </div>
+        <div class="compiler-stat">
+          <span class="compiler-stat-num">88<em>%</em></span>
+          <span class="compiler-stat-label">Schema drift (vs 40%)</span>
+        </div>
+        <div class="compiler-stat">
+          <span class="compiler-stat-num">7</span>
+          <span class="compiler-stat-label">Static checks</span>
+        </div>
+      </div>
+    </div>
+
     <div class="case-grid">
 
       <div class="case-card featured reveal">
         <span class="case-number">01</span>
-        <p class="case-tag">Systems · 2025–2026</p>
         <h3 class="case-title">SVMP — Multi-Tenant LLM Governance Layer</h3>
         <p class="case-desc">
           Production-grade customer-service AI for multi-tenant B2B deployment. Three async 
@@ -302,39 +413,8 @@
         </div>
       </div>
 
-      <div class="case-card featured reveal">
-        <span class="case-number">02</span>
-        <p class="case-tag">Research Build · 2025–2026</p>
-        <h3 class="case-title">LLM Code Graph Compiler — Deterministic Workflow-to-Code</h3>
-        <p class="case-desc">
-          Separates LLM planning from execution entirely. The model picks nodes from a 
-          pre-verified typed registry and outputs a JSON plan. A seven-check static validator 
-          runs before any code is generated — no repair loops, no runtime chaining. 
-          Benchmarked on 300 tasks: 284/300 compiled runs vs. ~170/300 for GPT-4o. 
-          The evaluation surfaced a "constraint evasion" failure mode — the planner routes 
-          computation into the one unconstrained surface when better-structured nodes are 
-          available. That ended up being the most interesting result.
-        </p>
-        <div class="case-stack">
-          <span class="stack-pill">Python</span>
-          <span class="stack-pill">OpenAI API</span>
-          <span class="stack-pill">DAG Execution</span>
-          <span class="stack-pill">Static Validation</span>
-          <span class="stack-pill">CLI Tooling</span>
-        </div>
-        <div class="case-meta">
-          <span>284/300 benchmark</span>
-          <span>Wrote a paper on it</span>
-        </div>
-        <div class="case-links">
-          <a class="case-link" href="compiler.html">Full Write-up →</a>
-          <a class="case-link secondary" href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub ↗</a>
-          <a class="case-link secondary" href="compiler.html">Paper →</a>
-        </div>
-      </div>
-
       <div class="case-card reveal">
-        <span class="case-number">03</span>
+        <span class="case-number">02</span>
         <p class="case-tag">Field Research · 2025–2026</p>
         <h3 class="case-title">Wage Asymmetry Study — Kerala Labour Markets</h3>
         <p class="case-desc">
@@ -356,7 +436,7 @@
       </div>
 
       <div class="case-card reveal">
-        <span class="case-number">04</span>
+        <span class="case-number">03</span>
         <p class="case-tag">Operations · 2025–Present</p>
         <h3 class="case-title">Niyomilan — Pre-Launch Labour Marketplace</h3>
         <p class="case-desc">
@@ -373,7 +453,7 @@
       </div>
 
       <div class="case-card reveal">
-        <span class="case-number">05</span>
+        <span class="case-number">03</span>
         <p class="case-tag">Venture · 2024–2025</p>
         <h3 class="case-title">Student Marketing Venture</h3>
         <p class="case-desc">
@@ -390,7 +470,7 @@
       </div>
 
       <div class="case-card reveal">
-        <span class="case-number">06</span>
+        <span class="case-number">03</span>
         <p class="case-tag">Side Project · 2024</p>
         <h3 class="case-title">Matiks Breaker</h3>
         <p class="case-desc">
@@ -420,7 +500,7 @@
     <h2 class="contact-title">Open to fellowships,<br>research &amp; early-stage work</h2>
     <p class="contact-sub">If you're working on something interesting, reach out.</p>
     <div class="contact-links">
-      <a href="mailto:prnvvh@gmail.com">prnvvh@gmail.com</a>
+      <a href="/cdn-cgi/l/email-protection#6414160a12120c240309050d084a070b09"><span class="__cf_email__" data-cfemail="2151534f57574961464c40484d0f424e4c">[email&#160;protected]</span></a>
       <a href="https://www.linkedin.com/in/pranav-h2/" target="_blank">LinkedIn ↗</a>
       <a href="https://github.com/prnvh" target="_blank">GitHub ↗</a>
       <a href="Deterministic_Compilation_Architecture_v2.pdf" target="_blank">Paper PDF ↗</a>
@@ -431,7 +511,4 @@
 
 <footer>
   <p>© <span id="year"></span> <span>Pranav Harikumar</span>. Bangalore, India.</p>
-  <p><span>18</span> · Builder · Researcher</p>
-</footer>
-
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-
+  <p><span>18</s
