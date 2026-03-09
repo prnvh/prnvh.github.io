@@ -335,7 +335,7 @@
     <!-- FEATURED: COMPILER -->
     <div class="compiler-feature reveal">
       <div class="compiler-feature-left">
-        <p class="case-tag">Research Build · 2025–2026</p>
+        <p class="case-tag">Research Build · 2026</p>
         <h3 class="compiler-feature-title">LLM Code Graph Compiler</h3>
         <p class="compiler-feature-sub">Deterministic Workflow-to-Code</p>
         <p class="compiler-feature-desc">
@@ -367,12 +367,16 @@
           <span class="compiler-stat-label">Compiled runs</span>
         </div>
         <div class="compiler-stat">
-          <span class="compiler-stat-num">~170<em>/300</em></span>
-          <span class="compiler-stat-label">GPT-4o baseline</span>
+          <span class="compiler-stat-num">~202<em>/300</em></span>
+          <span class="compiler-stat-label">GPT-4.1 baseline</span>
+        </div>
+        <div class="compiler-stat">
+          <span class="compiler-stat-num">183<em>/300</em></span>
+          <span class="compiler-stat-label">Claude Sonnet 4.6 baseline</span>
         </div>
         <div class="compiler-stat">
           <span class="compiler-stat-num">88<em>%</em></span>
-          <span class="compiler-stat-label">Schema drift (vs 40%)</span>
+          <span class="compiler-stat-label">Schema drift (vs 40% baseline)</span>
         </div>
         <div class="compiler-stat">
           <span class="compiler-stat-num">7</span>
@@ -387,7 +391,7 @@
         <span class="case-number">01</span>
         <h3 class="case-title">SVMP — Multi-Tenant LLM Governance Layer</h3>
         <p class="case-desc">
-          Production-grade customer-service AI for multi-tenant B2B deployment. Three async 
+          Multi-tenant governance architecture for customer-service AI workflows. Three async 
           workflows — ingestor, processor, janitor — each doing one job. A 2.5s soft debounce 
           and atomic lock queue merge fragmented messages and cut duplicate LLM calls by ~40%. 
           Tenant isolation via a four-coordinate identity frame. 0.75 cosine-similarity gate 
@@ -453,7 +457,7 @@
       </div>
 
       <div class="case-card reveal">
-        <span class="case-number">03</span>
+        <span class="case-number">04</span>
         <p class="case-tag">Venture · 2024–2025</p>
         <h3 class="case-title">Student Marketing Venture</h3>
         <p class="case-desc">
@@ -470,8 +474,8 @@
       </div>
 
       <div class="case-card reveal">
-        <span class="case-number">03</span>
-        <p class="case-tag">Side Project · 2024</p>
+        <span class="case-number">05</span>
+        <p class="case-tag">Side Project · 2026</p>
         <h3 class="case-title">Matiks Breaker</h3>
         <p class="case-desc">
           Reverse-engineered the Matiks daily puzzle flow via its GraphQL endpoint, converted 
@@ -511,4 +515,18 @@
 
 <footer>
   <p>© <span id="year"></span> <span>Pranav Harikumar</span>. Bangalore, India.</p>
-  <p><span>18</s
+  <p><span>18</span> · Builder & Researcher</p>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 10) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
