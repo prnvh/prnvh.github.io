@@ -20,13 +20,18 @@
     --gold-light:  #D4AE50;
     --gold-bg:     #F7F2E2;
     --white:       #FDFBF6;
-    --serif-display: 'IBM Plex Mono', monospace;
+
+    /* keep subtext/body as before, only fix heading families */
+    --serif-display: 'Playfair Display', Georgia, serif;
     --serif-body:    'Playfair Display', Georgia, serif;
     --serif-text:    'Source Serif 4', Georgia, serif;
+    --mono:          'IBM Plex Mono', monospace;
+
     --nav-h: 68px;
     --max-w: 1080px;
     --col: 660px;
   }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; font-size: 18px; }
   body { background: var(--parchment); color: var(--ink); font-family: var(--serif-text); font-weight: 300; line-height: 1.75; overflow-x: hidden; }
@@ -47,10 +52,10 @@
     transition: box-shadow 0.3s;
   }
   nav.scrolled { box-shadow: 0 2px 20px rgba(46,43,38,0.07); }
-  .nav-logo { font-family: var(--serif-display); font-size: 0.88rem; font-weight: 400; letter-spacing: 0.18em; color: var(--ink); }
+  .nav-logo { font-family: var(--mono); font-size: 0.88rem; font-weight: 400; letter-spacing: 0.18em; color: var(--ink); }
   .nav-logo span { color: var(--gold); }
   .nav-links { display: flex; gap: 2.2rem; list-style: none; }
-  .nav-links a { font-family: var(--serif-display); font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate); transition: color 0.2s; position: relative; }
+  .nav-links a { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate); transition: color 0.2s; position: relative; }
   .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; right: 0; height: 1px; background: var(--gold); transform: scaleX(0); transition: transform 0.3s; }
   .nav-links a:hover { color: var(--gold); }
   .nav-links a:hover::after { transform: scaleX(1); }
@@ -67,18 +72,44 @@
     pointer-events: none;
   }
   #home::after { content: ''; position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%); width: 480px; height: 480px; border-radius: 50%; border: 1px solid rgba(180,144,42,0.09); pointer-events: none; }
-  .hero-eyebrow { font-family: var(--serif-display); font-size: 0.65rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.4rem; animation: fadeUp 0.8s ease both; }
-  .hero-name { font-family: var(--serif-display); font-size: clamp(2.6rem, 6.5vw, 4.8rem); font-weight: 300; letter-spacing: 0.08em; line-height: 1.05; color: var(--ink); margin-bottom: 0.5rem; animation: fadeUp 0.8s 0.1s ease both; }
-  .hero-name em { font-style: italic; color: var(--gold); font-family: var(--serif-body); font-weight: 300; }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.4rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  /* main header fixed to match compiler vibe more closely */
+  .hero-name {
+    font-family: var(--serif-display);
+    font-size: clamp(2.7rem, 6.2vw, 4.9rem);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.03;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+  .hero-name em {
+    font-style: italic;
+    color: var(--gold);
+    font-family: var(--serif-body);
+    font-weight: 500;
+  }
+
   .hero-title { font-family: var(--serif-body); font-size: 1rem; font-weight: 300; font-style: italic; color: var(--ash); margin-bottom: 1.8rem; animation: fadeUp 0.8s 0.2s ease both; }
   .hero-divider { display: flex; align-items: center; gap: 1rem; justify-content: center; margin-bottom: 1.8rem; animation: fadeUp 0.8s 0.3s ease both; }
   .hero-divider::before, .hero-divider::after { content: ''; flex: 1; max-width: 70px; height: 1px; background: var(--gold); opacity: 0.45; }
   .hero-divider span { color: var(--gold); font-size: 0.9rem; }
   .hero-bio { max-width: 500px; font-size: 1rem; color: var(--slate); line-height: 1.85; margin-bottom: 2.2rem; animation: fadeUp 0.8s 0.4s ease both; }
   .hero-tags { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2.2rem; animation: fadeUp 0.8s 0.45s ease both; }
-  .hero-tag { font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(180,144,42,0.32); padding: 0.28rem 0.7rem; }
+  .hero-tag { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(180,144,42,0.32); padding: 0.28rem 0.7rem; }
   .hero-ctas { display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.8s 0.5s ease both; }
-  .btn { font-family: var(--serif-display); font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.8rem 2rem; border: 1px solid; cursor: pointer; transition: all 0.28s; display: inline-block; }
+  .btn { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.8rem 2rem; border: 1px solid; cursor: pointer; transition: all 0.28s; display: inline-block; }
   .btn-primary { background: var(--gold); border-color: var(--gold); color: var(--parchment); }
   .btn-primary:hover { background: transparent; color: var(--gold); }
   .btn-outline { background: transparent; border-color: var(--stone); color: var(--slate); }
@@ -88,8 +119,27 @@
   section { padding: 6.5rem 2rem; }
   .container { max-width: var(--max-w); margin: 0 auto; }
   .section-header { text-align: center; margin-bottom: 4.5rem; }
-  .section-label { font-family: var(--serif-display); font-size: 0.62rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.7rem; }
-  .section-title { font-family: var(--serif-display); font-size: clamp(1.7rem, 3.5vw, 2.6rem); font-weight: 300; letter-spacing: 0.06em; color: var(--ink); line-height: 1.2; }
+
+  /* keep small labels mono, just like compiler */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.7rem;
+  }
+
+  /* fix large section headers */
+  .section-title {
+    font-family: var(--serif-display);
+    font-size: clamp(1.8rem, 3.5vw, 2.7rem);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
   .section-rule { display: flex; align-items: center; gap: 1rem; justify-content: center; margin-top: 1.1rem; }
   .section-rule::before, .section-rule::after { content: ''; width: 55px; height: 1px; background: var(--gold); opacity: 0.45; }
   .section-rule span { color: var(--gold); font-size: 0.65rem; }
@@ -99,14 +149,25 @@
   .about-grid { display: grid; grid-template-columns: 1fr; gap: 0; align-items: start; }
   .portrait-frame { width: 100%; aspect-ratio: 3/4; background: var(--parchment-2); border: 1px solid var(--stone); position: relative; display: flex; align-items: center; justify-content: center; }
   .portrait-frame::before { content: ''; position: absolute; inset: 11px; border: 1px solid var(--gold); opacity: 0.28; pointer-events: none; }
-  .portrait-placeholder { font-family: var(--serif-display); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ash); }
-  .about-text h2 { font-family: var(--serif-display); font-size: 1.65rem; font-weight: 300; letter-spacing: 0.04em; color: var(--ink); margin-bottom: 1.4rem; line-height: 1.35; }
+  .portrait-placeholder { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ash); }
+
+  /* fix this heading too */
+  .about-text h2 {
+    font-family: var(--serif-display);
+    font-size: 1.75rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    margin-bottom: 1.4rem;
+    line-height: 1.32;
+  }
+
   .about-text p { color: var(--slate); margin-bottom: 1.1rem; font-size: 0.97rem; }
   .about-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 2.2rem; border-top: 1px solid var(--stone); padding-top: 1.8rem; }
   .fact { padding: 0.85rem 0; border-bottom: 1px solid rgba(216,210,196,0.45); }
   .fact:nth-child(odd) { border-right: 1px solid var(--stone); padding-right: 2rem; }
   .fact:nth-child(even) { padding-left: 2rem; }
-  .fact-label { font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.22rem; }
+  .fact-label { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.22rem; }
   .fact-value { font-size: 0.88rem; color: var(--ink); }
   .fact-value a { color: var(--gold); border-bottom: 1px solid rgba(180,144,42,0.3); }
 
@@ -142,7 +203,7 @@
   }
   .compiler-writeup-strip:hover { background: rgba(180,144,42,0.14); border-color: var(--gold); }
   .compiler-writeup-label {
-    font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.22em;
+    font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.22em;
     text-transform: uppercase; color: var(--gold);
   }
   .compiler-writeup-title {
@@ -159,12 +220,12 @@
     display: flex; flex-direction: column; gap: 0.3rem;
   }
   .compiler-stat-num {
-    font-family: var(--serif-display); font-size: 1.5rem; font-weight: 300;
+    font-family: var(--mono); font-size: 1.5rem; font-weight: 300;
     color: var(--parchment); letter-spacing: 0.04em; line-height: 1;
   }
   .compiler-stat-num em { font-style: normal; color: var(--gold); font-size: 0.9rem; }
   .compiler-stat-label {
-    font-family: var(--serif-display); font-size: 0.52rem; letter-spacing: 0.14em;
+    font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.14em;
     text-transform: uppercase; color: rgba(138,132,120,0.8);
   }
   @media (max-width: 780px) {
@@ -180,33 +241,42 @@
   .case-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(46,43,38,0.07); }
   .case-card:hover::before { transform: scaleY(1); }
   .case-card.featured { border-color: rgba(180,144,42,0.38); background: var(--gold-bg); }
-  .case-tag { font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.85rem; }
+  .case-tag { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.85rem; }
   .case-title { font-family: var(--serif-body); font-size: 1.25rem; font-weight: 500; color: var(--ink); line-height: 1.35; margin-bottom: 0.65rem; }
   .case-desc { font-size: 0.88rem; color: var(--ash); line-height: 1.75; margin-bottom: 1.1rem; }
   .case-stack { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1.1rem; }
-  .stack-pill { font-family: var(--serif-display); font-size: 0.52rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--slate); background: var(--parchment-2); border: 1px solid var(--stone); padding: 0.18rem 0.55rem; }
-  .case-meta { display: flex; flex-wrap: wrap; gap: 1rem; font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); }
+  .stack-pill { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--slate); background: var(--parchment-2); border: 1px solid var(--stone); padding: 0.18rem 0.55rem; }
+  .case-meta { display: flex; flex-wrap: wrap; gap: 1rem; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); }
   .case-links { display: flex; gap: 1rem; margin-top: 1.3rem; flex-wrap: wrap; }
-  .case-link { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--serif-display); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); transition: gap 0.25s; }
+  .case-link { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); transition: gap 0.25s; }
   .case-link.secondary { color: var(--ash); }
   .case-card:hover .case-link { gap: 0.65rem; }
-  .case-number { position: absolute; top: 1.6rem; right: 1.8rem; font-family: var(--serif-display); font-size: 2.6rem; font-weight: 300; color: var(--stone); line-height: 1; pointer-events: none; }
+  .case-number { position: absolute; top: 1.6rem; right: 1.8rem; font-family: var(--mono); font-size: 2.6rem; font-weight: 300; color: var(--stone); line-height: 1; pointer-events: none; }
   .case-card.featured .case-number { color: rgba(180,144,42,0.18); }
-
-
 
   /* CONTACT */
   #contact { background: var(--ink); padding: 5.5rem 2rem; text-align: center; }
-  .contact-label { font-family: var(--serif-display); font-size: 0.62rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.9rem; }
-  .contact-title { font-family: var(--serif-display); font-size: clamp(1.5rem, 3.5vw, 2.4rem); font-weight: 300; letter-spacing: 0.07em; color: var(--parchment); margin-bottom: 0.5rem; line-height: 1.3; }
+  .contact-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.9rem; }
+
+  /* fix contact header too since it is one of the big headers */
+  .contact-title {
+    font-family: var(--serif-display);
+    font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--parchment);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
   .contact-sub { font-family: var(--serif-body); font-style: italic; color: var(--ash); margin-bottom: 2.2rem; font-size: 0.97rem; }
   .contact-links { display: flex; gap: 1.4rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2.5rem; }
-  .contact-links a { font-family: var(--serif-display); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ash); border-bottom: 1px solid transparent; padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
+  .contact-links a { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ash); border-bottom: 1px solid transparent; padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
   .contact-links a:hover { color: var(--gold-light); border-color: var(--gold-light); }
 
   /* FOOTER */
   footer { background: var(--ink); border-top: 1px solid rgba(180,144,42,0.13); padding: 1.4rem 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  footer p { font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--slate); }
+  footer p { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--slate); }
   footer p span { color: var(--gold); }
 
   /* ANIMATIONS */
@@ -237,19 +307,17 @@
 <section id="home">
   <p class="hero-eyebrow">18 · Bangalore · Builder & Researcher</p>
   <h1 class="hero-name">Pranav <em>Harikumar</em></h1>
-  <p class="hero-title">LLM systems, deterministic compilers, field economics</p>
+  <p class="hero-title">LLM systems, deterministic compilers</p>
   <div class="hero-divider"><span>✦</span></div>
   <p class="hero-bio">
     I build things and write about them. Most of my recent work is about making AI systems 
-    more reliable — less prompt-wrangling, more structural guarantees. I also do field 
+    more reliable; less prompt engineering, more structural guarantees. I also do field 
     research on labour markets when I'm not at a keyboard.
   </p>
   <div class="hero-tags">
     <span class="hero-tag">LLM Reliability</span>
     <span class="hero-tag">Deterministic Compilation</span>
     <span class="hero-tag">Multi-Tenant Systems</span>
-    <span class="hero-tag">Labour Economics</span>
-    <span class="hero-tag">Python · MongoDB · FastAPI</span>
   </div>
   <div class="hero-ctas">
     <a class="btn btn-primary" href="#case-studies">See the Work</a>
@@ -270,21 +338,19 @@
     </div>
     <div class="about-grid">
       <div class="about-text reveal">
-        <h2>I like building things that hold up when you stress-test them.</h2>
+        <h2>I like building systems that fail predictably instead of silently.</h2>
         <p>
           I'm 18, based in Bangalore, finishing school in April 2026. Most of my time right now 
-          goes into LLM systems work — specifically the question of how you build pipelines that 
+          goes into LLM systems work, specifically the question of how you build systems that 
           fail in predictable, debuggable ways rather than silently misbehaving. That's what SVMP 
           and the compiler paper came out of.
         </p>
         <p>
           On the side, I've been doing independent field research on wage asymmetry between 
-          migrant and local workers in Kerala — 150+ structured interviews, working toward a paper. 
-          It started as curiosity and turned into something more serious.
+          migrant and local workers in Kerala, ran survey with 150 respondents, working toward a paper. 
         </p>
         <p>
-          Looking for fellowships, research internships, and early-stage teams where there's real 
-          work to do and room to figure things out.
+          Availale for any opportunities in LLM systems, deterministic compilers, or feedback.
         </p>
         <div class="about-facts">
           <div class="fact">
@@ -293,7 +359,7 @@
           </div>
           <div class="fact">
             <p class="fact-label">Working on</p>
-            <p class="fact-value">LLM reliability, labour economics research</p>
+            <p class="fact-value">LLM reliability</p>
           </div>
           <div class="fact">
             <p class="fact-label">Location</p>
@@ -301,7 +367,7 @@
           </div>
           <div class="fact">
             <p class="fact-label">Stack</p>
-            <p class="fact-value">Python · MongoDB · FastAPI · OpenAI API</p>
+            <p class="fact-value">Python · MongoDB · FastAPI</p>
           </div>
           <div class="fact">
             <p class="fact-label">Open to</p>
@@ -341,7 +407,7 @@
         <p class="compiler-feature-desc">
           Separates LLM planning from execution entirely. The model selects nodes from a 
           pre-verified typed registry and outputs a JSON plan. A seven-check static validator 
-          enforces correctness before any code runs — no repair loops, no runtime chaining, 
+          enforces correctness before any code runs; no repair loops, no runtime chaining, 
           no silent failures. The evaluation surfaced a "constraint evasion" failure mode: 
           leave one surface unconstrained and the planner always finds it. That turned out 
           to be the most interesting result.
@@ -391,10 +457,10 @@
         <span class="case-number">01</span>
         <h3 class="case-title">SVMP — Multi-Tenant LLM Governance Layer</h3>
         <p class="case-desc">
-          Multi-tenant governance architecture for customer-service AI workflows. Three async 
-          workflows — ingestor, processor, janitor — each doing one job. A 2.5s soft debounce 
+          Multi-tenant governance architecture for customer service AI workflows. Three async 
+          workflows; ingestor, processor, janitor, each doing one job. A 2.5s soft debounce 
           and atomic lock queue merge fragmented messages and cut duplicate LLM calls by ~40%. 
-          Tenant isolation via a four-coordinate identity frame. 0.75 cosine-similarity gate 
+          Tenant isolation via a four point identity frame. 0.75 cosine-similarity gate 
           routes uncertain queries to humans with Slack escalation. API keys encrypted at rest 
           with Fernet AES-128. Ran 500+ adversarial tests for prompt injection and 
           cross-tenant leakage.
@@ -419,13 +485,12 @@
 
       <div class="case-card reveal">
         <span class="case-number">02</span>
-        <p class="case-tag">Field Research · 2025–2026</p>
-        <h3 class="case-title">Wage Asymmetry Study — Kerala Labour Markets</h3>
+        <p class="case-tag">Field Research · 2026</p>
+        <h3 class="case-title">Wage Asymmetry Study - Kerala Labour Markets</h3>
         <p class="case-desc">
-          150+ structured interviews across Kerala on the wage gap between inter-state migrant 
+          150+ structured interviews across Kerala on the wage gap between inter state migrant 
           workers and local labourers. Designed the interview protocol, ran the field data 
-          collection, writing it up as an economics paper with guidance from a retired 
-          economics professor. Short version: the gap is real, persistent, and institutional.
+          collection, writing it up as an economics paper. Short version: the gap is real, persistent, and institutional.
         </p>
         <div class="case-stack">
           <span class="stack-pill">Field Research</span>
@@ -444,8 +509,8 @@
         <p class="case-tag">Operations · 2025–Present</p>
         <h3 class="case-title">Niyomilan — Pre-Launch Labour Marketplace</h3>
         <p class="case-desc">
-          Working on ops and growth for a marketplace built for daily-wage workers. 
-          Field-driven GTM work and early operational design. The Kerala research feeds 
+          Working on ops and growth for a marketplace built for daily wage workers. 
+          Field driven GTM work and early operational design. The Kerala research feeds 
           directly into how I think about the problem here.
         </p>
         <div class="case-stack">
@@ -458,7 +523,7 @@
 
       <div class="case-card reveal">
         <span class="case-number">04</span>
-        <p class="case-tag">Venture · 2024–2025</p>
+        <p class="case-tag">Venture · 2024-2025</p>
         <h3 class="case-title">Student Marketing Venture</h3>
         <p class="case-desc">
           Co-ran a content and marketing operation serving international clients out of school. 
@@ -495,7 +560,6 @@
     </div>
   </div>
 </section>
-
 
 <!-- CONTACT -->
 <section id="contact">

@@ -192,7 +192,7 @@
       <div class="hmeta"><dt>Type</dt><dd>Research build</dd></div>
       <div class="hmeta"><dt>Benchmark</dt><dd>300 tasks across 6 sets</dd></div>
       <div class="hmeta"><dt>Result</dt><dd>278/300 compiled successes</dd></div>
-      <div class="hmeta"><dt>Method</dt><dd>Single-plan JSON → static validation → deterministic codegen</dd></div>
+      <div class="hmeta"><dt>Method</dt><dd>Single-plan JSON -> static validation -> deterministic codegen</dd></div>
     </dl>
     <div class="hero-links">
       <a class="hero-btn primary" href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">Reproducible GitHub Repo ↗</a>
@@ -212,7 +212,7 @@
       <div class="stat-label">GPT-4.1 BASELINE</div>
     </div>
     <div class="stat">
-      <div class="stat-num">184<em>/300</em></div>
+      <div class="stat-num">192<em>/300</em></div>
       <div class="stat-label">CLAUDE SONNET 4.6</div>
     </div>
     <div class="stat">
@@ -266,7 +266,7 @@
 │  LLM PLANNER  (single call, constrained output)                 │
 │                                                                 │
 │  Input:  Task description + node registry (typed)               │
-│  Output: JSON plan — node selections + parameter bindings       │
+│  Output: JSON plan - node selections + parameter bindings       │
 │                                                                 │
 │  The LLM cannot invent new nodes or execute repair loops.       │
 │  It emits a plan and stops there.                               │
@@ -281,7 +281,7 @@
 │  ✓ Type compatibility    ✓ Input arity                          │
 │  ✓ Required parameter presence                                  │
 │                                                                 │
-│  Fails here → reject, log, return. No execution.                │
+│  Fails here -> reject, log, return. No execution.               │
 └──────────────────────────┬──────────────────────────────────────┘
                            │  validated plan
                            ▼
@@ -447,7 +447,7 @@
           <span class="score-bar"><span class="score-fill fill-mid" style="width:76%"></span></span>
         </td>
         <td>
-          <span class="score-label">28/50</span>
+          <span class="score-label">36/50</span>
           <span class="score-bar"><span class="score-fill fill-red" style="width:56%"></span></span>
         </td>
       </tr>
