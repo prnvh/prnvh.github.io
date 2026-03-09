@@ -96,7 +96,7 @@
 
   /* ABOUT */
   #about { background: var(--white); }
-  .about-grid { display: grid; grid-template-columns: 1fr 1.7fr; gap: 5.5rem; align-items: start; }
+  .about-grid { display: grid; grid-template-columns: 1fr; gap: 0; align-items: start; }
   .portrait-frame { width: 100%; aspect-ratio: 3/4; background: var(--parchment-2); border: 1px solid var(--stone); position: relative; display: flex; align-items: center; justify-content: center; }
   .portrait-frame::before { content: ''; position: absolute; inset: 11px; border: 1px solid var(--gold); opacity: 0.28; pointer-events: none; }
   .portrait-placeholder { font-family: var(--serif-display); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ash); }
@@ -131,37 +131,7 @@
   .case-number { position: absolute; top: 1.6rem; right: 1.8rem; font-family: var(--serif-display); font-size: 2.6rem; font-weight: 300; color: var(--stone); line-height: 1; pointer-events: none; }
   .case-card.featured .case-number { color: rgba(180,144,42,0.18); }
 
-  /* PAPERS */
-  #papers { background: var(--gold-bg); }
-  .papers-list { max-width: var(--col); margin: 0 auto; }
-  .paper-item { display: grid; grid-template-columns: auto 1fr; gap: 1.8rem; padding: 1.8rem 0; border-bottom: 1px solid rgba(180,144,42,0.18); transition: padding-left 0.3s; }
-  .paper-item:hover { padding-left: 0.4rem; }
-  .paper-year { font-family: var(--serif-display); font-size: 0.62rem; letter-spacing: 0.1em; color: var(--gold); margin-top: 0.2rem; min-width: 48px; font-weight: 500; }
-  .paper-type { font-family: var(--serif-display); font-size: 0.55rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ash); margin-bottom: 0.35rem; }
-  .paper-title { font-family: var(--serif-body); font-size: 1.08rem; font-weight: 500; color: var(--ink); line-height: 1.38; margin-bottom: 0.38rem; }
-  .paper-authors { font-family: var(--serif-body); font-style: italic; font-size: 0.86rem; color: var(--ash); margin-bottom: 0.5rem; }
-  .paper-abstract { font-size: 0.88rem; color: var(--slate); line-height: 1.7; margin-bottom: 0.65rem; }
-  .paper-finding { font-size: 0.86rem; color: var(--ink); background: rgba(180,144,42,0.08); border-left: 2px solid var(--gold); padding: 0.45rem 0.75rem; margin-bottom: 0.7rem; font-family: var(--serif-body); font-style: italic; }
-  .paper-actions { display: flex; gap: 1.1rem; }
-  .paper-actions a { font-family: var(--serif-display); font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); border-bottom: 1px solid rgba(180,144,42,0.28); padding-bottom: 1px; transition: border-color 0.2s; }
-  .paper-actions a:hover { border-color: var(--gold); }
 
-  /* WRITING */
-  #blog { background: var(--white); }
-  .writing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-  .writing-card {
-    background: var(--parchment); border: 1px solid var(--stone);
-    padding: 2.5rem 2.2rem; display: flex; flex-direction: column;
-    transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
-    cursor: pointer;
-  }
-  .writing-card:hover { background: var(--white); transform: translateY(-3px); box-shadow: 0 10px 36px rgba(46,43,38,0.07); }
-  .writing-card-label { font-family: var(--serif-display); font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
-  .writing-card-title { font-family: var(--serif-body); font-size: 1.4rem; font-weight: 500; color: var(--ink); margin-bottom: 0.75rem; line-height: 1.25; }
-  .writing-card-desc { font-size: 0.9rem; color: var(--ash); line-height: 1.75; flex: 1; margin-bottom: 1.5rem; }
-  .writing-card-link { font-family: var(--serif-display); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); transition: letter-spacing 0.25s; }
-  .writing-card:hover .writing-card-link { letter-spacing: 0.25em; }
-  @media (max-width: 700px) { .writing-grid { grid-template-columns: 1fr; } }
 
   /* CONTACT */
   #contact { background: var(--ink); padding: 5.5rem 2rem; text-align: center; }
@@ -197,8 +167,6 @@
     <li><a href="#home">Home</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#case-studies">Projects</a></li>
-    <li><a href="#papers">Papers</a></li>
-    <li><a href="#blog">Blog</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
@@ -223,7 +191,7 @@
   </div>
   <div class="hero-ctas">
     <a class="btn btn-primary" href="#case-studies">See the Work</a>
-    <a class="btn btn-outline" href="#papers">Read the Paper</a>
+    <a class="btn btn-outline" href="compiler.html">Read the Paper</a>
   </div>
 
 </section>
@@ -239,9 +207,6 @@
       <div class="section-rule"><span>✦</span></div>
     </div>
     <div class="about-grid">
-      <div class="about-portrait reveal">
-        <div class="portrait-frame"><p class="portrait-placeholder">Your Photo</p></div>
-      </div>
       <div class="about-text reveal">
         <h2>I like building things that hold up when you stress-test them.</h2>
         <p>
@@ -364,7 +329,7 @@
         <div class="case-links">
           <a class="case-link" href="compiler.html">Full Write-up →</a>
           <a class="case-link secondary" href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub ↗</a>
-          <a class="case-link secondary" href="#papers">Paper →</a>
+          <a class="case-link secondary" href="compiler.html">Paper →</a>
         </div>
       </div>
 
@@ -447,116 +412,6 @@
   </div>
 </section>
 
-<div class="meander"></div>
-
-<!-- PAPERS -->
-<section id="papers">
-  <div class="container">
-    <div class="section-header reveal">
-      <p class="section-label">Research</p>
-      <h2 class="section-title">Papers &amp; Writing</h2>
-      <div class="section-rule"><span>✦</span></div>
-    </div>
-    <div class="papers-list">
-
-      <div class="paper-item reveal">
-        <p class="paper-year">2026</p>
-        <div class="paper-body">
-          <p class="paper-type">Research Paper</p>
-          <p class="paper-title">A Deterministic Compilation Architecture for Robust Multi-Step LLM Workflow Execution</p>
-          <p class="paper-authors">Pranav Harikumar</p>
-          <p class="paper-abstract">
-            A typed-node-registry compiler that separates LLM planning from execution. 
-            Seven-check static validator enforces correctness before any code runs — 
-            eliminates hallucinated imports, naming drift, and schema inconsistency by design.
-          </p>
-          <div class="paper-finding">
-            284/300 on depth-stratified benchmarks vs. ~170/300 for GPT-4o. Schema drift: 
-            88% compiled vs. 40% GPT-4.1. Key finding: constraint evasion under partial 
-            enforcement — leave one surface unconstrained and the planner finds it.
-          </div>
-          <div class="paper-actions">
-            <a href="Deterministic_Compilation_Architecture_v2.pdf" target="_blank">PDF ↗</a>
-            <a href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">Code ↗</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="paper-item reveal">
-        <p class="paper-year">2026</p>
-        <div class="paper-body">
-          <p class="paper-type">Working Paper · In Progress</p>
-          <p class="paper-title">Wage Asymmetry in Informal Labour Markets: Evidence from Kerala</p>
-          <p class="paper-authors">Pranav Harikumar</p>
-          <p class="paper-abstract">
-            150+ structured field interviews across Kerala on persistent wage differentials 
-            between inter-state migrants and local workers. Focuses on contractor networks, 
-            information asymmetry, and social capital as mechanisms that sustain the gap.
-          </p>
-          <div class="paper-finding">Forthcoming. Available on request.</div>
-          <div class="paper-actions">
-            <a href="/cdn-cgi/l/email-protection#0272706c74746a42656f636b6e2c616d6f">Request Draft</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="paper-item reveal">
-        <p class="paper-year">2026</p>
-        <div class="paper-body">
-          <p class="paper-type">Architecture Document</p>
-          <p class="paper-title">SVMP v1.0.0 — Python Architecture: From Whitepaper to Production</p>
-          <p class="paper-authors">Pranav Harikumar</p>
-          <p class="paper-abstract">
-            Full technical spec for the SVMP multi-tenant AI governance layer — tri-workflow 
-            architecture, MongoDB schema, identity-frame model, Fernet key encryption, crash 
-            alerting, and a 20-step build order.
-          </p>
-          <div class="paper-actions">
-            <a href="https://github.com/svmp-systems/SVMP-Systems" target="_blank">GitHub ↗</a>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<div class="meander"></div>
-
-<!-- BLOG -->
-<section id="blog">
-  <div class="container">
-    <div class="section-header reveal">
-      <p class="section-label">Writing</p>
-      <h2 class="section-title">Writing</h2>
-      <div class="section-rule"><span>✦</span></div>
-    </div>
-    <div class="writing-grid reveal">
-
-      <a class="writing-card" href="case-studies.html">
-        <p class="writing-card-label">01</p>
-        <h3 class="writing-card-title">Case Studies</h3>
-        <p class="writing-card-desc">Deep dives into projects I've built — architecture decisions, what broke, what worked.</p>
-        <span class="writing-card-link">Browse →</span>
-      </a>
-
-      <a class="writing-card" href="technical-blog.html">
-        <p class="writing-card-label">02</p>
-        <h3 class="writing-card-title">Technical Blog</h3>
-        <p class="writing-card-desc">Shorter posts on systems, LLM reliability, and things I figured out the hard way.</p>
-        <span class="writing-card-link">Browse →</span>
-      </a>
-
-      <a class="writing-card" href="research-papers.html">
-        <p class="writing-card-label">03</p>
-        <h3 class="writing-card-title">Research Papers</h3>
-        <p class="writing-card-desc">Longer-form research — the compiler paper, the Kerala labour market study, and what comes next.</p>
-        <span class="writing-card-link">Browse →</span>
-      </a>
-
-    </div>
-  </div>
-</section>
 
 <!-- CONTACT -->
 <section id="contact">
@@ -570,7 +425,7 @@
       <a href="https://github.com/prnvh" target="_blank">GitHub ↗</a>
       <a href="Deterministic_Compilation_Architecture_v2.pdf" target="_blank">Paper PDF ↗</a>
     </div>
-    <a class="btn btn-primary" href="mailto:prnvvh@gmail.com">Say hello</a>
+    <a class="btn btn-primary" href="/cdn-cgi/l/email-protection#3a4a48544c4c527a5d575b535614595557">Say hello</a>
   </div>
 </section>
 
@@ -579,10 +434,4 @@
   <p><span>18</span> · Builder · Researcher</p>
 </footer>
 
-<script>
-  document.getElementById('year').textContent = new Date().getFullYear();
-  const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
-</script>
-</body>
-</html>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-
