@@ -432,7 +432,7 @@
         </td>
         <td>
           <span class="score-label">27/50</span>
-          <span class="score-bar"><span class="score-fill fill-red" style="width:54%"></span></span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:54%"></span></span>
         </td>
       </tr>
       <tr>
@@ -448,7 +448,7 @@
         </td>
         <td>
           <span class="score-label">36/50</span>
-          <span class="score-bar"><span class="score-fill fill-red" style="width:72%"></span></span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:72%"></span></span>
         </td>
       </tr>
       <tr>
@@ -464,7 +464,7 @@
         </td>
         <td>
           <span class="score-label">26/50</span>
-          <span class="score-bar"><span class="score-fill fill-red" style="width:52%"></span></span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:52%"></span></span>
         </td>
       </tr>
       <tr>
@@ -592,11 +592,11 @@
     This is v1. The following are deliberate exclusions, not accidental omissions:
   </p>
   <ul class="checks reveal">
-    <li><span class="check-num">—</span><div>A SQL parser to constrain the <code>QueryEngine</code> parameter (the known open surface)</div></li>
-    <li><span class="check-num">—</span><div>Repair loops or retry logic — first-pass success is the explicit design goal</div></li>
+    <li><span class="check-num">—</span><div>Repair loops or retry logic</div></li>
     <li><span class="check-num">—</span><div>A node registry beyond the 26 nodes used in the benchmark</div></li>
     <li><span class="check-num">—</span><div>Multi-model planning (one LLM call, one plan)</div></li>
     <li><span class="check-num">—</span><div>Streaming or incremental compilation</div></li>
+    <li><span class="check-num">—</span><div>Dynamic branching is not supported</div></li>
   </ul>
 
 </div>
