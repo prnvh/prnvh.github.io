@@ -400,7 +400,7 @@
         </td>
         <td>
           <span class="score-label">30/50</span>
-          <span class="score-bar"><span class="score-fill fill-mid" style="width:72%"></span></span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:60%"></span></span>
         </td>
       </tr>
       <tr>
@@ -411,8 +411,8 @@
           <span class="score-bar"><span class="score-fill fill-green" style="width:100%"></span></span>
         </td>
         <td>
-          <span class="score-label">38/50</span>
-          <span class="score-bar"><span class="score-fill fill-mid" style="width:76%"></span></span>
+          <span class="score-label">36/50</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:72%"></span></span>
         </td>
         <td>
           <span class="score-label">23/50</span>
@@ -427,12 +427,12 @@
           <span class="score-bar"><span class="score-fill fill-green" style="width:88%"></span></span>
         </td>
         <td>
-          <span class="score-label">38/50</span>
-          <span class="score-bar"><span class="score-fill fill-mid" style="width:76%"></span></span>
+          <span class="score-label">34/50</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:68%"></span></span>
         </td>
         <td>
-          <span class="score-label">26/50</span>
-          <span class="score-bar"><span class="score-fill fill-red" style="width:52%"></span></span>
+          <span class="score-label">27/50</span>
+          <span class="score-bar"><span class="score-fill fill-red" style="width:54%"></span></span>
         </td>
       </tr>
       <tr>
@@ -448,7 +448,7 @@
         </td>
         <td>
           <span class="score-label">36/50</span>
-          <span class="score-bar"><span class="score-fill fill-red" style="width:56%"></span></span>
+          <span class="score-bar"><span class="score-fill fill-red" style="width:72%"></span></span>
         </td>
       </tr>
       <tr>
@@ -508,7 +508,7 @@
 
   <div class="finding reveal">
     <div class="finding-label">FINDING</div>
-    <h3>Constraint evasion is predictable, not random</h3>
+    <h3>The planner showed a consistent tendency to route computation into the unconstrained surface</h3>
     <p>
       When you impose constraints on most surfaces of a generation system while leaving 
       others open, the LLM will route computation into whichever surface remains 
@@ -517,8 +517,7 @@
       within whatever degrees of freedom are still available.
     </p>
     <p>
-      This is a design-level concern, not a prompting problem. More specific prompts do not 
-      fix it. The only fix is either closing the unconstrained surface or explicitly accepting 
+      The result suggests the problem may be architectural rather than purely prompt-level. The most direct fix is either closing the unconstrained surface or explicitly accepting 
       that the remaining freedom will be used.
     </p>
   </div>
@@ -530,7 +529,7 @@
     remaining failure in an otherwise highly constrained system.
   </p>
   <p class="reveal">
-    This generalises beyond SQL. Any system that relies on partial symbolic constraint as a 
+    This likely extends beyond SQL-like escape hatches. Any system that relies on partial symbolic constraint as a 
     correctness mechanism will exhibit constraint evasion proportional to the expressiveness of 
     its unconstrained surfaces. The lesson is not simply "constrain everything"; it is to know 
     exactly where the open surfaces are and what the planner can still push into them.
