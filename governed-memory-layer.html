@@ -117,17 +117,10 @@
     white-space: pre;
   }
 
-  .bench-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.86rem; }
-  .bench-table th { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em; color: var(--mid); text-align: left; padding: 0.6rem 1rem; border-bottom: 2px solid var(--rule); font-weight: 500; }
-  .bench-table td { padding: 0.65rem 1rem; border-bottom: 1px solid rgba(200,194,180,0.4); color: var(--muted); vertical-align: middle; }
-  .bench-table tr:last-child td { border-bottom: none; }
-  .bench-table .compiled { font-weight: 600; color: var(--ink); }
-  .score-bar { height: 6px; background: var(--cream-2); border: 1px solid var(--rule); position: relative; min-width: 80px; display: inline-block; vertical-align: middle; margin-left: 0.5rem; }
-  .score-fill { height: 100%; position: absolute; top: 0; left: 0; }
-  .fill-green { background: var(--green); }
-  .fill-mid   { background: var(--gold-dim); }
-  .fill-red   { background: var(--red); }
-  .score-label { font-family: var(--mono); font-size: 0.7em; }
+  .arch-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.86rem; }
+  .arch-table th { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em; color: var(--mid); text-align: left; padding: 0.6rem 1rem; border-bottom: 2px solid var(--rule); font-weight: 500; }
+  .arch-table td { padding: 0.65rem 1rem; border-bottom: 1px solid rgba(200,194,180,0.4); color: var(--muted); vertical-align: top; }
+  .arch-table tr:last-child td { border-bottom: none; }
 
   .finding {
     border: 1px solid var(--rule); padding: 1.6rem 1.8rem; margin: 2rem 0;
@@ -185,17 +178,17 @@
     <p class="proj-label">Project &nbsp;&middot;&nbsp; Research Build &nbsp;&middot;&nbsp; 2026</p>
     <h1>Governed Memory Layer for Multi-Agent Shared State</h1>
     <p class="hero-sub">
-      A ledger-backed memory architecture that lets agents write private notes first, then promotes only validated, resolvable, canonical state into shared memory.
+      A SQLite-backed memory runtime that lets agents write raw notes privately, then promotes only validated, resolvable, canonical state into shared memory.
     </p>
     <dl class="hero-meta-row">
       <div class="hmeta"><dt>Type</dt><dd>Research build</dd></div>
-      <div class="hmeta"><dt>Benchmark</dt><dd>304 trajectories across 6 families</dd></div>
-      <div class="hmeta"><dt>Storage</dt><dd>SQLite ledger + canonical projection tables</dd></div>
-      <div class="hmeta"><dt>Method</dt><dd>Private notes -&gt; governed promotion -&gt; deterministic projection</dd></div>
+      <div class="hmeta"><dt>Runtime</dt><dd>WorkingMemory -&gt; PromotionPipeline -&gt; Inputter</dd></div>
+      <div class="hmeta"><dt>Storage</dt><dd><code>events_memory</code> + <code>shared_*</code> + <code>pending_memory_events</code></dd></div>
+      <div class="hmeta"><dt>Safety Rule</dt><dd>Ambiguous lifecycle writes are deferred, not guessed</dd></div>
     </dl>
     <div class="hero-links">
       <a class="hero-btn primary" href="https://github.com/prnvh/governed_memory_layer" target="_blank">Reproducible GitHub Repo &nearr;</a>
-      <a class="hero-btn secondary" href="#evaluation">See Evaluation Coverage</a>
+      <a class="hero-btn secondary" href="#topology">See Runtime Topology</a>
     </div>
   </div>
 </div>
@@ -203,20 +196,20 @@
 <div class="stats-bar">
   <div class="stats-inner">
     <div class="stat">
-      <div class="stat-num">304</div>
-      <div class="stat-label">BENCHMARK TRAJECTORIES</div>
+      <div class="stat-num">4</div>
+      <div class="stat-label">GOVERNANCE STAGES</div>
     </div>
     <div class="stat">
       <div class="stat-num">7</div>
       <div class="stat-label">CANONICAL MEMORY BUCKETS</div>
     </div>
     <div class="stat">
-      <div class="stat-num">9</div>
-      <div class="stat-label">SQLITE TABLES</div>
+      <div class="stat-num">3</div>
+      <div class="stat-label">PERSISTENCE SURFACES</div>
     </div>
     <div class="stat">
-      <div class="stat-num">44</div>
-      <div class="stat-label">CORE PIPELINE TESTS</div>
+      <div class="stat-num">1</div>
+      <div class="stat-label">OFFICIAL WRITE PATH</div>
     </div>
   </div>
 </div>
@@ -224,30 +217,23 @@
 <div class="content-wrap">
 
   <span class="s-label reveal">// motivation</span>
-  <h2 class="reveal">The problem with naive shared memory for agents</h2>
+  <h2 class="reveal">The problem is not storing notes. It is deciding what a note is allowed to mean.</h2>
   <p class="reveal">
-    Multi-agent systems need some kind of shared state. The obvious implementation is also the dangerous one:
-    let each agent append what it thinks is important into a common memory store and hope the useful state rises above the noise.
-    In practice, this fails in a very specific way. <strong>Bad memory is durable</strong>. A vague note becomes a tracked issue.
-    A paraphrased lifecycle update closes the wrong row. A malformed result record survives long enough to mislead the next agent.
+    Multi-agent systems need some kind of shared state. The naive version is obvious: let every agent append whatever it thinks matters into a common store and hope the useful state rises above the noise. In practice, that fails in a very specific way. <strong>Bad memory is durable.</strong> A vague note becomes a tracked issue. A paraphrased lifecycle update closes the wrong row. A malformed result record survives long enough to mislead the next agent.
   </p>
   <p class="reveal">
-    The hard part is not storing text. The hard part is deciding what a note is allowed to mean once it becomes shared canonical state.
-    That means filtering noise, preserving identity across time, handling contradictions, and refusing to guess when a later note
-    refers ambiguously to an earlier issue, constraint, or decision.
+    Governed Memory Layer is built around a stricter view: raw note text is not canonical state. A note is only a candidate write. Before it becomes durable shared memory, the system has to decide whether it is meaningful, what it refers to, whether the write is structurally safe, and how that write should project into the canonical tables everyone else reads.
   </p>
   <div class="callout reveal">
-    <strong>The central question:</strong> how do you let agents accumulate durable shared memory without allowing ambiguous or malformed writes to silently corrupt the canonical state everyone else depends on?
+    <strong>The core design move:</strong> separate note capture from shared-memory mutation, then turn ambiguity into explicit pending state instead of silent corruption.
   </div>
 
   <hr class="reveal">
 
-  <span class="s-label reveal">// architecture</span>
-  <h2 class="reveal">How the governed memory layer works</h2>
+  <span class="s-label reveal" id="topology">// architecture</span>
+  <h2 class="reveal">High-level topology</h2>
   <p class="reveal">
-    The system imposes a strict separation between private note capture and shared-memory mutation.
-    Agents are allowed to write raw notes into working memory. They are not allowed to write canonical shared state directly.
-    Every note passes through a governance stack before anything becomes durable shared memory.
+    The system is deliberately split into narrow stages. Agents can write notes into private working memory, but they cannot write canonical shared state directly. All durable memory changes flow through a governed promotion stack and then through a single persistence path.
   </p>
 
   <div class="diagram reveal">+------------------------------------------------------------+
@@ -355,177 +341,255 @@
 
   <hr class="reveal">
 
-  <span class="s-label reveal" id="evaluation">// evaluation</span>
-  <h2 class="reveal">Benchmark coverage</h2>
+  <span class="s-label reveal">// runtime</span>
+  <h2 class="reveal">Core runtime responsibilities</h2>
   <p class="reveal">
-    The repository includes a dedicated benchmark harness rather than only unit tests.
-    The benchmark does not score generated text. It scores the final shared-memory snapshot:
-    whether the right canonical rows exist, whether stale rows remain, whether pending debt accumulates,
-    and whether replay can reconstruct state after projection failures.
-  </p>
-  <p class="reveal">
-    The harness compares the governed system against simpler baselines such as append-all memory
-    and no-shared-context classification. The current benchmark registry contains 304 trajectories across six families.
+    The runtime is not one giant memory object. It is a set of narrow modules, each responsible for one boundary in the note-to-memory path.
   </p>
 
-  <table class="bench-table reveal">
+  <div class="workflow reveal">
+    <div class="wf-step">
+      <div class="wf-num">01</div>
+      <div class="wf-content">
+        <h4>WorkingMemory</h4>
+        <p>
+          Agent-local scratch space for a single run. It stores timestamped <code>agent</code> and <code>tool_result</code> notes, tracks whether they have been processed, and intentionally does not enforce schema, identity, or canonical semantics.
+        </p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-num">02</div>
+      <div class="wf-content">
+        <h4>PromotionPipeline</h4>
+        <p>
+          The orchestrator. It pulls unpromoted notes, rebuilds fresh shared-memory context, runs interpretation, resolution, validation, and persistence, then retries pending writes after every successful canonical commit.
+        </p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-num">03</div>
+      <div class="wf-content">
+        <h4>Resolver plus Validator</h4>
+        <p>
+          The resolver handles identity and lifecycle policy. The validator enforces deterministic structural rules such as known buckets, allowed operations, slug-like target IDs, and existence of lifecycle targets when needed.
+        </p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-num">04</div>
+      <div class="wf-content">
+        <h4>Inputter</h4>
+        <p>
+          The only official persistence entry point. It writes to the event ledger first, then asks the deterministic projector to update canonical tables, preserving the committed event even if projection later fails.
+        </p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-num">05</div>
+      <div class="wf-content">
+        <h4>SharedMemoryWriter plus SharedMemory</h4>
+        <p>
+          <code>SharedMemoryWriter</code> projects events into canonical tables with bucket-specific semantics. <code>SharedMemory</code> is the read API the rest of the system is supposed to consume, so agents read current belief from canonical state rather than raw note text.
+        </p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-num">06</div>
+      <div class="wf-content">
+        <h4>PendingMemoryQueue</h4>
+        <p>
+          Holds important writes that are not yet safe to commit. Instead of dropping ambiguous lifecycle updates or forcing a guess, the system preserves them as explicit pending work that can be retried later against fresher context.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout reveal">
+    <strong>Context is intentionally narrow:</strong> the interpreter and resolver do not receive the whole database. They work from open issues, active decisions, and active constraints so lifecycle reasoning stays focused on the buckets where ambiguity is most dangerous.
+  </div>
+
+  <hr class="reveal">
+
+  <span class="s-label reveal">// storage</span>
+  <h2 class="reveal">Storage model and table roles</h2>
+  <p class="reveal">
+    The persistence layer is simple on purpose. SQLite is the backing store, connections run in WAL mode, and the database path can be overridden through <code>AGENT_MEMORY_DB_PATH</code>. The important design choice is not the database engine itself. It is the separation between ledger, pending queue, and canonical projections.
+  </p>
+
+  <table class="arch-table reveal">
     <thead>
       <tr>
-        <th>Family</th>
-        <th>Description</th>
-        <th>Count</th>
-        <th>What It Stresses</th>
+        <th>Surface</th>
+        <th>Purpose</th>
+        <th>Why It Exists</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><code>A</code></td>
-        <td>Promotion filtering</td>
-        <td class="compiled">
-          <span class="score-label">64</span>
-          <span class="score-bar"><span class="score-fill fill-green" style="width:100%"></span></span>
-        </td>
-        <td>Noise rejection and selective promotion</td>
+        <td><code>events_memory</code></td>
+        <td>Append-only ledger of committed canonical writes</td>
+        <td>Durability and audit. Every committed canonical mutation is recorded here first, even if projection later fails.</td>
       </tr>
       <tr>
-        <td><code>B</code></td>
-        <td>Lifecycle transitions</td>
-        <td class="compiled">
-          <span class="score-label">48</span>
-          <span class="score-bar"><span class="score-fill fill-mid" style="width:75%"></span></span>
-        </td>
-        <td>Open -&gt; resolve, active -&gt; invalidate, latest task state</td>
+        <td><code>pending_memory_events</code></td>
+        <td>Deferred writes that matter but are not yet safe to commit</td>
+        <td>Uncertainty handling. Ambiguous lifecycle updates become explicit pending state rather than silent corruption.</td>
       </tr>
       <tr>
-        <td><code>C</code></td>
-        <td>Duplicate avoidance</td>
-        <td class="compiled">
-          <span class="score-label">48</span>
-          <span class="score-bar"><span class="score-fill fill-mid" style="width:75%"></span></span>
-        </td>
-        <td>Identity continuity across aliases and paraphrases</td>
-      </tr>
-      <tr>
-        <td><code>D</code></td>
-        <td>Conflict handling</td>
-        <td class="compiled">
-          <span class="score-label">48</span>
-          <span class="score-bar"><span class="score-fill fill-mid" style="width:75%"></span></span>
-        </td>
-        <td>Authoritative override and stale-state cleanup</td>
-      </tr>
-      <tr>
-        <td><code>E</code></td>
-        <td>Cross-bucket coherence</td>
-        <td class="compiled">
-          <span class="score-label">48</span>
-          <span class="score-bar"><span class="score-fill fill-mid" style="width:75%"></span></span>
-        </td>
-        <td>Agreement between issues, constraints, decisions, results, and task state</td>
-      </tr>
-      <tr>
-        <td><code>F</code></td>
-        <td>Replay robustness</td>
-        <td class="compiled">
-          <span class="score-label">48</span>
-          <span class="score-bar"><span class="score-fill fill-mid" style="width:75%"></span></span>
-        </td>
-        <td>Ledger durability and reconstruction after projection failure</td>
+        <td><code>shared_*</code> tables</td>
+        <td>Canonical state agents and tools are expected to read</td>
+        <td>Operational state. Current belief is stored as deterministic projections rather than free-form notes.</td>
       </tr>
     </tbody>
   </table>
 
   <p class="reveal">
-    The evaluation focus is architectural, not cosmetic. Family A asks whether the system keeps junk out.
-    Families B through E ask whether shared memory stays coherent over time.
-    Family F asks whether the ledger is sufficient to recover the state after deterministic projection fails.
+    Reference memory is embedded inside canonical issue, constraint, and decision rows through <code>reference_memory_json</code>. That stored alias and phrase history is what helps the resolver reconnect later notes like "that earlier blocker" back to the same canonical object instead of creating duplicates or closing the wrong row.
   </p>
 
   <hr class="reveal">
 
-  <span class="s-label reveal">// key finding</span>
-  <h2 class="reveal">The hardest problem is not storage. It is identity continuity.</h2>
+  <span class="s-label reveal">// semantics</span>
+  <h2 class="reveal">Canonical bucket semantics</h2>
   <p class="reveal">
-    Schema validation is comparatively easy. The genuinely difficult problem is preserving the identity of a thing across time
-    when agents stop referring to it the same way. A system may correctly capture an issue today as
-    <code>pandas_import_blocker</code>, then encounter tomorrow's note phrased only as "that earlier blocker."
+    Each bucket has its own projection contract. Some behave like current state, some behave like append-only history, and some have lifecycle transitions that explicitly retire earlier rows.
+  </p>
+
+  <table class="arch-table reveal">
+    <thead>
+      <tr>
+        <th>Bucket</th>
+        <th>Operations</th>
+        <th>Projection Rule</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>plan</code></td>
+        <td><code>upsert</code></td>
+        <td>Single canonical row in practice, keyed by <code>main</code>; content is replaced and version increments.</td>
+      </tr>
+      <tr>
+        <td><code>constraints</code></td>
+        <td><code>upsert</code>, <code>invalidate</code></td>
+        <td>Represents currently active restrictions; lifecycle moves rows between active and invalidated state.</td>
+      </tr>
+      <tr>
+        <td><code>issues</code></td>
+        <td><code>upsert</code>, <code>resolve</code></td>
+        <td>Tracked problems and blockers; canonical rows stay open until a bound lifecycle write resolves them.</td>
+      </tr>
+      <tr>
+        <td><code>decisions</code></td>
+        <td><code>append</code>, <code>invalidate</code></td>
+        <td>Choices accumulate over time; invalidation projects to superseded state rather than deleting history.</td>
+      </tr>
+      <tr>
+        <td><code>results</code></td>
+        <td><code>append</code></td>
+        <td>Append-only measurements or outcome records; multiple rows may coexist for the same task or experiment.</td>
+      </tr>
+      <tr>
+        <td><code>task_state</code></td>
+        <td><code>upsert</code></td>
+        <td>Latest state wins by <code>task_id</code>; optimized for current operational status rather than event history.</td>
+      </tr>
+      <tr>
+        <td><code>learnings</code></td>
+        <td><code>append</code></td>
+        <td>Append-only reusable knowledge stored as active canonical rows.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="reveal">
+    This mix is intentional. Plans and task state behave like current truth. Results and learnings behave like durable historical accumulation. Issues, constraints, and decisions sit in the middle, because they need lifecycle operations without losing identity over time.
+  </p>
+
+  <hr class="reveal">
+
+  <span class="s-label reveal">// identity</span>
+  <h2 class="reveal">The hardest part is identity continuity across time</h2>
+  <p class="reveal">
+    Structural validation is comparatively easy. The difficult problem is preserving the identity of a thing across changing language. A system might capture an issue today as <code>pandas_import_blocker</code>, then receive tomorrow's note phrased only as "that earlier blocker." If the system binds too aggressively, it closes the wrong row. If it binds too weakly, it creates duplicates and leaves stale active state behind.
+  </p>
+  <p class="reveal">
+    The resolver uses explicit target IDs, explicit snake_case slugs in note text, token overlap, interpreter-provided alias hints, and stored reference memory to score candidate matches. But when the match is still weak, the architecture chooses delay over false certainty.
   </p>
 
   <div class="finding reveal">
-    <div class="finding-label">FINDING</div>
-    <h3>The architecture's main safety move is to turn uncertainty into explicit state instead of silent corruption</h3>
+    <div class="finding-label">ARCHITECTURAL INVARIANT</div>
+    <h3>Uncertainty becomes explicit state instead of silent corruption</h3>
     <p>
-      When a lifecycle note cannot be bound confidently to an existing canonical row, the system does not force a guess.
-      It records the unresolved write in a pending queue and retries later after canonical state changes.
-      This is a stronger architectural move than it first appears. It converts ambiguity from a hidden failure mode into a visible, inspectable backlog.
+      When a lifecycle note cannot be bound confidently to an existing canonical row, the system does not force a guess. It records the unresolved write in the pending queue and retries later after canonical state changes. That turns ambiguity from a hidden failure mode into a visible, inspectable backlog.
     </p>
     <p>
-      In other words, the design treats deferred resolution debt as healthier than incorrect certainty.
-      That choice shapes the entire system: resolver logic, reference-memory accumulation, replay behavior, and benchmark metrics all exist because of it.
+      The append-only ledger, reference memory, pending queue, and deterministic projector all exist to support that one choice. The system would be simpler without those parts, but it would also be far easier to silently corrupt shared state.
     </p>
   </div>
 
-  <p class="reveal">
-    This is why the append-only ledger and deterministic projections matter together.
-    The ledger preserves what happened. The canonical tables preserve what is currently believed.
-    The pending queue preserves what the system suspects but refuses to collapse prematurely.
-  </p>
-
   <hr class="reveal">
 
-  <span class="s-label reveal">// failure modes</span>
-  <h2 class="reveal">How simpler memory systems fail</h2>
+  <span class="s-label reveal">// flows</span>
+  <h2 class="reveal">End-to-end write flows</h2>
   <p class="reveal">
-    The repository includes baseline harnesses precisely because the failure modes are predictable.
-    Once you compare governed memory against simpler designs, two recurring breakdowns explain most of the difference.
+    There are three operational paths worth understanding: normal commit, provisional deferral, and pending replay.
   </p>
 
   <div class="workflow reveal">
     <div class="wf-step">
-      <div class="wf-num">F1</div>
+      <div class="wf-num">N1</div>
       <div class="wf-content">
-        <h4>Over-promotion</h4>
+        <h4>Normal commit flow</h4>
         <p>
-          In append-all memory, every note becomes durable state. Internal musings, transient telemetry,
-          and speculative side comments all survive as if they were canonical facts. The result is memory pollution:
-          extra issues, fake learnings, and contradictory state rows that future agents must reason around.
+          Working memory yields an unpromoted note. The pipeline interprets it, resolves identity, validates structure, writes an event into <code>events_memory</code>, projects canonical state through <code>SharedMemoryWriter</code>, then marks the event as successfully applied.
         </p>
       </div>
     </div>
     <div class="wf-step">
-      <div class="wf-num">F2</div>
+      <div class="wf-num">N2</div>
       <div class="wf-content">
-        <h4>Lifecycle misbinding</h4>
+        <h4>Provisional flow</h4>
         <p>
-          In note-by-note systems without shared-state context or reference memory, later updates frequently attach to the wrong thing
-          or create duplicates instead of closing the original row. The visible symptom is not only duplicates; it is stale active state that never gets retired.
+          If a lifecycle write matters but cannot be safely attached to an existing canonical row, the pipeline does not reject it as noise and does not commit it as fact. It stores the serialized request in <code>pending_memory_events</code> so the uncertainty remains visible and recoverable.
+        </p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-num">N3</div>
+      <div class="wf-content">
+        <h4>Pending replay flow</h4>
+        <p>
+          After every successful canonical commit, the runtime runs a bounded retry loop over retryable pending items. A newly committed canonical row can make an older ambiguous note resolvable, which means pending work is not dead data. It is deferred resolution debt the system actively revisits.
         </p>
       </div>
     </div>
   </div>
 
-  <p class="reveal">
-    The governed system does not eliminate all uncertainty. What it does is force that uncertainty through explicit boundaries:
-    interpretation, resolution, validation, and deterministic write semantics.
-  </p>
+  <ul class="checks reveal">
+    <li><span class="check-num">01</span><div><span class="check-name">Agents never write canonical tables directly.</span> All durable writes pass through the governed pipeline and the Inputter.</div></li>
+    <li><span class="check-num">02</span><div><span class="check-name">Every committed mutation enters the ledger first.</span> Canonical tables are projections, not the durability backbone.</div></li>
+    <li><span class="check-num">03</span><div><span class="check-name">Projection is deterministic and bucket-specific.</span> Each bucket has explicit write semantics instead of generic text-to-state mutation.</div></li>
+    <li><span class="check-num">04</span><div><span class="check-name">Ambiguity is preserved, not collapsed.</span> The pending queue exists so uncertain lifecycle updates do not silently become wrong facts.</div></li>
+  </ul>
 
   <hr class="reveal">
 
   <span class="s-label reveal">// scope</span>
   <h2 class="reveal">Limitations and current scope</h2>
   <p class="reveal">
-    This is a memory architecture and benchmark suite, not a full production multi-agent platform.
-    The repository is intentionally concentrated on the note-to-memory boundary and the correctness properties around that boundary.
+    The repository is intentionally concentrated on the note-to-memory boundary. It is a disciplined memory runtime, not a full production multi-agent platform.
   </p>
   <p class="reveal">
     The following are current scope limits, not accidental omissions:
   </p>
   <ul class="checks reveal">
-    <li><span class="check-num">-</span><div>Identity-specialized resolver logic exists only for issues, constraints, and decisions</div></li>
-    <li><span class="check-num">-</span><div>No full runtime agent orchestration layer or service API is included yet</div></li>
-    <li><span class="check-num">-</span><div>Replay is implemented through the fault-injection benchmark harness, not a standalone production repair tool</div></li>
-    <li><span class="check-num">-</span><div>Classification quality still depends partly on the live interpreter model and prompt</div></li>
-    <li><span class="check-num">-</span><div>The system is synchronous and SQLite-based rather than distributed</div></li>
+    <li><span class="check-num">-</span><div>Identity-specialized resolver logic exists only for issues, constraints, and decisions.</div></li>
+    <li><span class="check-num">-</span><div>Reference memory is currently stored only on those same lifecycle-sensitive buckets.</div></li>
+    <li><span class="check-num">-</span><div>Classification quality still depends partly on the live interpreter model and prompt.</div></li>
+    <li><span class="check-num">-</span><div>Replay exists in development tooling, not yet as a standalone production repair command.</div></li>
+    <li><span class="check-num">-</span><div>No full runtime orchestration layer, service API, or UI is included yet.</div></li>
+    <li><span class="check-num">-</span><div>The implementation is synchronous and SQLite-based rather than distributed.</div></li>
   </ul>
 
 </div>
