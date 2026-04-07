@@ -256,45 +256,54 @@
     parameters, expressed as a typed JSON plan. Everything after that point is deterministic.
   </p>
 
-  <div class="diagram reveal">┌─────────────────────────────────────────────────────────────────┐
-│  USER TASK                                                      │
-│  "ingest CSV → normalize columns → aggregate → export to SQL"   │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  LLM PLANNER  (single call, constrained output)                 │
-│                                                                 │
-│  Input:  Task description + node registry (typed)               │
-│  Output: JSON plan - node selections + parameter bindings       │
-│                                                                 │
-│  The LLM cannot invent new nodes or execute repair loops.       │
-│  It emits a plan and stops there.                               │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │  JSON plan
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  STATIC VALIDATOR  (7 checks, deterministic)                    │
-│                                                                 │
-│  ✓ Node existence        ✓ Acyclicity                           │ 
-│  ✓ Edge validity         ✓ Orphan detection                     │
-│  ✓ Type compatibility    ✓ Input arity                          │
-│  ✓ Required parameter presence                                  │
-│                                                                 │
-│  Fails here -> reject, log, return. No execution.               │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │  validated plan
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  COMPILER  (topological sort → Python assembly)                 │
-│                                                                 │
-│  Assembles executable Python from pre-verified node templates.  │
-│  The LLM is not called again after planning.                    │
-│  No runtime repair loops. No output inspection.                 │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │  executable Python
-                           ▼
-                    deterministic run</div>
+  <div class="diagram reveal">+------------------------------------------------------------+
+| USER TASK                                                  |
+| "ingest csv -> normalize columns -> aggregate -> export    |
+| to SQL"                                                    |
++------------------------------------------------------------+
+                             |
+                             v
++------------------------------------------------------------+
+| LLM PLANNER                                                |
+| (single call, constrained output)                          |
+|                                                            |
+| Input:  task description + typed node registry             |
+| Output: JSON plan with node selections + parameter         |
+|         bindings                                           |
+|                                                            |
+| The LLM cannot invent new nodes or execute repair loops.   |
+| It emits a plan and stops there.                           |
++------------------------------------------------------------+
+                             |
+                             | JSON plan
+                             v
++------------------------------------------------------------+
+| STATIC VALIDATOR                                           |
+| (7 deterministic checks)                                   |
+|                                                            |
+| [x] Node existence       [x] Acyclicity                    |
+| [x] Edge validity        [x] Orphan detection              |
+| [x] Type compatibility   [x] Input arity                   |
+| [x] Required parameter presence                            |
+|                                                            |
+| Fails here -> reject, log, return. No execution.           |
++------------------------------------------------------------+
+                             |
+                             | validated plan
+                             v
++------------------------------------------------------------+
+| COMPILER                                                   |
+| (topological sort -> Python assembly)                      |
+|                                                            |
+| Assembles executable Python from pre-verified node         |
+| templates.                                                 |
+| The LLM is not called again after planning.                |
+| No runtime repair loops. No output inspection.             |
++------------------------------------------------------------+
+                             |
+                             | executable Python
+                             v
+                      deterministic run</div>
 
   <h3 class="reveal">The seven static checks</h3>
   <ul class="checks reveal">

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Governed Memory Layer - Architecture Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream:    #F2EEE4;
+    --cream-2:  #E8E3D6;
+    --rule:     #C8C2B4;
+    --mid:      #8A8478;
+    --muted:    #4A4640;
+    --ink:      #1E1C19;
+    --gold:     #A07820;
+    --gold-dim: #C49A3C;
+    --paper:    #FAF8F3;
+    --white:    #FFFFFF;
+    --code-bg:  #1A1816;
+    --code-fg:  #D4CFC4;
+    --green:    #5A8A5A;
+    --red:      #8A4A4A;
+
+    --display: 'Playfair Display', Georgia, serif;
+    --body:    'Source Serif 4', Georgia, serif;
+    --mono:    'IBM Plex Mono', 'Courier New', monospace;
+
+    --nav-h: 64px;
+    --prose: 700px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 17px; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--body); font-weight: 300; line-height: 1.8; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: rgba(160,120,32,0.15); }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+    background: var(--cream); border-bottom: 1px solid var(--rule);
+    z-index: 100; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 2.5rem;
+    transition: box-shadow 0.25s;
+  }
+  nav.scrolled { box-shadow: 0 1px 12px rgba(30,28,25,0.07); }
+  .nav-back { font-family: var(--body); font-size: 0.85rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
+  .nav-back:hover { color: var(--gold); }
+  .nav-back span { font-size: 1rem; line-height: 1; }
+  .nav-right { display: flex; gap: 1.2rem; }
+  .nav-right a { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); letter-spacing: 0.05em; border: 1px solid var(--rule); padding: 0.3rem 0.8rem; transition: all 0.2s; }
+  .nav-right a:hover { color: var(--gold); border-color: var(--gold); }
+
+  #top {
+    padding: calc(var(--nav-h) + 4.5rem) 2.5rem 4rem;
+    border-bottom: 1px solid var(--rule);
+    background: var(--cream);
+  }
+  .hero-inner { max-width: var(--prose); margin: 0 auto; }
+  .proj-label { font-family: var(--mono); font-size: 0.7rem; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 1.2rem; }
+  h1 { font-family: var(--display); font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; color: var(--ink); margin-bottom: 1rem; }
+  .hero-sub { font-size: 1.05rem; font-style: italic; color: var(--muted); margin-bottom: 2rem; }
+  .hero-meta-row { display: flex; gap: 2rem; flex-wrap: wrap; border-top: 1px solid var(--rule); padding-top: 1.2rem; margin-bottom: 2rem; }
+  .hmeta dt { font-family: var(--mono); font-size: 0.62rem; color: var(--mid); letter-spacing: 0.06em; margin-bottom: 0.2rem; }
+  .hmeta dd { font-size: 0.88rem; color: var(--ink); }
+  .hero-links { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .hero-btn { font-family: var(--body); font-size: 0.85rem; padding: 0.6rem 1.4rem; border: 1px solid; transition: all 0.22s; display: inline-block; }
+  .hero-btn.primary { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+  .hero-btn.primary:hover { background: var(--gold); border-color: var(--gold); }
+  .hero-btn.secondary { background: transparent; border-color: var(--rule); color: var(--muted); }
+  .hero-btn.secondary:hover { border-color: var(--ink); color: var(--ink); }
+
+  .stats-bar {
+    background: var(--ink); padding: 2rem 2.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .stats-inner { max-width: var(--prose); margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .stat { text-align: center; }
+  .stat-num { font-family: var(--display); font-size: 2.2rem; font-weight: 700; color: var(--cream); line-height: 1; margin-bottom: 0.3rem; }
+  .stat-num em { color: var(--gold-dim); font-style: normal; }
+  .stat-label { font-family: var(--mono); font-size: 0.62rem; color: rgba(138,132,120,0.8); letter-spacing: 0.06em; }
+
+  .content-wrap { max-width: var(--prose); margin: 0 auto; padding: 4rem 2.5rem; }
+  .s-label { font-family: var(--mono); font-size: 0.68rem; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 0.4rem; margin-top: 3.5rem; display: block; }
+  .s-label:first-child { margin-top: 0; }
+  h2 { font-family: var(--display); font-size: 1.45rem; font-weight: 600; color: var(--ink); line-height: 1.3; margin-bottom: 1rem; }
+  h3 { font-family: var(--display); font-size: 1.1rem; font-weight: 500; color: var(--ink); margin-bottom: 0.7rem; margin-top: 2rem; }
+  p { font-size: 0.97rem; color: var(--muted); margin-bottom: 1rem; line-height: 1.82; }
+  p strong { color: var(--ink); font-weight: 600; }
+  hr { border: none; border-top: 1px solid var(--rule); margin: 3rem 0; }
+
+  .callout {
+    border-left: 3px solid var(--gold); background: rgba(160,120,32,0.06);
+    padding: 1rem 1.2rem; margin: 1.5rem 0; font-style: italic;
+    font-size: 0.93rem; color: var(--ink);
+  }
+  .callout strong { font-style: normal; font-weight: 600; }
+
+  pre {
+    background: var(--code-bg); color: var(--code-fg);
+    font-family: var(--mono); font-size: 0.78rem; line-height: 1.65;
+    padding: 1.4rem 1.6rem; overflow-x: auto; margin: 1.5rem 0;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  code { font-family: var(--mono); font-size: 0.82em; background: var(--cream-2); padding: 0.1em 0.35em; border: 1px solid var(--rule); }
+  pre code { background: none; padding: 0; border: none; font-size: 1em; }
+  .comment { color: #5A6A50; }
+  .str { color: #8AAF8A; }
+
+  .diagram {
+    background: var(--code-bg); color: var(--code-fg);
+    font-family: var(--mono); font-size: 0.76rem; line-height: 1.6;
+    padding: 1.6rem 1.8rem; margin: 1.5rem 0; overflow-x: auto;
+    border: 1px solid rgba(255,255,255,0.06);
+    white-space: pre;
+  }
+
+  .bench-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.86rem; }
+  .bench-table th { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em; color: var(--mid); text-align: left; padding: 0.6rem 1rem; border-bottom: 2px solid var(--rule); font-weight: 500; }
+  .bench-table td { padding: 0.65rem 1rem; border-bottom: 1px solid rgba(200,194,180,0.4); color: var(--muted); vertical-align: middle; }
+  .bench-table tr:last-child td { border-bottom: none; }
+  .bench-table .compiled { font-weight: 600; color: var(--ink); }
+  .score-bar { height: 6px; background: var(--cream-2); border: 1px solid var(--rule); position: relative; min-width: 80px; display: inline-block; vertical-align: middle; margin-left: 0.5rem; }
+  .score-fill { height: 100%; position: absolute; top: 0; left: 0; }
+  .fill-green { background: var(--green); }
+  .fill-mid   { background: var(--gold-dim); }
+  .fill-red   { background: var(--red); }
+  .score-label { font-family: var(--mono); font-size: 0.7em; }
+
+  .finding {
+    border: 1px solid var(--rule); padding: 1.6rem 1.8rem; margin: 2rem 0;
+    background: var(--cream);
+  }
+  .finding-label { font-family: var(--mono); font-size: 0.62rem; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+  .finding h3 { margin-top: 0; font-size: 1rem; }
+  .finding p { font-size: 0.9rem; }
+
+  .workflow { margin: 1.5rem 0; }
+  .wf-step { display: flex; gap: 1.2rem; padding: 1rem 0; border-bottom: 1px solid rgba(200,194,180,0.4); align-items: flex-start; }
+  .wf-step:last-child { border-bottom: none; }
+  .wf-num { font-family: var(--mono); font-size: 0.68rem; color: var(--gold); min-width: 28px; padding-top: 0.15rem; }
+  .wf-content h4 { font-family: var(--display); font-size: 0.95rem; font-weight: 500; color: var(--ink); margin-bottom: 0.25rem; }
+  .wf-content p { font-size: 0.87rem; margin-bottom: 0; }
+
+  .checks { list-style: none; margin: 1rem 0; }
+  .checks li { font-size: 0.9rem; color: var(--muted); padding: 0.35rem 0; border-bottom: 1px solid rgba(200,194,180,0.35); display: flex; gap: 0.8rem; align-items: baseline; }
+  .checks li:last-child { border-bottom: none; }
+  .check-num { font-family: var(--mono); font-size: 0.65rem; color: var(--gold); min-width: 22px; }
+  .check-name { font-weight: 600; color: var(--ink); }
+
+  .page-footer { border-top: 1px solid var(--rule); padding: 3rem 2.5rem; background: var(--cream); }
+  .page-footer-inner { max-width: var(--prose); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .pf-left p { font-family: var(--mono); font-size: 0.68rem; color: var(--mid); letter-spacing: 0.05em; }
+  .pf-right { display: flex; gap: 0.8rem; }
+  .pf-link { font-family: var(--body); font-size: 0.85rem; color: var(--gold); border-bottom: 1px solid rgba(160,120,32,0.3); padding-bottom: 1px; }
+  .pf-link:hover { border-color: var(--gold); }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 620px) {
+    nav { padding: 0 1.2rem; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .content-wrap { padding: 3rem 1.2rem; }
+    #top { padding-left: 1.2rem; padding-right: 1.2rem; }
+    .hero-meta-row { gap: 1.2rem; }
+    .page-footer { padding: 2rem 1.2rem; }
+    .page-footer-inner { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="nav-back" href="#top"><span>&larr;</span> Governed Memory Layer</a>
+  <div class="nav-right">
+    <a href="https://github.com/prnvh/governed_memory_layer" target="_blank">GitHub &nearr;</a>
+  </div>
+</nav>
+
+<div id="top">
+  <div class="hero-inner">
+    <p class="proj-label">Project &nbsp;&middot;&nbsp; Research Build &nbsp;&middot;&nbsp; 2026</p>
+    <h1>Governed Memory Layer for Multi-Agent Shared State</h1>
+    <p class="hero-sub">
+      A ledger-backed memory architecture that lets agents write private notes first, then promotes only validated, resolvable, canonical state into shared memory.
+    </p>
+    <dl class="hero-meta-row">
+      <div class="hmeta"><dt>Type</dt><dd>Research build</dd></div>
+      <div class="hmeta"><dt>Benchmark</dt><dd>304 trajectories across 6 families</dd></div>
+      <div class="hmeta"><dt>Storage</dt><dd>SQLite ledger + canonical projection tables</dd></div>
+      <div class="hmeta"><dt>Method</dt><dd>Private notes -&gt; governed promotion -&gt; deterministic projection</dd></div>
+    </dl>
+    <div class="hero-links">
+      <a class="hero-btn primary" href="https://github.com/prnvh/governed_memory_layer" target="_blank">Reproducible GitHub Repo &nearr;</a>
+      <a class="hero-btn secondary" href="#evaluation">See Evaluation Coverage</a>
+    </div>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat">
+      <div class="stat-num">304</div>
+      <div class="stat-label">BENCHMARK TRAJECTORIES</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">7</div>
+      <div class="stat-label">CANONICAL MEMORY BUCKETS</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">9</div>
+      <div class="stat-label">SQLITE TABLES</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">44</div>
+      <div class="stat-label">CORE PIPELINE TESTS</div>
+    </div>
+  </div>
+</div>
+
+<div class="content-wrap">
+
+  <span class="s-label reveal">// motivation</span>
+  <h2 class="reveal">The problem with naive shared memory for agents</h2>
+  <p class="reveal">
+    Multi-agent systems need some kind of shared state. The obvious implementation is also the dangerous one:
+    let each agent append what it thinks is important into a common memory store and hope the useful state rises above the noise.
+    In practice, this fails in a very specific way. <strong>Bad memory is durable</strong>. A vague note becomes a tracked issue.
+    A paraphrased lifecycle update closes the wrong row. A malformed result record survives long enough to mislead the next agent.
+  </p>
+  <p class="reveal">
+    The hard part is not storing text. The hard part is deciding what a note is allowed to mean once it becomes shared canonical state.
+    That means filtering noise, preserving identity across time, handling contradictions, and refusing to guess when a later note
+    refers ambiguously to an earlier issue, constraint, or decision.
+  </p>
+  <div class="callout reveal">
+    <strong>The central question:</strong> how do you let agents accumulate durable shared memory without allowing ambiguous or malformed writes to silently corrupt the canonical state everyone else depends on?
+  </div>
+
+  <hr class="reveal">
+
+  <span class="s-label reveal">// architecture</span>
+  <h2 class="reveal">How the governed memory layer works</h2>
+  <p class="reveal">
+    The system imposes a strict separation between private note capture and shared-memory mutation.
+    Agents are allowed to write raw notes into working memory. They are not allowed to write canonical shared state directly.
+    Every note passes through a governance stack before anything becomes durable shared memory.
+  </p>
+
+  <div class="diagram reveal">+------------------------------------------------------------+
+| AGENT / TOOL OUTPUT                                        |
+| Natural-language notes, observations, status updates       |
++------------------------------------------------------------+
+                             |
+                             v
++------------------------------------------------------------+
+| WORKING MEMORY                                              |
+| Private, per-agent, per-run note buffer                     |
+|                                                            |
+| Stores timestamped notes only.                             |
+| No schema enforcement. No shared writes.                   |
++------------------------------------------------------------+
+                             |
+                             v
++------------------------------------------------------------+
+| PROMOTION PIPELINE                                          |
+|                                                            |
+| 1. Interpreter: should this note become shared memory?     |
+| 2. Resolver: what existing thing, if any, does it refer to?|
+| 3. Validator: is this write structurally safe?             |
+| 4. Inputter: commit to ledger and project canonical state  |
++------------------------------------------------------------+
+                             |
+                             +-----------------------------+
+                             |                             |
+                             v                             v
++------------------------------------------------+  +----------------------+
+| EVENTS LEDGER                                  |  | PENDING QUEUE        |
+| append-only events_memory                      |  | pending_memory_events|
+| every committed canonical write is recorded    |  | unresolved but       |
+| first, even if projection fails                |  | important lifecycle  |
+|                                                |  | writes wait here     |
++------------------------------------------------+  +----------------------+
+                             |
+                             v
++------------------------------------------------------------+
+| DETERMINISTIC PROJECTOR                                    |
+| shared_memory_writer.py                                    |
+|                                                            |
+| Updates shared_plan / shared_issues / shared_constraints   |
+| / shared_decisions / shared_results / shared_task_state    |
+| / shared_learnings                                         |
++------------------------------------------------------------+
+                             |
+                             v
+                      canonical shared memory</div>
+
+  <h3 class="reveal">The four governance stages</h3>
+  <ul class="checks reveal">
+    <li><span class="check-num">01</span><div><span class="check-name">Interpretation</span> - classify a note as meaningful shared state or reject it as noise, speculation, or insufficiently structured</div></li>
+    <li><span class="check-num">02</span><div><span class="check-name">Resolution</span> - decide whether a lifecycle note safely binds to an existing canonical entity, creates a new one, or must remain provisional</div></li>
+    <li><span class="check-num">03</span><div><span class="check-name">Validation</span> - enforce bucket, operation, payload, and lifecycle-target correctness deterministically before canonical mutation</div></li>
+    <li><span class="check-num">04</span><div><span class="check-name">Projection</span> - persist the ledger event, then update canonical tables through deterministic SQL rather than free-form model output</div></li>
+  </ul>
+  <p class="reveal">
+    The key architectural claim is not that the interpreter is always right.
+    It is that <strong>shared state is never mutated on the basis of model text alone</strong>.
+    The model can propose meaning. It cannot directly define canonical memory.
+  </p>
+
+  <hr class="reveal">
+
+  <span class="s-label reveal">// implementation</span>
+  <h2 class="reveal">What a governed write actually looks like</h2>
+  <p class="reveal">
+    The most important interface in the system is the structured write request emitted after interpretation.
+    From that point on, the pipeline becomes progressively more deterministic.
+  </p>
+<pre class="reveal"><span class="comment">// Example: a note becomes a structured write request</span>
+{
+  <span class="str">"decision"</span>: <span class="str">"accept"</span>,
+  <span class="str">"bucket"</span>: <span class="str">"issues"</span>,
+  <span class="str">"target_id"</span>: <span class="str">"pandas_import_blocker"</span>,
+  <span class="str">"operation"</span>: <span class="str">"resolve"</span>,
+  <span class="str">"payload"</span>: {},
+  <span class="str">"reference_text"</span>: <span class="str">"the earlier blocker"</span>,
+  <span class="str">"candidate_aliases"</span>: [<span class="str">"pandas error"</span>, <span class="str">"import blocker"</span>],
+  <span class="str">"confidence"</span>: 0.84,
+  <span class="str">"rationale"</span>: <span class="str">"lifecycle update referring to an earlier open issue"</span>
+}</pre>
+  <p class="reveal">
+    The resolver then compares that request against current canonical context: open issues, active constraints, and active decisions.
+    If the reference clearly binds to one existing row, the write can commit. If it cannot safely identify the target, the system does not guess.
+    It preserves the write in <code>pending_memory_events</code> and retries later when fresh canonical state exists.
+  </p>
+
+  <pre class="reveal"><span class="comment">// Example: what gets durably recorded on commit</span>
+{
+  <span class="str">"event_id"</span>: <span class="str">"uuid"</span>,
+  <span class="str">"bucket"</span>: <span class="str">"issues"</span>,
+  <span class="str">"target_id"</span>: <span class="str">"pandas_import_blocker"</span>,
+  <span class="str">"operation"</span>: <span class="str">"resolve"</span>,
+  <span class="str">"payload_json"</span>: <span class="str">"{}"</span>,
+  <span class="str">"raw_input"</span>: <span class="str">"The earlier blocker is fixed."</span>,
+  <span class="str">"source_ref"</span>: <span class="str">"{ matched_target_id, candidate_matches, resolution_reason }"</span>,
+  <span class="str">"applied_successfully"</span>: 1
+}</pre>
+  <p class="reveal">
+    That ledger row is the durable source of truth. Canonical tables are downstream projections.
+    This is why the system can recover from projection failures: the audit trail exists independently of whether the projector succeeded in that moment.
+  </p>
+
+  <hr class="reveal">
+
+  <span class="s-label reveal" id="evaluation">// evaluation</span>
+  <h2 class="reveal">Benchmark coverage</h2>
+  <p class="reveal">
+    The repository includes a dedicated benchmark harness rather than only unit tests.
+    The benchmark does not score generated text. It scores the final shared-memory snapshot:
+    whether the right canonical rows exist, whether stale rows remain, whether pending debt accumulates,
+    and whether replay can reconstruct state after projection failures.
+  </p>
+  <p class="reveal">
+    The harness compares the governed system against simpler baselines such as append-all memory
+    and no-shared-context classification. The current benchmark registry contains 304 trajectories across six families.
+  </p>
+
+  <table class="bench-table reveal">
+    <thead>
+      <tr>
+        <th>Family</th>
+        <th>Description</th>
+        <th>Count</th>
+        <th>What It Stresses</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>A</code></td>
+        <td>Promotion filtering</td>
+        <td class="compiled">
+          <span class="score-label">64</span>
+          <span class="score-bar"><span class="score-fill fill-green" style="width:100%"></span></span>
+        </td>
+        <td>Noise rejection and selective promotion</td>
+      </tr>
+      <tr>
+        <td><code>B</code></td>
+        <td>Lifecycle transitions</td>
+        <td class="compiled">
+          <span class="score-label">48</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:75%"></span></span>
+        </td>
+        <td>Open -&gt; resolve, active -&gt; invalidate, latest task state</td>
+      </tr>
+      <tr>
+        <td><code>C</code></td>
+        <td>Duplicate avoidance</td>
+        <td class="compiled">
+          <span class="score-label">48</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:75%"></span></span>
+        </td>
+        <td>Identity continuity across aliases and paraphrases</td>
+      </tr>
+      <tr>
+        <td><code>D</code></td>
+        <td>Conflict handling</td>
+        <td class="compiled">
+          <span class="score-label">48</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:75%"></span></span>
+        </td>
+        <td>Authoritative override and stale-state cleanup</td>
+      </tr>
+      <tr>
+        <td><code>E</code></td>
+        <td>Cross-bucket coherence</td>
+        <td class="compiled">
+          <span class="score-label">48</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:75%"></span></span>
+        </td>
+        <td>Agreement between issues, constraints, decisions, results, and task state</td>
+      </tr>
+      <tr>
+        <td><code>F</code></td>
+        <td>Replay robustness</td>
+        <td class="compiled">
+          <span class="score-label">48</span>
+          <span class="score-bar"><span class="score-fill fill-mid" style="width:75%"></span></span>
+        </td>
+        <td>Ledger durability and reconstruction after projection failure</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="reveal">
+    The evaluation focus is architectural, not cosmetic. Family A asks whether the system keeps junk out.
+    Families B through E ask whether shared memory stays coherent over time.
+    Family F asks whether the ledger is sufficient to recover the state after deterministic projection fails.
+  </p>
+
+  <hr class="reveal">
+
+  <span class="s-label reveal">// key finding</span>
+  <h2 class="reveal">The hardest problem is not storage. It is identity continuity.</h2>
+  <p class="reveal">
+    Schema validation is comparatively easy. The genuinely difficult problem is preserving the identity of a thing across time
+    when agents stop referring to it the same way. A system may correctly capture an issue today as
+    <code>pandas_import_blocker</code>, then encounter tomorrow's note phrased only as "that earlier blocker."
+  </p>
+
+  <div class="finding reveal">
+    <div class="finding-label">FINDING</div>
+    <h3>The architecture's main safety move is to turn uncertainty into explicit state instead of silent corruption</h3>
+    <p>
+      When a lifecycle note cannot be bound confidently to an existing canonical row, the system does not force a guess.
+      It records the unresolved write in a pending queue and retries later after canonical state changes.
+      This is a stronger architectural move than it first appears. It converts ambiguity from a hidden failure mode into a visible, inspectable backlog.
+    </p>
+    <p>
+      In other words, the design treats deferred resolution debt as healthier than incorrect certainty.
+      That choice shapes the entire system: resolver logic, reference-memory accumulation, replay behavior, and benchmark metrics all exist because of it.
+    </p>
+  </div>
+
+  <p class="reveal">
+    This is why the append-only ledger and deterministic projections matter together.
+    The ledger preserves what happened. The canonical tables preserve what is currently believed.
+    The pending queue preserves what the system suspects but refuses to collapse prematurely.
+  </p>
+
+  <hr class="reveal">
+
+  <span class="s-label reveal">// failure modes</span>
+  <h2 class="reveal">How simpler memory systems fail</h2>
+  <p class="reveal">
+    The repository includes baseline harnesses precisely because the failure modes are predictable.
+    Once you compare governed memory against simpler designs, two recurring breakdowns explain most of the difference.
+  </p>
+
+  <div class="workflow reveal">
+    <div class="wf-step">
+      <div class="wf-num">F1</div>
+      <div class="wf-content">
+        <h4>Over-promotion</h4>
+        <p>
+          In append-all memory, every note becomes durable state. Internal musings, transient telemetry,
+          and speculative side comments all survive as if they were canonical facts. The result is memory pollution:
+          extra issues, fake learnings, and contradictory state rows that future agents must reason around.
+        </p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-num">F2</div>
+      <div class="wf-content">
+        <h4>Lifecycle misbinding</h4>
+        <p>
+          In note-by-note systems without shared-state context or reference memory, later updates frequently attach to the wrong thing
+          or create duplicates instead of closing the original row. The visible symptom is not only duplicates; it is stale active state that never gets retired.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="reveal">
+    The governed system does not eliminate all uncertainty. What it does is force that uncertainty through explicit boundaries:
+    interpretation, resolution, validation, and deterministic write semantics.
+  </p>
+
+  <hr class="reveal">
+
+  <span class="s-label reveal">// scope</span>
+  <h2 class="reveal">Limitations and current scope</h2>
+  <p class="reveal">
+    This is a memory architecture and benchmark suite, not a full production multi-agent platform.
+    The repository is intentionally concentrated on the note-to-memory boundary and the correctness properties around that boundary.
+  </p>
+  <p class="reveal">
+    The following are current scope limits, not accidental omissions:
+  </p>
+  <ul class="checks reveal">
+    <li><span class="check-num">-</span><div>Identity-specialized resolver logic exists only for issues, constraints, and decisions</div></li>
+    <li><span class="check-num">-</span><div>No full runtime agent orchestration layer or service API is included yet</div></li>
+    <li><span class="check-num">-</span><div>Replay is implemented through the fault-injection benchmark harness, not a standalone production repair tool</div></li>
+    <li><span class="check-num">-</span><div>Classification quality still depends partly on the live interpreter model and prompt</div></li>
+    <li><span class="check-num">-</span><div>The system is synchronous and SQLite-based rather than distributed</div></li>
+  </ul>
+
+</div>
+
+<div class="page-footer">
+  <div class="page-footer-inner">
+    <div class="pf-left">
+      <p>Governed Memory Layer &nbsp;&middot;&nbsp; 2026</p>
+      <p style="margin-top:0.2rem;">Ledger-backed shared memory for agents</p>
+    </div>
+    <div class="pf-right">
+      <a class="pf-link" href="https://github.com/prnvh/governed_memory_layer" target="_blank">Reproducible GitHub Repo &nearr;</a>
+      <a class="pf-link" href="#top">&uarr; Back to top</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 10));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), 60);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

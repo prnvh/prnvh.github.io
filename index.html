@@ -235,8 +235,8 @@
 
   /* PROJECTS */
   #case-studies { background: var(--parchment); }
-  .case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2px; }
-  .case-card { background: var(--white); border: 1px solid var(--stone); padding: 2.2rem; position: relative; overflow: hidden; transition: transform 0.28s, box-shadow 0.28s; }
+  .case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2px; counter-reset: case-counter; }
+  .case-card { background: var(--white); border: 1px solid var(--stone); padding: 2.2rem; position: relative; overflow: hidden; transition: transform 0.28s, box-shadow 0.28s; counter-increment: case-counter; }
   .case-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--gold); transform: scaleY(0); transform-origin: bottom; transition: transform 0.35s; }
   .case-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(46,43,38,0.07); }
   .case-card:hover::before { transform: scaleY(1); }
@@ -251,8 +251,9 @@
   .case-link { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); transition: gap 0.25s; }
   .case-link.secondary { color: var(--ash); }
   .case-card:hover .case-link { gap: 0.65rem; }
-  .case-number { position: absolute; top: 1.6rem; right: 1.8rem; font-family: var(--mono); font-size: 2.6rem; font-weight: 300; color: var(--stone); line-height: 1; pointer-events: none; }
-  .case-card.featured .case-number { color: rgba(180,144,42,0.18); }
+  .case-number { position: absolute; top: 1.6rem; right: 1.8rem; font-family: var(--mono); font-size: 0; font-weight: 300; color: transparent; line-height: 1; pointer-events: none; }
+  .case-number::after { content: counter(case-counter, decimal-leading-zero); font-size: 2.6rem; color: var(--stone); }
+  .case-card.featured .case-number::after { color: rgba(180,144,42,0.18); }
 
   /* CONTACT */
   #contact { background: var(--ink); padding: 5.5rem 2rem; text-align: center; }
@@ -322,6 +323,7 @@
   <div class="hero-ctas">
     <a class="btn btn-primary" href="#case-studies">See the Work</a>
     <a class="btn btn-outline" href="compiler.html">Read the Paper</a>
+    <a class="btn btn-outline" href="governed-memory-layer.html">Memory Layer Write-up</a>
   </div>
 
 </section>
@@ -479,6 +481,32 @@
 
       <div class="case-card reveal">
         <span class="case-number">02</span>
+        <p class="case-tag">Research Build &middot; 2026</p>
+        <h3 class="case-title">Governed Memory Layer for Multi-Agent Shared State</h3>
+        <p class="case-desc">
+          Ledger-backed memory architecture for multi-agent systems where agents write private
+          notes first, then only validated, resolvable, canonical state is promoted into shared
+          memory. Uses governed promotion, deterministic projection, and an evaluation harness
+          over 304 benchmark trajectories instead of trusting free-form memory writes.
+        </p>
+        <div class="case-stack">
+          <span class="stack-pill">Python</span>
+          <span class="stack-pill">SQLite</span>
+          <span class="stack-pill">Shared Memory</span>
+          <span class="stack-pill">Deterministic Projection</span>
+        </div>
+        <div class="case-meta">
+          <span>304 benchmark trajectories</span>
+          <span>44 core pipeline tests</span>
+        </div>
+        <div class="case-links">
+          <a class="case-link" href="governed-memory-layer.html">Case Study &rarr;</a>
+          <a class="case-link secondary" href="https://github.com/prnvh/governed_memory_layer" target="_blank">GitHub &nearr;</a>
+        </div>
+      </div>
+
+      <div class="case-card reveal">
+        <span class="case-number">03</span>
         <p class="case-tag">Field Research · 2026</p>
         <h3 class="case-title">Wage Asymmetry Study - Kerala Labour Markets</h3>
         <p class="case-desc">
