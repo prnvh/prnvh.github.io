@@ -161,7 +161,7 @@ class AnimatedJellyfish {
 
   drawTentacles(metrics) {
     const baseY = this.jellyfish.y + (this.bell.length + this.skirt.length + 1) * metrics.lineHeight;
-    this.ctx.globalAlpha = this.opacity * 0.78;
+    this.ctx.globalAlpha = this.opacity * 0.9;
 
     this.tentacles.forEach((tentacle) => {
       for (let segment = 0; segment < tentacle.length; segment++) {
@@ -205,7 +205,7 @@ class AnimatedJellyfish {
 function mountJellyfish() {
   new AnimatedJellyfish('jellyfishCanvas', {
     color: '#3f4244',
-    opacity: 0.34,
+    opacity: 0.7,
     speed: 1,
     scale: 1
   });
