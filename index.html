@@ -22,46 +22,57 @@
 <main class="page">
   <section class="hero">
     <div class="shell hero-grid">
-      <div>
+      <div class="hero-copy">
         <p class="eyebrow">LLM Systems &middot; Memory &middot; Reliability</p>
-        <h1 class="hero-display">Governed memory, deterministic execution, and <em>legible AI systems</em>.</h1>
+        <h1 class="hero-display">Governed systems for memory, execution, and <em>failure</em>.</h1>
         <p class="lede">
-          I work on AI systems where memory, execution, and failure are made explicit. Most of my recent work sits at the boundary between governed shared state, workflow compilation, and operational reliability.
+          I build AI infrastructure where shared state is explicit, execution stays deterministic, and edge cases are treated as architecture rather than cleanup.
         </p>
         <div class="actions">
           <a class="btn btn-primary" href="projects.html">Browse Projects</a>
           <a class="btn btn-secondary" href="writing.html">Open Writing</a>
+        </div>
+        <div class="hero-strip">
+          <span>Governed shared state</span>
+          <span>Deterministic workflow execution</span>
+          <span>Operational reliability layers</span>
         </div>
       </div>
     </div>
   </section>
 
   <section class="section">
-    <div class="shell">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Operating Posture</p>
-          <h2 class="section-title">How I work.</h2>
-        </div>
+    <div class="shell operating-layout">
+      <div class="operating-intro">
+        <p class="eyebrow">Operating Posture</p>
+        <h2 class="section-title">How I work.</h2>
+        <p class="section-copy">
+          The throughline is simple: make state legible, let failures surface early, and document the system clearly enough that someone else can reason about it under pressure.
+        </p>
       </div>
-
-      <div class="manifesto-grid">
-        <article class="surface feature-card">
-          <span class="meta-line">01 &middot; Governance</span>
-          <h3>Governance before cleverness</h3>
-          <p>Raw model output is never the final authority. Important state has to be promoted, validated, and made structurally legible.</p>
+      <div class="principles-list">
+        <article class="principle">
+          <div class="principle-lead">
+            <span class="principle-index">01</span>
+            <h3>Governance before cleverness</h3>
+          </div>
+          <p>Raw model output can suggest. It does not get to silently become truth, policy, or shared memory.</p>
         </article>
 
-        <article class="surface feature-card">
-          <span class="meta-line">02 &middot; Failure</span>
-          <h3>Failure should arrive with a name</h3>
-          <p>I prefer systems that reject, defer, or surface uncertainty clearly over systems that smooth over it and silently drift.</p>
+        <article class="principle">
+          <div class="principle-lead">
+            <span class="principle-index">02</span>
+            <h3>Failure should arrive with a name</h3>
+          </div>
+          <p>I would rather a system reject, defer, or ask for help than smooth uncertainty over and silently drift.</p>
         </article>
 
-        <article class="surface feature-card">
-          <span class="meta-line">03 &middot; Writing</span>
-          <h3>Writeups are part of the work</h3>
-          <p>If a system deserves trust, it should survive being explained in public, with architecture, tradeoffs, and failure boundaries made explicit.</p>
+        <article class="principle">
+          <div class="principle-lead">
+            <span class="principle-index">03</span>
+            <h3>Writeups are part of the work</h3>
+          </div>
+          <p>If a system deserves trust, it should survive being explained in public with its tradeoffs and failure boundaries intact.</p>
         </article>
       </div>
     </div>

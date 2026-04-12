@@ -25,7 +25,7 @@
       <p class="eyebrow">Projects</p>
       <h1 class="page-display">Selected <em>projects</em>.</h1>
       <p class="page-intro">
-        The longer project archive: what I built, why it mattered, and where the writeups or code live.
+        Systems work, research, and operating projects that shaped how I think about memory, execution, and real-world reliability.
       </p>
     </div>
   </section>
@@ -38,116 +38,83 @@
           <h2 class="section-title">Reliability, memory, and execution.</h2>
         </div>
         <p class="section-copy">
-          Projects centered on governed state, deterministic execution, and sharper failure boundaries.
+          The core systems work: deterministic workflow execution, governed shared state, and reliability layers that make failure visible.
         </p>
       </div>
 
-      <div class="preview-grid">
-        <article class="detail-card featured" id="compiler-project">
-          <span class="meta-line">Research Build &middot; 2025-2026</span>
-          <h3>LLM Code Graph Compiler</h3>
-          <p>Compile structured workflows into executable code through a typed node registry and static validation, rather than letting the model improvise its way through runtime.</p>
-          <div class="detail-stack" style="margin-top:1rem;">
-            <span class="pill">Python</span>
-            <span class="pill">DAG Execution</span>
-            <span class="pill">Static Validation</span>
-            <span class="pill">CLI Tooling</span>
+      <div class="project-stack">
+        <article class="project-sheet" id="compiler-project">
+          <div class="project-sheet-meta">
+            <span class="meta-line">Research Build</span>
+            <span class="sheet-year">2025-2026</span>
           </div>
-          <div class="detail-grid">
-            <div class="detail-copy">
-              <div>
-                <h4>What it is</h4>
-                <p>The model only selects from pre-verified nodes and emits a JSON plan. A validator checks type correctness, wiring, argument structure, and graph integrity before any execution begins.</p>
-              </div>
-              <div>
-                <h4>Why it mattered</h4>
-                <p>The interesting result was not just higher compile success. It was discovering how quickly planners exploit any unconstrained surface, which sharpened how I think about system boundaries.</p>
-              </div>
+          <div class="project-sheet-main">
+            <h3>LLM Code Graph Compiler</h3>
+            <p class="project-sheet-summary">Compile structured workflows through a typed node registry and static validation before anything executes.</p>
+            <div class="project-note-grid">
+              <p class="project-note"><strong>System</strong>The planner emits a JSON graph from a constrained registry, then a validator checks wiring, arguments, and graph integrity before codegen begins.</p>
+              <p class="project-note"><strong>Focus</strong>Deterministic generation, compile-time safety, and a hard boundary against free-form runtime improvisation.</p>
             </div>
-            <div class="detail-copy">
-              <div>
-                <h4>What I focused on</h4>
-                <ul class="detail-list">
-                  <li>Typed registry design and deterministic code generation</li>
-                  <li>Static safety checks ahead of runtime</li>
-                  <li>Benchmarking against freer-generation baselines</li>
-                </ul>
-              </div>
+            <div class="detail-stack">
+              <span class="pill">Python</span>
+              <span class="pill">DAG Execution</span>
+              <span class="pill">Static Validation</span>
+              <span class="pill">CLI Tooling</span>
             </div>
-          </div>
-          <div class="inline-links">
-            <a href="compiler.html">Technical writeup</a>
-            <a href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub</a>
+            <div class="project-sheet-links">
+              <a href="compiler.html">Technical writeup</a>
+              <a href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub</a>
+            </div>
           </div>
         </article>
 
-        <article class="detail-card featured" id="memory-project">
-          <span class="meta-line">Research Build &middot; 2026</span>
-          <h3>Governed Memory Layer for Multi-Agent Shared State</h3>
-          <p>A memory runtime where agents write raw notes privately, then promote only validated and resolvable state into canonical shared memory through a ledger-backed pipeline.</p>
-          <div class="detail-stack" style="margin-top:1rem;">
-            <span class="pill">Python</span>
-            <span class="pill">SQLite</span>
-            <span class="pill">Shared Memory</span>
-            <span class="pill">Deterministic Projection</span>
+        <article class="project-sheet" id="memory-project">
+          <div class="project-sheet-meta">
+            <span class="meta-line">Research Build</span>
+            <span class="sheet-year">2026</span>
           </div>
-          <div class="detail-grid">
-            <div class="detail-copy">
-              <div>
-                <h4>What it is</h4>
-                <p>The core split is between working memory and canonical memory. Notes are interpreted, resolved, validated, and only then written through a single official path into events, projections, and pending state.</p>
-              </div>
-              <div>
-                <h4>Why it mattered</h4>
-                <p>The hard problem turned out to be identity continuity rather than storage. That pushed the design toward pending ambiguity, reference memory, and a stronger refusal to guess.</p>
-              </div>
+          <div class="project-sheet-main">
+            <h3>Governed Memory Layer</h3>
+            <p class="project-sheet-summary">A ledger-backed memory runtime where agents write privately and only resolved, validated state gets promoted into canonical shared memory.</p>
+            <div class="project-note-grid">
+              <p class="project-note"><strong>System</strong>Working memory and canonical memory stay separate. Notes are interpreted, resolved, validated, and only then written through a single governed path.</p>
+              <p class="project-note"><strong>Focus</strong>Promotion rules, append-only durability, deterministic projection, and pending state when identity cannot be safely resolved.</p>
             </div>
-            <div class="detail-copy">
-              <div>
-                <h4>What I focused on</h4>
-                <ul class="detail-list">
-                  <li>Governed promotion pipeline and narrow write boundaries</li>
-                  <li>Append-only event durability with deterministic projection</li>
-                  <li>Pending resolution for lifecycle updates that cannot safely bind</li>
-                </ul>
-              </div>
+            <div class="detail-stack">
+              <span class="pill">Python</span>
+              <span class="pill">SQLite</span>
+              <span class="pill">Shared Memory</span>
+              <span class="pill">Event Projection</span>
             </div>
-          </div>
-          <div class="inline-links">
-            <a href="governed-memory-layer.html">Technical writeup</a>
-            <a href="https://github.com/prnvh/governed_memory_layer" target="_blank">GitHub</a>
+            <div class="project-sheet-links">
+              <a href="governed-memory-layer.html">Technical writeup</a>
+              <a href="https://github.com/prnvh/governed_memory_layer" target="_blank">GitHub</a>
+            </div>
           </div>
         </article>
-      </div>
 
-      <div class="preview-grid" style="margin-top:1.2rem;">
-        <article class="detail-card" id="svmp-project">
-          <span class="meta-line">Systems Build &middot; 2026</span>
-          <h3>SVMP Multi-Tenant Governance Layer</h3>
-          <p>A customer-service reliability layer for multi-tenant AI workflows, with queue discipline, tenant isolation, escalation routing, and operational guardrails.</p>
-          <div class="detail-grid">
-            <div class="detail-copy">
-              <div>
-                <h4>What it is</h4>
-                <p>Three async workflows handle ingestion, processing, and cleanup. A soft debounce plus lock queue merges fragmented messages before the LLM layer sees them, which reduces duplicate work and sharpens session state.</p>
-              </div>
-            </div>
-            <div class="detail-copy">
-              <div>
-                <h4>Why it mattered</h4>
-                <p>This was where operational reliability stopped being abstract. Isolation boundaries, uncertain-query routing, and adversarial testing all had to work as product constraints rather than nice-to-have theory.</p>
-              </div>
-            </div>
+        <article class="project-sheet" id="svmp-project">
+          <div class="project-sheet-meta">
+            <span class="meta-line">Systems Build</span>
+            <span class="sheet-year">2026</span>
           </div>
-          <div class="detail-stack" style="margin-top:1rem;">
-            <span class="pill">FastAPI</span>
-            <span class="pill">MongoDB Atlas</span>
-            <span class="pill">Motor</span>
-            <span class="pill">APScheduler</span>
-            <span class="pill">Fernet</span>
-          </div>
-          <div class="inline-links">
-            <a href="https://github.com/svmp-systems/SVMP-Systems" target="_blank">GitHub</a>
+          <div class="project-sheet-main">
+            <h3>SVMP Governance Layer</h3>
+            <p class="project-sheet-summary">A multi-tenant customer-service reliability layer with routing, tenant isolation, escalation controls, and operational guardrails.</p>
+            <div class="project-note-grid">
+              <p class="project-note"><strong>System</strong>Async workflows handle ingestion, processing, and cleanup while lock queues and soft debouncing merge fragmented messages before the model sees them.</p>
+              <p class="project-note"><strong>Focus</strong>Operational isolation, uncertain-query routing, and adversarial reliability work under real product constraints.</p>
+            </div>
+            <div class="detail-stack">
+              <span class="pill">FastAPI</span>
+              <span class="pill">MongoDB Atlas</span>
+              <span class="pill">Motor</span>
+              <span class="pill">APScheduler</span>
+              <span class="pill">Fernet</span>
+            </div>
+            <div class="project-sheet-links">
+              <a href="https://github.com/svmp-systems/SVMP-Systems" target="_blank">GitHub</a>
+            </div>
           </div>
         </article>
       </div>
@@ -162,93 +129,71 @@
           <h2 class="section-title">Research and operations.</h2>
         </div>
         <p class="section-copy">
-          Field research, GTM work, and adjacent operating questions that shaped how I think about systems later.
+          Fieldwork, GTM, and adjacent operating work that shaped the way I think about systems once they meet real users.
         </p>
       </div>
 
-      <div class="preview-grid">
-        <article class="detail-card">
-          <span class="meta-line">Field Research &middot; 2026</span>
-          <h3>Wage Asymmetry Study in Kerala Labour Markets</h3>
-          <p>Structured interview-based research on the wage gap between inter-state migrant workers and local labourers in Kerala.</p>
-          <div class="detail-grid">
-            <div class="detail-copy">
-              <div>
-                <h4>What I did</h4>
-                <p>Designed the interview structure, ran 150-plus field interviews, and started shaping the findings into a paper rather than leaving them as raw anecdote.</p>
-              </div>
-            </div>
-            <div class="detail-copy">
-              <div>
-                <h4>Why it mattered</h4>
-                <p>This work sharpened how I think about labour markets, asymmetric information, and the difference between formal system design and the real-world behaviour around it.</p>
-              </div>
+      <div class="project-stack">
+        <article class="project-sheet">
+          <div class="project-sheet-meta">
+            <span class="meta-line">Field Research</span>
+            <span class="sheet-year">2026</span>
+          </div>
+          <div class="project-sheet-main">
+            <h3>Kerala Wage Asymmetry Study</h3>
+            <p class="project-sheet-summary">Structured field research on wage differences between inter-state migrant workers and local labourers in Kerala.</p>
+            <div class="project-note-grid">
+              <p class="project-note"><strong>Work</strong>Designed the interview structure, ran 150-plus field interviews, and started turning the findings into a paper instead of leaving them as anecdote.</p>
+              <p class="project-note"><strong>Why it mattered</strong>It sharpened how I think about labour markets, asymmetric information, and the gap between formal system logic and lived behaviour.</p>
             </div>
           </div>
         </article>
 
-        <article class="detail-card">
-          <span class="meta-line">Operations &middot; 2025-Present</span>
-          <h3>Niyomilan</h3>
-          <p>Pre-launch labour marketplace work focused on early operations, GTM framing, and field-informed decision making.</p>
-          <div class="detail-grid">
-            <div class="detail-copy">
-              <div>
-                <h4>What I did</h4>
-                <p>Worked on ops and growth framing for a marketplace built around daily wage work, with the Kerala research feeding directly into how I think about product assumptions.</p>
-              </div>
-            </div>
-            <div class="detail-copy">
-              <div>
-                <h4>Why it mattered</h4>
-                <p>It pushed me toward more grounded operating questions: where information breaks, where trust is thin, and how real participants interpret a system very differently from its builders.</p>
-              </div>
-            </div>
+        <article class="project-sheet">
+          <div class="project-sheet-meta">
+            <span class="meta-line">Operations</span>
+            <span class="sheet-year">2025-Present</span>
           </div>
-        </article>
-      </div>
-
-      <div class="preview-grid" style="margin-top:1.2rem;">
-        <article class="detail-card">
-          <span class="meta-line">Venture &middot; 2024-2025</span>
-          <h3>Student Marketing Venture</h3>
-          <p>A small-team content and marketing operation serving international clients while still in school.</p>
-          <div class="detail-grid">
-            <div class="detail-copy">
-              <div>
-                <h4>What I did</h4>
-                <p>Handled client management, revisions, delivery, and the operational shape of a fast-moving service business across 20-plus projects.</p>
-              </div>
-            </div>
-            <div class="detail-copy">
-              <div>
-                <h4>Why it mattered</h4>
-                <p>It taught me what operational pressure really feels like when delivery, reputation, and cash flow all sit on top of the same process quality.</p>
-              </div>
+          <div class="project-sheet-main">
+            <h3>Niyomilan</h3>
+            <p class="project-sheet-summary">Pre-launch labour marketplace work focused on early operations, GTM framing, and field-informed product thinking.</p>
+            <div class="project-note-grid">
+              <p class="project-note"><strong>Work</strong>Worked on growth and operator-side framing for a marketplace shaped by the same labour realities surfaced during the Kerala research.</p>
+              <p class="project-note"><strong>Why it mattered</strong>It kept pushing the work back toward real trust, thin information, and how participants interpret a system differently from its builders.</p>
             </div>
           </div>
         </article>
 
-        <article class="detail-card">
-          <span class="meta-line">Side Project &middot; 2026</span>
-          <h3>Matiks Breaker</h3>
-          <p>A reverse-engineering and solver project around the Matiks daily puzzle, built from its GraphQL endpoint outward.</p>
-          <div class="detail-grid">
-            <div class="detail-copy">
-              <div>
-                <h4>What I did</h4>
-                <p>Converted raw game state into structured constraints, then built a permutation-based backtracking solver to produce verified solutions.</p>
-              </div>
-            </div>
-            <div class="detail-copy">
-              <div>
-                <h4>Why it mattered</h4>
-                <p>It was a compact exercise in system reading: understand the shape of an external interface, formalize the constraints, then build the deterministic solver the original product never exposed.</p>
-              </div>
+        <article class="project-sheet">
+          <div class="project-sheet-meta">
+            <span class="meta-line">Venture</span>
+            <span class="sheet-year">2024-2025</span>
+          </div>
+          <div class="project-sheet-main">
+            <h3>Student Marketing Venture</h3>
+            <p class="project-sheet-summary">A small-team content and marketing operation serving international clients while I was still in school.</p>
+            <div class="project-note-grid">
+              <p class="project-note"><strong>Work</strong>Handled client management, revisions, delivery, and the operational shape of a service business across 20-plus projects.</p>
+              <p class="project-note"><strong>Why it mattered</strong>It made process quality real: delivery, reputation, and cash flow all sat on the same set of operational decisions.</p>
             </div>
           </div>
-          <div class="inline-links">
-            <a href="https://github.com/prnvh/matiks_breaker" target="_blank">GitHub</a>
+        </article>
+
+        <article class="project-sheet">
+          <div class="project-sheet-meta">
+            <span class="meta-line">Side Project</span>
+            <span class="sheet-year">2026</span>
+          </div>
+          <div class="project-sheet-main">
+            <h3>Matiks Breaker</h3>
+            <p class="project-sheet-summary">A reverse-engineering and solver project built outward from the Matiks daily puzzle GraphQL endpoint.</p>
+            <div class="project-note-grid">
+              <p class="project-note"><strong>Work</strong>Converted raw game state into structured constraints, then built a permutation-based backtracking solver to produce verified solutions.</p>
+              <p class="project-note"><strong>Why it mattered</strong>It was a compact exercise in reading an external system, formalizing the constraints, and building the deterministic solver the product never exposed.</p>
+            </div>
+            <div class="project-sheet-links">
+              <a href="https://github.com/prnvh/matiks_breaker" target="_blank">GitHub</a>
+            </div>
           </div>
         </article>
       </div>
@@ -259,7 +204,7 @@
 <footer class="footer">
   <div class="shell footer-inner">
     <p class="footer-copy">Pranav <span>Harikumar</span></p>
-    <p class="footer-copy">Projects page &middot; detailed archive</p>
+    <p class="footer-copy">Projects page &middot; systems, research, and operating work</p>
   </div>
 </footer>
 </body>
