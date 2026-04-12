@@ -115,6 +115,20 @@ class AnimatedJellyfish {
     this.jellyfish.y = Math.min(bounds.bottom, Math.max(bounds.top, this.jellyfish.y));
   }
 
+  getMotionVector() {
+    const speed = Math.hypot(this.jellyfish.vx, this.jellyfish.vy) || 1;
+    const dx = this.jellyfish.vx / speed;
+    const dy = this.jellyfish.vy / speed;
+
+    return {
+      dx,
+      dy,
+      px: -dy,
+      py: dx,
+      speed
+    };
+  }
+
   updatePosition() {
     const bounds = this.getMovementBounds();
     const driftX = Math.sin(this.time * 0.009) * 0.11;
@@ -139,7 +153,7 @@ class AnimatedJellyfish {
     }
   }
 
-  drawAsciiRows(rows, startY, metrics, alphaScale = 1) {
+  drawAsciiRows(rows, startY, metrics, motion, alphaScale = 1) {
     this.ctx.globalAlpha = this.opacity * alphaScale;
 
     rows.forEach((line, rowIndex) => {
@@ -150,26 +164,32 @@ class AnimatedJellyfish {
         if (char === ' ') continue;
 
         const colOffset = col - centerOffset;
+        const localX = colOffset * metrics.charWidth;
+        const localY = startY + rowIndex * metrics.lineHeight;
+        const travelPosition = localX * motion.dx + localY * motion.dy;
         const pulse = 1 + Math.sin(this.time * 0.024) * 0.018;
-        const current = Math.sin(this.time * 0.026 + rowIndex * 0.22 + col * 0.08);
-        const x = this.jellyfish.x + colOffset * metrics.charWidth * pulse + current * 0.55;
-        const y = this.jellyfish.y + startY + rowIndex * metrics.lineHeight + Math.cos(this.time * 0.018 + col * 0.04) * 0.4;
+        const travelingWave = Math.sin(this.time * 0.07 - travelPosition * 0.055);
+        const bodySway = travelingWave * (0.55 + rowIndex * 0.018);
+        const glide = Math.cos(this.time * 0.052 - travelPosition * 0.045) * 0.35;
+        const x = this.jellyfish.x + localX * pulse + motion.px * bodySway + motion.dx * glide;
+        const y = this.jellyfish.y + localY + motion.py * bodySway + motion.dy * glide;
         this.ctx.fillText(char, x, y);
       }
     });
   }
 
-  drawTentacles(metrics) {
+  drawTentacles(metrics, motion) {
     const baseY = this.jellyfish.y + (this.bell.length + this.skirt.length + 1) * metrics.lineHeight;
     this.ctx.globalAlpha = this.opacity * 0.9;
 
     this.tentacles.forEach((tentacle) => {
       for (let segment = 0; segment < tentacle.length; segment++) {
         const taper = segment / tentacle.length;
-        const wave = Math.sin(this.time * 0.04 + segment * 0.45 + tentacle.phase) * (1 + taper * 5.5) * tentacle.curl;
-        const secondary = Math.cos(this.time * 0.02 + segment * 0.25 + tentacle.phase) * taper * 2.2;
-        const x = this.jellyfish.x + tentacle.anchor * metrics.charWidth + wave + secondary;
-        const y = baseY + segment * metrics.lineHeight * 0.74;
+        const wave = Math.sin(this.time * 0.075 - segment * 0.55 + tentacle.phase) * (1 + taper * 6.5) * tentacle.curl;
+        const secondary = Math.cos(this.time * 0.035 - segment * 0.38 + tentacle.phase) * taper * 2.4;
+        const trail = taper * 13;
+        const x = this.jellyfish.x + tentacle.anchor * metrics.charWidth + motion.px * wave - motion.dx * trail + motion.px * secondary;
+        const y = baseY + segment * metrics.lineHeight * 0.74 + motion.py * wave - motion.dy * trail + motion.py * secondary;
         const char = taper > 0.74 ? '.' : taper > 0.42 ? ':' : ';';
 
         this.ctx.fillText(char, x, y);
@@ -179,6 +199,7 @@ class AnimatedJellyfish {
 
   drawJellyfish() {
     const metrics = this.getMetrics();
+    const motion = this.getMotionVector();
 
     this.ctx.save();
     this.ctx.fillStyle = this.color;
@@ -186,9 +207,9 @@ class AnimatedJellyfish {
     this.ctx.textBaseline = 'top';
     this.ctx.textAlign = 'center';
 
-    this.drawAsciiRows(this.bell, 0, metrics, 1);
-    this.drawAsciiRows(this.skirt, this.bell.length * metrics.lineHeight, metrics, 0.9);
-    this.drawTentacles(metrics);
+    this.drawAsciiRows(this.bell, 0, metrics, motion, 1);
+    this.drawAsciiRows(this.skirt, this.bell.length * metrics.lineHeight, metrics, motion, 0.9);
+    this.drawTentacles(metrics, motion);
 
     this.ctx.restore();
   }
