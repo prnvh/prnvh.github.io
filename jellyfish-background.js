@@ -8,7 +8,7 @@ class AnimatedJellyfish {
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
     this.color = options.color || '#181a1b';
     this.opacity = options.opacity || 0.9;
-    this.speed = options.speed || 1;
+    this.speed = options.speed || 0.5;
     this.scale = options.scale || 1.12;
     this.time = 0;
 
@@ -42,8 +42,8 @@ class AnimatedJellyfish {
     this.jellyfish = {
       x: 0,
       y: 0,
-      vx: 0.2 * this.speed,
-      vy: 0.08 * this.speed
+      vx: 0.05 * this.speed,
+      vy: 0.008 * this.speed
     };
 
     this.handleResize();
@@ -283,7 +283,7 @@ function mountJellyfish() {
   new AnimatedJellyfish('jellyfishCanvas', {
     color: '#181a1b',
     opacity: 0.9,
-    speed: 0.78,
+    speed: 0.5,
     scale: 1.12
   });
 }
