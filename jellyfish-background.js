@@ -43,7 +43,7 @@ class AnimatedJellyfish {
       x: 0,
       y: 0,
       vx: 0.05 * this.speed,
-      vy: 0.008 * this.speed
+      vy: 0.00008 * this.speed
     };
 
     this.handleResize();
