@@ -7,34 +7,35 @@ class AnimatedJellyfish {
     this.boundsElement = this.canvas.parentElement || document.body;
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
     this.color = options.color || '#3f4244';
-    this.opacity = options.opacity || 0.7;
+    this.opacity = options.opacity || 0.85;
     this.speed = options.speed || 1;
-    this.scale = options.scale || 1;
+    this.scale = options.scale || 2;
     this.time = 0;
 
     this.bell = [
-      '                 ...:::;;;+++++++;;;:::...                 ',
-      '             ..::;;+++++++++++++++++++++;;::..             ',
-      '          ..::;+++***********************+++;::..          ',
-      '        .::;++*******************************++;::.        ',
-      '      .::;++***********************************++;;:.      ',
-      '    .::;++***************************************++;;:.    ',
-      '   .:;++*******************************************++;:.   ',
-      '  .:;++*********************************************++;:.  ',
-      ' .:;++***********************************************++;:. ',
-      ' .:;++***********************************************++;:. ',
-      ' .:;++***********************************************++;:. ',
-      '  .:;++*********************************************++;:.  ',
-      '   .:;++***********************************+++++++++;:.   ',
-      '    .::;++**************************+++++;;;;;;;++;:.     ',
-      '      .::;;++++************+++++;;;;::::::::;;;;::.       ',
-      '        ..::;;;;++++++++;;;;:::::........::::::..         ',
-      '            ...::::;;;;::::.....         .....            '
+      '                 ..:::;;;;+++++;;;;:::..                 ',
+      '             ..::;;+++++++++++++++++++;;::..             ',
+      '          ..::;+++;;;;;;;;;;;;;;;;;;;;+++;::..           ',
+      '        .::;++;;;;;;;;;;;;;;;;;;;;;;;;;;;;++;::.          ',
+      '      .::;++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;++;;:.         ',
+      '    .::;++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;++;;:.       ',
+      '   .:;++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;++;:.      ',
+      '  .:;++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;++;:.      ',
+      ' .:;++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;++;:.     ',
+      ' .:;++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;++;:.     ',
+      ' .:;++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;++;:.     ',
+      '  .:;++;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;++;:.      ',
+      '   .:;++;;;;;;;;;;;;;;;;;;;;;;;;;;;;++++++++++++;:.       ',
+      '    .::;++;;;;;;;;;;;;;;;;;;;;+++++;;;;;;;;;;++;:.        ',
+      '      .::;;++++;;;;;;;;+++++;;;;::::::::;;;;::.           ',
+      '        ..::;;;;++++++++;;;;:::::.....::::::..            ',
+      '            ...::::;;;;::::.....       .....              '
     ];
 
     this.skirt = [
-      '             .:;:..:;:..:;:..:;:..:;:..:;:.             ',
-      '               .:.  .:.  .:.  .:.  .:.  .:.             '
+      '           .:;;:..:;;:..:;;:..:;;:..:;;:..:;;:.          ',
+      '             .;:.  .;:.  .;:.  .;:.  .;:.  .;:.          ',
+      '              :.    :.    :.    :.    :.    :.            '
     ];
 
     this.tentacles = this.createTentacles();
@@ -54,14 +55,16 @@ class AnimatedJellyfish {
 
   createTentacles() {
     return [
-      { anchor: -24, length: 9, phase: 0.2, curl: -1 },
-      { anchor: -18, length: 13, phase: 1.1, curl: 1 },
-      { anchor: -12, length: 16, phase: 2.0, curl: -1 },
-      { anchor: -6, length: 19, phase: 2.8, curl: 1 },
-      { anchor: 0, length: 18, phase: 3.4, curl: -1 },
-      { anchor: 6, length: 16, phase: 4.2, curl: 1 },
-      { anchor: 13, length: 13, phase: 5.0, curl: -1 },
-      { anchor: 20, length: 10, phase: 5.7, curl: 1 }
+      { anchor: -25, length: 9, phase: 0.2, curl: -1, inner: false },
+      { anchor: -20, length: 13, phase: 0.8, curl: 1, inner: false },
+      { anchor: -15, length: 16, phase: 1.5, curl: -1, inner: true },
+      { anchor: -9, length: 19, phase: 2.1, curl: 1, inner: true },
+      { anchor: -3, length: 18, phase: 2.9, curl: -1, inner: true },
+      { anchor: 3, length: 18, phase: 3.6, curl: 1, inner: true },
+      { anchor: 9, length: 17, phase: 4.2, curl: -1, inner: true },
+      { anchor: 15, length: 14, phase: 4.9, curl: 1, inner: false },
+      { anchor: 21, length: 12, phase: 5.5, curl: -1, inner: false },
+      { anchor: 26, length: 9, phase: 6.1, curl: 1, inner: false }
     ];
   }
 
@@ -85,7 +88,7 @@ class AnimatedJellyfish {
       charWidth: fontSize * 0.62,
       lineHeight: fontSize * 0.92,
       halfWidth: 31 * fontSize * 0.62,
-      totalHeight: 35 * fontSize * 0.92
+      totalHeight: 34 * fontSize * 0.92
     };
   }
 
@@ -154,8 +157,6 @@ class AnimatedJellyfish {
   }
 
   drawAsciiRows(rows, startY, metrics, motion, alphaScale = 1) {
-    this.ctx.globalAlpha = this.opacity * alphaScale;
-
     rows.forEach((line, rowIndex) => {
       const centerOffset = line.length / 2;
 
@@ -173,14 +174,23 @@ class AnimatedJellyfish {
         const glide = Math.cos(this.time * 0.052 - travelPosition * 0.045) * 0.35;
         const x = this.jellyfish.x + localX * pulse + motion.px * bodySway + motion.dx * glide;
         const y = this.jellyfish.y + localY + motion.py * bodySway + motion.dy * glide;
+        this.ctx.globalAlpha = this.opacity * alphaScale * this.getCharacterAlpha(char);
         this.ctx.fillText(char, x, y);
       }
     });
   }
 
+  getCharacterAlpha(char) {
+    if (char === ';') return 1.08;
+    if (char === ':') return 1.08;
+    if (char === '.') return 1.14;
+    if (char === '+') return 0.9;
+    if (char === '*') return 0.62;
+    return 1;
+  }
+
   drawTentacles(metrics, motion) {
     const baseY = this.jellyfish.y + (this.bell.length + this.skirt.length + 1) * metrics.lineHeight;
-    this.ctx.globalAlpha = this.opacity * 0.9;
 
     this.tentacles.forEach((tentacle) => {
       for (let segment = 0; segment < tentacle.length; segment++) {
@@ -190,9 +200,23 @@ class AnimatedJellyfish {
         const trail = taper * 13;
         const x = this.jellyfish.x + tentacle.anchor * metrics.charWidth + motion.px * wave - motion.dx * trail + motion.px * secondary;
         const y = baseY + segment * metrics.lineHeight * 0.74 + motion.py * wave - motion.dy * trail + motion.py * secondary;
-        const char = taper > 0.74 ? '.' : taper > 0.42 ? ':' : ';';
+        const char = taper > 0.78 ? ':' : taper > 0.42 ? ';' : '+';
 
+        this.ctx.globalAlpha = this.opacity * (taper > 0.78 ? 0.98 : 1.08);
         this.ctx.fillText(char, x, y);
+      }
+
+      if (tentacle.inner) {
+        for (let segment = 0; segment < Math.floor(tentacle.length * 0.48); segment++) {
+          const taper = segment / tentacle.length;
+          const wave = Math.sin(this.time * 0.082 - segment * 0.62 + tentacle.phase + 1.8) * (1 + taper * 4);
+          const trail = taper * 7;
+          const x = this.jellyfish.x + (tentacle.anchor + tentacle.curl * 2.4) * metrics.charWidth + motion.px * wave - motion.dx * trail;
+          const y = baseY + segment * metrics.lineHeight * 0.62 + motion.py * wave - motion.dy * trail;
+
+          this.ctx.globalAlpha = this.opacity * 0.96;
+          this.ctx.fillText(segment > 4 ? ':' : ';', x, y);
+        }
       }
     });
   }
