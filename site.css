@@ -148,6 +148,12 @@ img {
 
 .hero {
   padding: 4.8rem 2rem 5.8rem;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-bottom: 1px solid rgba(96, 92, 84, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(245, 239, 228, 0.2) 72%, rgba(245, 239, 228, 0) 100%);
 }
 
 .hero-grid {
@@ -155,6 +161,8 @@ img {
   grid-template-columns: 1fr;
   gap: 2.2rem;
   align-items: start;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-copy {
@@ -1054,14 +1062,11 @@ img {
 }
 
 #jellyfishCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
+  z-index: 0;
   pointer-events: none;
   display: block;
   margin: 0;
