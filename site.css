@@ -153,15 +153,15 @@ img {
 .page-display {
   margin: 0 0 1rem;
   font-family: var(--display);
-  font-size: clamp(3.6rem, 7vw, 6.4rem);
+  font-size: clamp(3.2rem, 6vw, 5.6rem);
   line-height: 0.98;
   letter-spacing: -0.04em;
   font-weight: 600;
-  max-width: 14ch;
+  max-width: 18ch;
 }
 
 .page-display {
-  max-width: 16ch;
+  max-width: none;
 }
 
 .hero-display em,
@@ -180,8 +180,8 @@ img {
 
 .lede {
   margin: 0;
-  max-width: 38ch;
-  font-size: 1.16rem;
+  max-width: 46ch;
+  font-size: 1.12rem;
   color: var(--ink-soft);
 }
 
@@ -629,6 +629,16 @@ img {
   padding: 2.2rem;
 }
 
+.projects-page .detail-card h3 {
+  font-size: 2.15rem;
+}
+
+.projects-page .detail-card p,
+.projects-page .detail-list {
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
 .projects-page .detail-grid {
   grid-template-columns: 1fr;
   gap: 1.55rem;
@@ -639,8 +649,20 @@ img {
   gap: 1.15rem;
 }
 
+.projects-page .detail-copy h4 {
+  font-size: 1.24rem;
+}
+
 .writing-page .lane-grid {
   grid-template-columns: 1fr;
+}
+
+.writing-page .page-display {
+  max-width: none;
+}
+
+.title-card .text-link {
+  margin-top: 1rem;
 }
 
 @media (max-width: 980px) {
