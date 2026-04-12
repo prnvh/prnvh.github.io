@@ -7,7 +7,7 @@ class AnimatedJellyfish {
     this.boundsElement = this.canvas.parentElement || document.body;
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
     this.color = options.color || '#3f4244';
-    this.opacity = options.opacity || 0.34;
+    this.opacity = options.opacity || 0.7;
     this.speed = options.speed || 1;
     this.scale = options.scale || 1;
     this.time = 0;
