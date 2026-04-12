@@ -7,8 +7,8 @@ class AnimatedJellyfish {
     this.boundsElement = this.canvas.parentElement || document.body;
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    this.color = options.color || '#4b4f52';
-    this.opacity = options.opacity || 0.2;
+    this.color = options.color || '#3f4447';
+    this.opacity = options.opacity || 0.24;
     this.speed = options.speed || 1;
     this.scale = options.scale || 1;
     this.time = 0;
@@ -56,26 +56,28 @@ class AnimatedJellyfish {
 
   createBellPoints() {
     const points = [];
-    const chars = ['.', ':', ':', ';', '+', '*'];
+    const chars = ['.', ':', ':', ';', ';', '+', '+'];
 
-    for (let row = -13; row <= 12; row++) {
-      for (let col = -38; col <= 40; col++) {
-        const nx = col / 39;
-        const ny = row / 15;
-        const dome = ((nx + 0.1) * (nx + 0.1)) / 1.08 + ((ny + 0.08) * (ny + 0.08)) / 0.56;
-        const rightLobe = ((nx - 0.32) * (nx - 0.32)) / 0.54 + ((ny - 0.08) * (ny - 0.08)) / 0.48;
-        const lowerCut = row < 8 + Math.sin((col + 6) * 0.22) * 1.8;
+    for (let row = -14; row <= 14; row++) {
+      for (let col = -40; col <= 42; col++) {
+        const nx = col / 40;
+        const ny = row / 16;
+        const dome = ((nx + 0.12) * (nx + 0.12)) / 1.05 + ((ny + 0.06) * (ny + 0.06)) / 0.58;
+        const rightLobe = ((nx - 0.3) * (nx - 0.3)) / 0.58 + ((ny - 0.05) * (ny - 0.05)) / 0.5;
+        const lowerCut = row < 10 + Math.sin((col + 7) * 0.2) * 1.4;
         const inside = (dome < 1 || rightLobe < 1) && lowerCut;
 
         if (!inside) continue;
 
         const edgeFade = Math.max(dome, rightLobe);
-        const skip = edgeFade > 0.93 ? 0.32 : edgeFade > 0.82 ? 0.16 : 0.03;
+        const innerWeight = 1 - Math.min(1, edgeFade);
+        const lowerWeight = row > 3 ? 0.04 : 0;
+        const skip = edgeFade > 0.94 ? 0.24 : edgeFade > 0.84 ? 0.1 : Math.max(0, 0.02 - lowerWeight - innerWeight * 0.03);
         if (this.hash(col, row) < skip) continue;
 
         points.push({
           x: col,
-          y: row + 13,
+          y: row + 14,
           char: chars[Math.floor(this.hash(row, col) * chars.length)],
           phase: this.hash(col + 17, row - 9) * Math.PI * 2,
           edge: edgeFade
@@ -89,8 +91,8 @@ class AnimatedJellyfish {
   createSkirtPoints() {
     const points = [];
 
-    for (let col = -30; col <= 28; col += 2) {
-      const row = 25 + Math.sin(col * 0.22) * 1.6;
+    for (let col = -32; col <= 32; col += 2) {
+      const row = 27 + Math.sin(col * 0.2) * 1.5;
       points.push({
         x: col,
         y: row,
@@ -103,14 +105,15 @@ class AnimatedJellyfish {
   }
 
   createTentacles() {
-    const anchors = [-26, -20, -14, -8, -2, 5, 12, 19, 25];
-    const lengths = [10, 15, 18, 22, 24, 21, 17, 14, 10];
+    const anchors = [-29, -23, -17, -11, -5, 1, 7, 13, 20, 27];
+    const lengths = [8, 12, 16, 20, 23, 21, 18, 15, 12, 8];
 
     return anchors.map((anchor, index) => ({
       anchor,
       length: lengths[index],
       phase: index * 0.72,
-      curl: index % 2 === 0 ? 1 : -1
+      curl: index % 2 === 0 ? 1 : -1,
+      oral: index > 2 && index < 7
     }));
   }
 
@@ -120,8 +123,8 @@ class AnimatedJellyfish {
       fontSize,
       charWidth: fontSize * 0.62,
       lineHeight: fontSize * 0.86,
-      halfWidth: 42 * fontSize * 0.62,
-      totalHeight: 50 * fontSize * 0.86
+      halfWidth: 44 * fontSize * 0.62,
+      totalHeight: 48 * fontSize * 0.86
     };
   }
 
@@ -190,19 +193,32 @@ class AnimatedJellyfish {
   }
 
   drawTentacles(metrics) {
-    const baseY = this.jellyfish.y + 28 * metrics.lineHeight;
+    const baseY = this.jellyfish.y + 30 * metrics.lineHeight;
 
-    this.ctx.globalAlpha = this.opacity * 0.9;
+    this.ctx.globalAlpha = this.opacity * 0.86;
 
     this.tentacles.forEach((tentacle, tentacleIndex) => {
       for (let segment = 0; segment < tentacle.length; segment++) {
         const taper = segment / tentacle.length;
-        const wave = Math.sin(this.time * 0.04 + segment * 0.32 + tentacle.phase) * (2 + taper * 10) * tentacle.curl;
-        const softCurrent = Math.cos(this.time * 0.018 + segment * 0.2 + tentacleIndex) * taper * 5;
+        const wave = Math.sin(this.time * 0.035 + segment * 0.36 + tentacle.phase) * (1.2 + taper * 7) * tentacle.curl;
+        const softCurrent = Math.cos(this.time * 0.016 + segment * 0.24 + tentacleIndex) * taper * 3.5;
         const x = this.jellyfish.x + tentacle.anchor * metrics.charWidth + wave + softCurrent;
         const y = baseY + segment * metrics.lineHeight * 0.78;
-        const char = taper > 0.78 ? '.' : taper > 0.48 ? ':' : '|';
+        const char = taper > 0.78 ? '.' : taper > 0.5 ? ':' : ';';
         this.ctx.fillText(char, x, y);
+      }
+
+      if (tentacle.oral) {
+        const armLength = Math.floor(tentacle.length * 0.5);
+
+        for (let segment = 0; segment < armLength; segment++) {
+          const taper = segment / armLength;
+          const wave = Math.sin(this.time * 0.043 + segment * 0.42 + tentacle.phase + 1.4) * (1 + taper * 4);
+          const x = this.jellyfish.x + (tentacle.anchor + 2.5 * tentacle.curl) * metrics.charWidth + wave;
+          const y = baseY + segment * metrics.lineHeight * 0.66;
+          const char = taper > 0.72 ? '.' : ':';
+          this.ctx.fillText(char, x, y);
+        }
       }
     });
 
@@ -236,8 +252,8 @@ class AnimatedJellyfish {
 
 function mountJellyfish() {
   new AnimatedJellyfish('jellyfishCanvas', {
-    color: '#4b4f52',
-    opacity: 0.2,
+    color: '#3f4447',
+    opacity: 0.24,
     speed: 1,
     scale: 1
   });
