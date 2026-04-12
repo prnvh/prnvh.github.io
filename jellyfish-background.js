@@ -42,8 +42,8 @@ class AnimatedJellyfish {
     this.jellyfish = {
       x: 0,
       y: 0,
-      vx: 0.28 * this.speed,
-      vy: 0.12 * this.speed
+      vx: 0.2 * this.speed,
+      vy: 0.08 * this.speed
     };
 
     this.handleResize();
@@ -133,13 +133,13 @@ class AnimatedJellyfish {
 
   updatePosition() {
     const bounds = this.getMovementBounds();
-    const driftX = Math.sin(this.time * 0.009) * 0.11;
-    const driftY = Math.cos(this.time * 0.013) * 0.08;
+    const driftX = Math.sin(this.time * 0.007) * 0.07;
+    const driftY = Math.cos(this.time * 0.01) * 0.05;
 
-    this.jellyfish.vx += Math.sin(this.time * 0.006) * 0.002;
-    this.jellyfish.vy += Math.cos(this.time * 0.008) * 0.0015;
-    this.jellyfish.vx = Math.max(-0.42, Math.min(0.42, this.jellyfish.vx));
-    this.jellyfish.vy = Math.max(-0.24, Math.min(0.24, this.jellyfish.vy));
+    this.jellyfish.vx += Math.sin(this.time * 0.005) * 0.0012;
+    this.jellyfish.vy += Math.cos(this.time * 0.006) * 0.0009;
+    this.jellyfish.vx = Math.max(-0.28, Math.min(0.28, this.jellyfish.vx));
+    this.jellyfish.vy = Math.max(-0.16, Math.min(0.16, this.jellyfish.vy));
 
     this.jellyfish.x += this.jellyfish.vx + driftX;
     this.jellyfish.y += this.jellyfish.vy + driftY;
@@ -156,12 +156,12 @@ class AnimatedJellyfish {
   }
 
   getPulse() {
-    const contraction = (Math.sin(this.time * 0.052) + 1) / 2;
+    const contraction = (Math.sin(this.time * 0.034) + 1) / 2;
 
     return {
       contraction,
-      stretchX: 1 + contraction * 0.075,
-      squeezeY: 1 - contraction * 0.11
+      stretchX: 1 + contraction * 0.045,
+      squeezeY: 1 - contraction * 0.045
     };
   }
 
@@ -175,14 +175,14 @@ class AnimatedJellyfish {
 
         const colOffset = col - centerOffset;
         const rowDepth = rowIndex / Math.max(1, rows.length - 1);
-        const localX = colOffset * metrics.charWidth * (1 + pulse.contraction * rowDepth * 0.06);
-        const localY = startY + rowIndex * metrics.lineHeight * (1 - pulse.contraction * rowDepth * 0.18);
+        const localX = colOffset * metrics.charWidth * (1 + pulse.contraction * rowDepth * 0.035);
+        const localY = startY + rowIndex * metrics.lineHeight * (1 - pulse.contraction * rowDepth * 0.055);
         const travelPosition = localX * motion.dx + localY * motion.dy;
         const breathingWidth = pulse.stretchX - rowDepth * pulse.contraction * 0.03;
-        const travelingWave = Math.sin(this.time * 0.07 - travelPosition * 0.055);
-        const bodySway = travelingWave * (0.45 + rowIndex * 0.02);
-        const glide = Math.cos(this.time * 0.052 - travelPosition * 0.045) * 0.35;
-        const bellSnap = rowDepth * pulse.contraction * metrics.lineHeight * -1.15;
+        const travelingWave = Math.sin(this.time * 0.052 - travelPosition * 0.055);
+        const bodySway = travelingWave * (0.36 + rowIndex * 0.014);
+        const glide = Math.cos(this.time * 0.04 - travelPosition * 0.045) * 0.25;
+        const bellSnap = rowDepth * pulse.contraction * metrics.lineHeight * -0.32;
         const x = this.jellyfish.x + localX * breathingWidth + motion.px * bodySway + motion.dx * glide;
         const y = this.jellyfish.y + localY + bellSnap + motion.py * bodySway + motion.dy * glide;
         this.ctx.globalAlpha = Math.min(1, this.opacity * alphaScale * this.getCharacterAlpha(char));
@@ -200,8 +200,8 @@ class AnimatedJellyfish {
   }
 
   getTentacleRoot(tentacle, metrics, pulse) {
-    const skirtY = (this.bell.length + 0.95) * metrics.lineHeight;
-    const rootLift = pulse.contraction * metrics.lineHeight * 1.35;
+    const skirtY = (this.bell.length + this.skirt.length - 1.9) * metrics.lineHeight;
+    const rootLift = pulse.contraction * metrics.lineHeight * 0.2;
 
     return {
       x: this.jellyfish.x + tentacle.anchor * metrics.charWidth * pulse.stretchX,
@@ -214,23 +214,23 @@ class AnimatedJellyfish {
 
     this.tentacles.forEach((tentacle) => {
       const root = this.getTentacleRoot(tentacle, metrics, pulse);
-      const connectorLength = tentacle.inner ? 3 : 2;
+      const connectorLength = tentacle.inner ? 5 : 4;
 
       for (let segment = 0; segment < connectorLength; segment++) {
-        const wave = Math.sin(this.time * 0.075 - segment * 0.55 + tentacle.phase) * 0.7;
+        const wave = Math.sin(this.time * 0.052 - segment * 0.45 + tentacle.phase) * 0.45;
         const x = root.x + motion.px * wave;
-        const y = root.y + segment * metrics.lineHeight * 0.62 + motion.py * wave;
+        const y = root.y + segment * metrics.lineHeight * 0.46 + motion.py * wave;
 
         this.ctx.fillText(';', x, y);
       }
 
       for (let segment = 0; segment < tentacle.length; segment++) {
         const taper = segment / tentacle.length;
-        const wave = Math.sin(this.time * 0.075 - segment * 0.55 + tentacle.phase) * (1 + taper * 6.5) * tentacle.curl;
-        const secondary = Math.cos(this.time * 0.035 - segment * 0.38 + tentacle.phase) * taper * 2.4;
-        const trail = taper * 13;
+        const wave = Math.sin(this.time * 0.052 - segment * 0.48 + tentacle.phase) * (0.8 + taper * 5.2) * tentacle.curl;
+        const secondary = Math.cos(this.time * 0.026 - segment * 0.34 + tentacle.phase) * taper * 1.8;
+        const trail = taper * 9;
         const x = root.x + motion.px * wave - motion.dx * trail + motion.px * secondary;
-        const y = root.y + (segment + connectorLength) * metrics.lineHeight * 0.68 + motion.py * wave - motion.dy * trail + motion.py * secondary;
+        const y = root.y + (segment + connectorLength) * metrics.lineHeight * 0.58 + motion.py * wave - motion.dy * trail + motion.py * secondary;
         const char = taper > 0.78 ? ':' : taper > 0.42 ? ';' : ':';
 
         this.ctx.globalAlpha = Math.min(1, this.opacity * (taper > 0.78 ? 0.98 : 1.08));
@@ -240,10 +240,10 @@ class AnimatedJellyfish {
       if (tentacle.inner) {
         for (let segment = 0; segment < Math.floor(tentacle.length * 0.48); segment++) {
           const taper = segment / tentacle.length;
-          const wave = Math.sin(this.time * 0.082 - segment * 0.62 + tentacle.phase + 1.8) * (1 + taper * 4);
-          const trail = taper * 7;
+          const wave = Math.sin(this.time * 0.058 - segment * 0.52 + tentacle.phase + 1.8) * (0.8 + taper * 3);
+          const trail = taper * 5;
           const x = root.x + tentacle.curl * metrics.charWidth * 1.7 + motion.px * wave - motion.dx * trail;
-          const y = root.y + (segment + 1.5) * metrics.lineHeight * 0.56 + motion.py * wave - motion.dy * trail;
+          const y = root.y + (segment + 1.2) * metrics.lineHeight * 0.5 + motion.py * wave - motion.dy * trail;
 
           this.ctx.globalAlpha = Math.min(1, this.opacity * 0.96);
           this.ctx.fillText(segment > 4 ? ':' : ';', x, y);
@@ -264,7 +264,7 @@ class AnimatedJellyfish {
     this.ctx.textAlign = 'center';
 
     this.drawAsciiRows(this.bell, 0, metrics, motion, pulse, 1);
-    this.drawAsciiRows(this.skirt, this.bell.length * metrics.lineHeight, metrics, motion, pulse, 0.96);
+    this.drawAsciiRows(this.skirt, (this.bell.length - 0.55) * metrics.lineHeight, metrics, motion, pulse, 1);
     this.drawTentacles(metrics, motion, pulse);
 
     this.ctx.restore();
@@ -274,7 +274,7 @@ class AnimatedJellyfish {
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.updatePosition();
     this.drawJellyfish();
-    this.time += 1;
+    this.time += 0.72;
     requestAnimationFrame(() => this.animate());
   }
 }
@@ -283,7 +283,7 @@ function mountJellyfish() {
   new AnimatedJellyfish('jellyfishCanvas', {
     color: '#181a1b',
     opacity: 0.9,
-    speed: 1,
+    speed: 0.78,
     scale: 1.12
   });
 }
