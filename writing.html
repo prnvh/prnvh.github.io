@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
 </head>
-<body>
+<body class="writing-page">
 <nav class="site-nav">
   <a class="brand" href="index.html">Pranav <span>Harikumar</span></a>
   <div class="nav-links">
@@ -23,9 +23,9 @@
   <section class="page-hero">
     <div class="shell">
       <p class="eyebrow">Writing</p>
-      <h1 class="page-display">Technical writeups, <em>notes</em>, and room for more.</h1>
+      <h1 class="page-display">Technical writeups and <em>notes</em>.</h1>
       <p class="page-intro">
-        This is the writing archive. It is split into technical writeups and blog-like pieces so the homepage can link to the latest work directly, while this page stays ready for future essays, notes, or longer technical breakdowns.
+        A simple archive for the pieces that deserve more space than a project card: architecture writeups, technical notes, and longer breakdowns.
       </p>
     </div>
   </section>
@@ -52,9 +52,17 @@
       </div>
 
       <aside class="archive-note">
-        <p class="panel-label">Publishing Structure</p>
-        <p>This page is meant to stay easy to extend. Keep technical writeups in one lane and blog-style writing in the other so both have a stable home.</p>
-        <p style="margin-top:1rem;">To add a new piece later, duplicate one of the existing <code>&lt;article&gt;</code> blocks in the relevant section and update the label, title, summary, and link.</p>
+        <p class="panel-label">Writing Titles</p>
+        <div class="title-stack">
+          <a class="title-item" href="governed-memory-layer.html">
+            <span class="mini-label">Technical Writeup</span>
+            <strong>Governed Memory Layer for Multi-Agent Shared State</strong>
+          </a>
+          <a class="title-item" href="compiler.html">
+            <span class="mini-label">Technical Writeup</span>
+            <strong>Deterministic Compilation for Structured LLM Workflows</strong>
+          </a>
+        </div>
       </aside>
     </div>
   </section>
@@ -89,37 +97,6 @@
     </div>
   </section>
 
-  <section class="section">
-    <div class="shell">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Notes &amp; Essays</p>
-          <h2 class="section-title">A lane for future blogs.</h2>
-        </div>
-        <p class="section-copy">
-          Use this section for blog posts, shorter technical notes, research fragments, or field observations that do not need a full architecture page.
-        </p>
-      </div>
-
-      <div class="writing-grid">
-        <article class="surface writing-card">
-          <span class="meta-line">Placeholder &middot; Blog Slot</span>
-          <h3>Add the next essay here.</h3>
-          <p>This slot is ready for a shorter blog post, essay, or note whenever you want the writing page to carry something besides formal technical writeups.</p>
-          <a class="text-link" href="writing.html">Reserved lane</a>
-        </article>
-
-        <article class="surface writing-card">
-          <span class="meta-line">Placeholder &middot; Field Notes</span>
-          <h3>Add research notes or operating fragments here.</h3>
-          <p>This can hold smaller pieces: market notes, field observations, reliability fragments, or ideas that are too sharp to bury inside a project summary.</p>
-          <a class="text-link" href="writing.html">Reserved lane</a>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- Duplicate one of the article blocks above to add a new technical writeup or blog post. -->
 </main>
 
 <footer class="footer">
