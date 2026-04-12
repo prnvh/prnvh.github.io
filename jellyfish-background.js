@@ -7,8 +7,8 @@ class AnimatedJellyfish {
     this.boundsElement = this.canvas.parentElement || document.body;
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    this.color = options.color || '#62666a';
-    this.opacity = options.opacity || 0.042;
+    this.color = options.color || '#4f5357';
+    this.opacity = options.opacity || 0.14;
     this.speed = options.speed || 1;
     this.scale = options.scale || 1;
     this.time = 0;
@@ -45,8 +45,8 @@ class AnimatedJellyfish {
 
   resetPosition() {
     const bounds = this.getMovementBounds();
-    this.jellyfish.x = bounds.left + (bounds.right - bounds.left) * 0.62;
-    this.jellyfish.y = bounds.top + (bounds.bottom - bounds.top) * 0.34;
+    this.jellyfish.x = bounds.left + (bounds.right - bounds.left) * 0.66;
+    this.jellyfish.y = bounds.top + (bounds.bottom - bounds.top) * 0.18;
   }
 
   hash(x, y) {
@@ -115,7 +115,7 @@ class AnimatedJellyfish {
   }
 
   getMetrics() {
-    const fontSize = Math.max(6.4, Math.min(10, this.width / 118)) * this.scale;
+    const fontSize = Math.max(7.2, Math.min(11.5, this.width / 104)) * this.scale;
     return {
       fontSize,
       charWidth: fontSize * 0.62,
@@ -236,8 +236,8 @@ class AnimatedJellyfish {
 
 function mountJellyfish() {
   new AnimatedJellyfish('jellyfishCanvas', {
-    color: '#64686c',
-    opacity: 0.044,
+    color: '#4f5357',
+    opacity: 0.14,
     speed: 1,
     scale: 1
   });
