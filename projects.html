@@ -44,35 +44,14 @@
       </div>
 
       <div class="project-grid project-grid-systems">
-        <article class="surface project-card project-card-wide" id="memory-project">
-          <span class="meta-line">Research Build &middot; 2026</span>
-          <h3>Governed Memory Layer</h3>
-          <p>A ledger-backed memory runtime where agents write privately and only resolved, validated state is promoted into canonical shared memory.</p>
-          <div class="project-card-copy">
-            <p><strong>Architecture</strong>Working memory and canonical memory stay separate. Notes are interpreted, resolved, validated, and written through one governed path.</p>
-            <p><strong>What mattered</strong>The design refused to guess on identity. Ambiguous lifecycle updates stay pending until the system can bind them safely.</p>
-          </div>
-          <div class="detail-stack">
-            <span class="pill">Python</span>
-            <span class="pill">SQLite</span>
-            <span class="pill">Shared Memory</span>
-            <span class="pill">Event Projection</span>
-          </div>
-          <div class="project-card-links">
-            <a href="governed-memory-layer.html">Technical writeup</a>
-            <a href="https://github.com/prnvh/governed_memory_layer" target="_blank">GitHub</a>
-          </div>
-        </article>
-
-        <article class="surface project-card" id="compiler-project">
+        <article class="surface project-card project-card-wide" id="compiler-project">
           <span class="meta-line">Research Build &middot; 2025-2026</span>
           <h3>LLM Code Graph Compiler</h3>
           <p>Compile workflows through a typed node registry and static validation before anything executes.</p>
-          <ul class="project-card-list">
-            <li>The planner emits a constrained JSON graph rather than free-form code.</li>
-            <li>Validation checks node wiring, arguments, and graph integrity before codegen.</li>
-            <li>The goal is deterministic execution, not clever runtime improvisation.</li>
-          </ul>
+          <div class="project-card-copy">
+            <p><strong>Architecture</strong>The planner emits a constrained JSON graph from a typed registry, and validation checks node wiring, arguments, and graph integrity before codegen.</p>
+            <p><strong>What mattered</strong>The system treats deterministic execution as the goal and removes the model's room to improvise once runtime begins.</p>
+          </div>
           <div class="detail-stack">
             <span class="pill">Python</span>
             <span class="pill">DAG Execution</span>
@@ -82,6 +61,27 @@
           <div class="project-card-links">
             <a href="compiler.html">Technical writeup</a>
             <a href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub</a>
+          </div>
+        </article>
+
+        <article class="surface project-card" id="memory-project">
+          <span class="meta-line">Research Build &middot; 2026</span>
+          <h3>Governed Memory Layer</h3>
+          <p>A ledger-backed memory runtime where agents write privately and only resolved, validated state is promoted into canonical shared memory.</p>
+          <ul class="project-card-list">
+            <li>Working memory and canonical memory stay separate.</li>
+            <li>Notes are interpreted, resolved, validated, and written through one governed path.</li>
+            <li>Ambiguous lifecycle updates stay pending until the system can bind them safely.</li>
+          </ul>
+          <div class="detail-stack">
+            <span class="pill">Python</span>
+            <span class="pill">SQLite</span>
+            <span class="pill">Shared Memory</span>
+            <span class="pill">Event Projection</span>
+          </div>
+          <div class="project-card-links">
+            <a href="governed-memory-layer.html">Technical writeup</a>
+            <a href="https://github.com/prnvh/governed_memory_layer" target="_blank">GitHub</a>
           </div>
         </article>
 

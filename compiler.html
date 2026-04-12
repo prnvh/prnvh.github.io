@@ -251,7 +251,7 @@
   <hr class="reveal">
 
   <span class="s-label reveal">// architecture</span>
-  <h2 class="reveal">How the compiler works</h2>
+  <h2 class="reveal">How PlanCompiler works</h2>
   <p class="reveal">
     The system imposes a strict separation between planning and execution. The LLM is permitted 
     to do exactly one thing: select nodes from a pre-verified registry and supply their required 
@@ -318,7 +318,7 @@
     <li><span class="check-num">07</span><div><span class="check-name">Required parameters</span> — all non-optional parameters are present and typed correctly</div></li>
   </ul>
   <p class="reveal">
-    If all seven pass, the compiler runs. If any fail, the plan is rejected before a single 
+    If all seven pass, PlanCompiler runs. If any fail, the plan is rejected before a single 
     line of user-affecting code executes. The claim is first-pass correctness under the stated 
     constraints: the system either compiles successfully or rejects cleanly. No partial 
     execution, no silent patching, no mid-run repair.
@@ -364,7 +364,7 @@
   ]
 }</pre>
   <p class="reveal">
-    The validator runs all seven checks against this object. If it passes, the compiler 
+    The validator runs all seven checks against this object. If it passes, PlanCompiler 
     assembles the corresponding Python by substituting each node ID with its pre-verified 
     template and wiring outputs to inputs in topological order.
   </p>

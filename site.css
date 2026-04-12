@@ -438,6 +438,14 @@ img {
   letter-spacing: -0.02em;
 }
 
+.writing-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-self: stretch;
+  background: linear-gradient(180deg, rgba(139, 106, 45, 0.08), rgba(255, 255, 255, 0.46));
+}
+
 .surface p,
 .detail-card p,
 .writing-card p,
@@ -466,6 +474,11 @@ img {
   font-size: 0.66rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+}
+
+.writing-card .text-link {
+  margin-top: auto;
+  padding-top: 1.15rem;
 }
 
 .project-list {
@@ -864,6 +877,7 @@ img {
 .project-grid {
   display: grid;
   gap: 1.3rem;
+  align-items: stretch;
 }
 
 .project-grid-systems,
@@ -872,8 +886,12 @@ img {
 }
 
 .project-card {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
+  height: 100%;
+  align-self: stretch;
+  background: linear-gradient(180deg, rgba(139, 106, 45, 0.08), rgba(255, 255, 255, 0.46));
 }
 
 .project-card-wide {
@@ -932,6 +950,8 @@ img {
   display: flex;
   flex-wrap: wrap;
   gap: 0.9rem 1.2rem;
+  margin-top: auto;
+  padding-top: 0.25rem;
 }
 
 .project-card-links a {
