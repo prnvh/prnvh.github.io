@@ -7,8 +7,8 @@ class AnimatedJellyfish {
     this.boundsElement = this.canvas.parentElement || document.body;
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    this.color = options.color || '#4f5357';
-    this.opacity = options.opacity || 0.14;
+    this.color = options.color || '#4b4f52';
+    this.opacity = options.opacity || 0.2;
     this.speed = options.speed || 1;
     this.scale = options.scale || 1;
     this.time = 0;
@@ -45,8 +45,8 @@ class AnimatedJellyfish {
 
   resetPosition() {
     const bounds = this.getMovementBounds();
-    this.jellyfish.x = bounds.left + (bounds.right - bounds.left) * 0.66;
-    this.jellyfish.y = bounds.top + (bounds.bottom - bounds.top) * 0.18;
+    this.jellyfish.x = bounds.left + (bounds.right - bounds.left) * 0.74;
+    this.jellyfish.y = bounds.top + (bounds.bottom - bounds.top) * 0.12;
   }
 
   hash(x, y) {
@@ -56,7 +56,7 @@ class AnimatedJellyfish {
 
   createBellPoints() {
     const points = [];
-    const chars = ['.', '.', ':', ',', ';', "'", '`'];
+    const chars = ['.', ':', ':', ';', '+', '*'];
 
     for (let row = -13; row <= 12; row++) {
       for (let col = -38; col <= 40; col++) {
@@ -70,7 +70,7 @@ class AnimatedJellyfish {
         if (!inside) continue;
 
         const edgeFade = Math.max(dome, rightLobe);
-        const skip = edgeFade > 0.93 ? 0.5 : edgeFade > 0.82 ? 0.28 : 0.1;
+        const skip = edgeFade > 0.93 ? 0.32 : edgeFade > 0.82 ? 0.16 : 0.03;
         if (this.hash(col, row) < skip) continue;
 
         points.push({
@@ -94,7 +94,7 @@ class AnimatedJellyfish {
       points.push({
         x: col,
         y: row,
-        char: col % 6 === 0 ? ':' : '.',
+        char: col % 6 === 0 ? '+' : ':',
         phase: this.hash(col, row) * Math.PI * 2
       });
     }
@@ -115,7 +115,7 @@ class AnimatedJellyfish {
   }
 
   getMetrics() {
-    const fontSize = Math.max(7.2, Math.min(11.5, this.width / 104)) * this.scale;
+    const fontSize = Math.max(8, Math.min(12, this.width / 98)) * this.scale;
     return {
       fontSize,
       charWidth: fontSize * 0.62,
@@ -192,7 +192,7 @@ class AnimatedJellyfish {
   drawTentacles(metrics) {
     const baseY = this.jellyfish.y + 28 * metrics.lineHeight;
 
-    this.ctx.globalAlpha = this.opacity * 0.82;
+    this.ctx.globalAlpha = this.opacity * 0.9;
 
     this.tentacles.forEach((tentacle, tentacleIndex) => {
       for (let segment = 0; segment < tentacle.length; segment++) {
@@ -236,8 +236,8 @@ class AnimatedJellyfish {
 
 function mountJellyfish() {
   new AnimatedJellyfish('jellyfishCanvas', {
-    color: '#4f5357',
-    opacity: 0.14,
+    color: '#4b4f52',
+    opacity: 0.2,
     speed: 1,
     scale: 1
   });
