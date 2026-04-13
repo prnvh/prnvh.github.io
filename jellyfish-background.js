@@ -50,15 +50,14 @@ class AnimatedJellyfish {
 
   createTentacles() {
     return [
-      { anchor: -16, length: 9, phase: 0.2, curl: -1, inner: false },
-      { anchor: -12, length: 13, phase: 0.8, curl: 1, inner: false },
-      { anchor: -8, length: 16, phase: 1.5, curl: -1, inner: true },
-      { anchor: -4, length: 19, phase: 2.1, curl: 1, inner: true },
-      { anchor: 0, length: 18, phase: 2.9, curl: -1, inner: true },
-      { anchor: 4, length: 18, phase: 3.6, curl: 1, inner: true },
-      { anchor: 8, length: 17, phase: 4.2, curl: -1, inner: true },
-      { anchor: 12, length: 14, phase: 4.9, curl: 1, inner: false },
-      { anchor: 16, length: 12, phase: 5.5, curl: -1, inner: false }
+      { anchor: -15, length: 10, phase: 0.2, curl: -1, inner: false, wisp: -1 },
+      { anchor: -11, length: 15, phase: 0.8, curl: 1, inner: true, wisp: 1 },
+      { anchor: -7, length: 20, phase: 1.5, curl: -1, inner: true, wisp: -1 },
+      { anchor: -3, length: 23, phase: 2.1, curl: 1, inner: true, wisp: 1 },
+      { anchor: 1, length: 21, phase: 2.9, curl: -1, inner: true, wisp: -1 },
+      { anchor: 5, length: 19, phase: 3.6, curl: 1, inner: true, wisp: 1 },
+      { anchor: 9, length: 16, phase: 4.2, curl: -1, inner: true, wisp: -1 },
+      { anchor: 13, length: 12, phase: 4.9, curl: 1, inner: false, wisp: 1 }
     ];
   }
 
@@ -235,43 +234,59 @@ class AnimatedJellyfish {
 
     this.tentacles.forEach((tentacle) => {
       const anchorFlow = this.getAnchorFlow(tentacle.anchor, metrics);
-      const rootY = undersideY + metrics.lineHeight * 0.16 + anchorFlow;
-      const connectorLength = tentacle.inner ? 5 : 4;
+      const rootY = undersideY + metrics.lineHeight * 0.08 + anchorFlow;
+      const connectorLength = tentacle.inner ? 7 : 5;
       const rootX = tentacle.anchor * metrics.charWidth;
 
       for (let segment = 0; segment < connectorLength; segment++) {
         const connectorTaper = segment / Math.max(1, connectorLength - 1);
-        const wave = Math.sin(this.time * 0.052 - segment * 0.45 + tentacle.phase) * 0.35 * connectorTaper;
-        const localX = rootX + wave;
-        const localY = rootY + segment * metrics.lineHeight * 0.34;
+        const wave = Math.sin(this.time * 0.052 - segment * 0.38 + tentacle.phase) * 0.5 * connectorTaper;
+        const bunch = Math.sin(segment * 1.7 + tentacle.phase) * metrics.charWidth * 0.18 * (1 - connectorTaper);
+        const localX = rootX + wave + bunch;
+        const localY = rootY + segment * metrics.lineHeight * 0.28;
         const point = this.transformPoint(localX, localY, metrics, motion, pulse, 0.72);
+        const char = segment < 2 ? ';' : segment < 5 ? ':' : '.';
 
         this.ctx.globalAlpha = Math.min(1, this.opacity);
-        this.ctx.fillText(';', point.x, point.y);
+        this.ctx.fillText(char, point.x, point.y);
       }
 
       for (let segment = 0; segment < tentacle.length; segment++) {
         const taper = segment / tentacle.length;
-        const rootTaper = Math.min(1, (segment + 1) / 5);
-        const sideWave = Math.sin(this.time * 0.052 - segment * 0.48 + tentacle.phase) * (0.45 + taper * 6.8) * tentacle.curl * rootTaper;
-        const secondary = Math.cos(this.time * 0.026 - segment * 0.34 + tentacle.phase) * taper * 2.6 * rootTaper;
+        const rootTaper = Math.min(1, (segment + 1) / 7);
+        const sideWave = Math.sin(this.time * 0.052 - segment * 0.48 + tentacle.phase) * (0.28 + taper * 7.5) * tentacle.curl * rootTaper;
+        const secondary = Math.cos(this.time * 0.026 - segment * 0.34 + tentacle.phase) * taper * 2.8 * rootTaper;
         const trail = taper * 10.5 * rootTaper;
         const localX = rootX + sideWave + secondary - motion.dx * trail;
-        const localY = rootY + (segment + connectorLength) * metrics.lineHeight * 0.48;
+        const localY = rootY + (segment + connectorLength * 0.72) * metrics.lineHeight * 0.5;
         const point = this.transformPoint(localX, localY, metrics, motion, pulse, 1.05);
-        const char = taper > 0.78 ? ':' : taper > 0.42 ? ';' : ':';
+        const char = taper > 0.82 ? '.' : taper > 0.52 ? ':' : ';';
 
         this.ctx.globalAlpha = Math.min(1, this.opacity * (taper > 0.78 ? 0.98 : 1.08));
         this.ctx.fillText(char, point.x, point.y);
+
+        if (segment > 2 && segment % 5 === 1) {
+          const wispLength = tentacle.inner ? 3 : 2;
+
+          for (let wisp = 0; wisp < wispLength; wisp++) {
+            const wispTaper = wisp / wispLength;
+            const wispX = localX + tentacle.wisp * metrics.charWidth * (0.7 + wispTaper * 0.8);
+            const wispY = localY + wisp * metrics.lineHeight * 0.28;
+            const wispPoint = this.transformPoint(wispX, wispY, metrics, motion, pulse, 0.9);
+
+            this.ctx.globalAlpha = Math.min(1, this.opacity * 0.78);
+            this.ctx.fillText(wispTaper > 0.5 ? '.' : ':', wispPoint.x, wispPoint.y);
+          }
+        }
       }
 
       if (tentacle.inner) {
         for (let segment = 0; segment < Math.floor(tentacle.length * 0.48); segment++) {
           const taper = segment / tentacle.length;
-          const rootTaper = Math.min(1, (segment + 1) / 4);
-          const wave = Math.sin(this.time * 0.058 - segment * 0.52 + tentacle.phase + 1.8) * (0.5 + taper * 4.2) * rootTaper;
-          const localX = rootX + tentacle.curl * metrics.charWidth * 1.2 * rootTaper + wave;
-          const localY = rootY + (segment + 1.6) * metrics.lineHeight * 0.44;
+          const rootTaper = Math.min(1, (segment + 1) / 5);
+          const wave = Math.sin(this.time * 0.058 - segment * 0.52 + tentacle.phase + 1.8) * (0.3 + taper * 4.4) * rootTaper;
+          const localX = rootX + tentacle.curl * metrics.charWidth * 0.9 * rootTaper + wave;
+          const localY = rootY + (segment + 1.1) * metrics.lineHeight * 0.38;
           const point = this.transformPoint(localX, localY, metrics, motion, pulse, 1);
 
           this.ctx.globalAlpha = Math.min(1, this.opacity * 0.96);

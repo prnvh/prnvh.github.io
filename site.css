@@ -34,9 +34,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  background:
-    radial-gradient(circle at top, rgba(193, 162, 107, 0.1), transparent 34%),
-    linear-gradient(180deg, #f8f2e8 0%, var(--paper) 56%, #f2e9dc 100%);
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--body);
   line-height: 1.7;
@@ -45,16 +43,7 @@ body {
 }
 
 body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    linear-gradient(to right, transparent 0, transparent calc(50% - 1px), rgba(139, 106, 45, 0.08) calc(50% - 1px), rgba(139, 106, 45, 0.08) calc(50% + 1px), transparent calc(50% + 1px)),
-    linear-gradient(rgba(139, 106, 45, 0.05) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 48px;
-  pointer-events: none;
-  opacity: 0.4;
-  z-index: -1;
+  content: none;
 }
 
 a {
@@ -549,6 +538,9 @@ img {
 
 .page-hero {
   padding: 4rem 2rem 2.75rem;
+  border-bottom: 1px solid rgba(96, 92, 84, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(245, 239, 228, 0) 100%);
 }
 
 .page-intro {

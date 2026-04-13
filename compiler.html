@@ -29,7 +29,7 @@
     --mono:    'IBM Plex Mono', 'Courier New', monospace;
 
     --nav-h: 64px;
-    --prose: 700px;
+    --prose: 760px;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,15 +54,15 @@
   .nav-right a:hover { color: var(--gold); border-color: var(--gold); }
 
   #top {
-    padding: calc(var(--nav-h) + 4.5rem) 2.5rem 4rem;
+    padding: calc(var(--nav-h) + 2rem) 2.5rem 2.25rem;
     border-bottom: 1px solid var(--rule);
     background: var(--cream);
   }
   .hero-inner { max-width: var(--prose); margin: 0 auto; }
   .proj-label { font-family: var(--mono); font-size: 0.7rem; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 1.2rem; }
   h1 { font-family: var(--display); font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; color: var(--ink); margin-bottom: 1rem; }
-  .hero-sub { font-size: 1.05rem; font-style: italic; color: var(--muted); margin-bottom: 2rem; }
-  .hero-meta-row { display: flex; gap: 2rem; flex-wrap: wrap; border-top: 1px solid var(--rule); padding-top: 1.2rem; margin-bottom: 2rem; }
+  .hero-sub { font-size: 1.05rem; font-style: italic; color: var(--muted); margin-bottom: 1.35rem; }
+  .hero-meta-row { display: flex; gap: 2rem; flex-wrap: wrap; border-top: 1px solid var(--rule); padding-top: 1rem; margin-bottom: 1.35rem; }
   .hmeta dt { font-family: var(--mono); font-size: 0.62rem; color: var(--mid); letter-spacing: 0.06em; margin-bottom: 0.2rem; }
   .hmeta dd { font-size: 0.88rem; color: var(--ink); }
   .hero-links { display: flex; gap: 0.8rem; flex-wrap: wrap; }
@@ -185,10 +185,10 @@
 
 <div id="top">
   <div class="hero-inner">
-    <p class="proj-label">Project &nbsp;·&nbsp; Research Build &nbsp;·&nbsp; 2025–2026</p>
+    <p class="proj-label">Project &nbsp;·&nbsp; Architecture Note &nbsp;·&nbsp; 2025–2026</p>
     <h1>Deterministic Compilation for Structured LLM Workflows</h1>
     <p class="hero-sub">
-      A typed-node-registry architecture that restricts the LLM to planning, then validates and compiles the resulting workflow deterministically before execution.
+      A workflow compiler that confines the model to typed plan selection, then applies static validation and template-based code generation before execution.
     </p>
     <dl class="hero-meta-row">
       <div class="hmeta"><dt>Type</dt><dd>Research build</dd></div>
@@ -197,8 +197,8 @@
       <div class="hmeta"><dt>Method</dt><dd>Single-plan JSON -> static validation -> deterministic codegen</dd></div>
     </dl>
     <div class="hero-links">
-      <a class="hero-btn primary" href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">Reproducible GitHub Repo ↗</a>
-      <a class="hero-btn secondary" href="#evaluation">See Benchmarks</a>
+      <a class="hero-btn primary" href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub Repository ↗</a>
+      <a class="hero-btn secondary" href="#evaluation">Evaluation</a>
     </div>
   </div>
 </div>
@@ -219,7 +219,7 @@
     </div>
     <div class="stat">
       <div class="stat-num">5<em>/6</em></div>
-      <div class="stat-label">SETS LED</div>
+      <div class="stat-label">HIGHEST PASS COUNT</div>
     </div>
   </div>
 </div>
@@ -227,35 +227,33 @@
 <div class="content-wrap">
 
   <span class="s-label reveal">// motivation</span>
-  <h2 class="reveal">The problem with free-form LLM code generation</h2>
+  <h2 class="reveal">Free-form code is the wrong boundary for structured workflows</h2>
   <p class="reveal">
-    LLMs are reasonably good at single-step coding tasks. The harder problem is multi-step 
-    pipelines — ingest data, apply transformations, persist to a database, export an artifact. 
-    In these settings, free-form code generation has a characteristic failure mode: 
+    LLMs can handle many single-step coding tasks. The less stable case is multi-step 
+    pipelines: ingest data, apply transformations, persist to a database, and export an artifact. 
+    In these settings, free-form code generation has a characteristic failure mode:
     <strong>errors accumulate across steps</strong>. A hallucinated import in step two propagates 
     through steps three and four. A mismatched column name introduced at ingestion causes 
     silent failures at query time. Each step may look locally correct while the composed 
     pipeline fails.
   </p>
   <p class="reveal">
-    Many popular LLM workflow frameworks focus primarily on orchestration and runtime recovery, 
+    Many LLM workflow frameworks focus primarily on orchestration and runtime recovery, 
     rather than enforcing strong pre-execution guarantees over the workflow representation itself. 
     The core question here is not whether a model can produce a plausible intermediate plan, 
     but what correctness guarantees that representation boundary actually provides.
   </p>
   <div class="callout reveal">
-    <strong>The central question:</strong> which failure modes does the architecture eliminate 
+    <strong>Architectural question:</strong> which failure modes does the architecture eliminate 
     by construction, which does it defer to runtime, and which can it not catch at all?
   </div>
 
   <hr class="reveal">
 
   <span class="s-label reveal">// architecture</span>
-  <h2 class="reveal">How PlanCompiler works</h2>
+  <h2 class="reveal">Planning boundary and compilation path</h2>
   <p class="reveal">
-    The system imposes a strict separation between planning and execution. The LLM is permitted 
-    to do exactly one thing: select nodes from a pre-verified registry and supply their required 
-    parameters, expressed as a typed JSON plan. Everything after that point is deterministic.
+    PlanCompiler separates planning from execution at the representation boundary. The model selects nodes from a pre-verified registry and supplies their required parameters as a typed JSON plan. Validation, ordering, and code assembly are deterministic after that point.
   </p>
 
   <div class="diagram reveal">+------------------------------------------------------------+
@@ -318,9 +316,8 @@
     <li><span class="check-num">07</span><div><span class="check-name">Required parameters</span> — all non-optional parameters are present and typed correctly</div></li>
   </ul>
   <p class="reveal">
-    If all seven pass, PlanCompiler runs. If any fail, the plan is rejected before a single 
-    line of user-affecting code executes. The claim is first-pass correctness under the stated 
-    constraints: the system either compiles successfully or rejects cleanly. No partial 
+    If all seven checks pass, PlanCompiler runs. If any check fails, the plan is rejected before a single 
+    line of user-affecting code executes. Under the benchmark constraints, the interface has a deliberately narrow contract: compile successfully or reject cleanly. No partial 
     execution, no silent patching, no mid-run repair.
   </p>
 
@@ -379,7 +376,7 @@
     only if the full pipeline executes end-to-end and produces the expected task output or artifact.
   </p>
   <p class="reveal">
-    Across the six sets, the compiled system leads in five and trails only in SQL roundtrip 
+    Across the six sets, the compiled path has the highest pass count in five and trails only in SQL roundtrip 
     tasks, where the intentionally unconstrained SQL surface becomes the dominant remaining 
     failure mode.
   </p>
@@ -498,10 +495,10 @@
   </table>
 
   <p class="reveal">
-    The compiled system's failures concentrate almost entirely in Set F, where the 
+    The compiled path's failures concentrate almost entirely in Set F, where the 
     unconstrained SQL parameter remains available. Sets A and B are 100%. Schema drift 
     (Set E) shows the largest advantage: 88% vs. 40% for GPT-4.1. Claude Sonnet 4.6 
-    outperforms the compiled system on SQL roundtrip, which is the single clear exception 
+    outperforms the compiled path on SQL roundtrip, which is the single clear exception 
     in the benchmark and is directly tied to the open surface described below.
   </p>
 
@@ -549,7 +546,7 @@
   <hr class="reveal">
 
   <span class="s-label reveal">// failure modes</span>
-  <h2 class="reveal">How the baselines fail</h2>
+  <h2 class="reveal">Observed baseline failure modes</h2>
   <p class="reveal">
     Analysing the baseline failures across all 300 tasks identified two systematic causes 
     that account for the majority of free-form generation errors:
@@ -584,7 +581,7 @@
   </div>
 
   <p class="reveal">
-    The compiled system eliminates both by construction. Output length instability does not 
+    The compiled path removes both by construction. Output length instability does not 
     affect plan structure because the JSON schema is fixed. Prompt underspecification is 
     contained because the validator catches structural mismatches before execution.
   </p>
@@ -619,7 +616,7 @@
       <p style="margin-top:0.2rem;">prnvvh@gmail.com</p>
     </div>
     <div class="pf-right">
-      <a class="pf-link" href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">Reproducible GitHub Repo ↗</a>
+      <a class="pf-link" href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub Repository ↗</a>
       <a class="pf-link" href="index.html">← Back to site</a>
     </div>
   </div>

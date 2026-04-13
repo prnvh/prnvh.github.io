@@ -29,7 +29,7 @@
     --mono:    'IBM Plex Mono', 'Courier New', monospace;
 
     --nav-h: 64px;
-    --prose: 700px;
+    --prose: 760px;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,15 +54,15 @@
   .nav-right a:hover { color: var(--gold); border-color: var(--gold); }
 
   #top {
-    padding: calc(var(--nav-h) + 4.5rem) 2.5rem 4rem;
+    padding: calc(var(--nav-h) + 2rem) 2.5rem 2.25rem;
     border-bottom: 1px solid var(--rule);
     background: var(--cream);
   }
   .hero-inner { max-width: var(--prose); margin: 0 auto; }
   .proj-label { font-family: var(--mono); font-size: 0.7rem; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 1.2rem; }
   h1 { font-family: var(--display); font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; color: var(--ink); margin-bottom: 1rem; }
-  .hero-sub { font-size: 1.05rem; font-style: italic; color: var(--muted); margin-bottom: 2rem; }
-  .hero-meta-row { display: flex; gap: 2rem; flex-wrap: wrap; border-top: 1px solid var(--rule); padding-top: 1.2rem; margin-bottom: 2rem; }
+  .hero-sub { font-size: 1.05rem; font-style: italic; color: var(--muted); margin-bottom: 1.35rem; }
+  .hero-meta-row { display: flex; gap: 2rem; flex-wrap: wrap; border-top: 1px solid var(--rule); padding-top: 1rem; margin-bottom: 1.35rem; }
   .hmeta dt { font-family: var(--mono); font-size: 0.62rem; color: var(--mid); letter-spacing: 0.06em; margin-bottom: 0.2rem; }
   .hmeta dd { font-size: 0.88rem; color: var(--ink); }
   .hero-links { display: flex; gap: 0.8rem; flex-wrap: wrap; }
@@ -167,7 +167,7 @@
 <body>
 
 <nav id="nav">
-  <a class="nav-back" href="#top"><span>&larr;</span> Governed Memory Layer</a>
+  <a class="nav-back" href="index.html"><span>&larr;</span> Pranav Harikumar</a>
   <div class="nav-right">
     <a href="writing.html">Writing</a>
     <a href="contact.html">Contact</a>
@@ -177,20 +177,18 @@
 
 <div id="top">
   <div class="hero-inner">
-    <p class="proj-label">Project &nbsp;&middot;&nbsp; Research Build &nbsp;&middot;&nbsp; 2026</p>
+    <p class="proj-label">Project &nbsp;&middot;&nbsp; Architecture Note &nbsp;&middot;&nbsp; 2026</p>
     <h1>Governed Memory Layer for Multi-Agent Shared State</h1>
     <p class="hero-sub">
-      A SQLite-backed memory runtime that lets agents write raw notes privately, then promotes only validated, resolvable, canonical state into shared memory.
+      A memory runtime that treats agent notes as provisional input, resolving and validating them before they can alter canonical shared state.
     </p>
     <dl class="hero-meta-row">
       <div class="hmeta"><dt>Type</dt><dd>Research build</dd></div>
-      <div class="hmeta"><dt>Runtime</dt><dd>WorkingMemory -&gt; PromotionPipeline -&gt; Inputter</dd></div>
       <div class="hmeta"><dt>Storage</dt><dd><code>events_memory</code> + <code>shared_*</code> + <code>pending_memory_events</code></dd></div>
-      <div class="hmeta"><dt>Safety Rule</dt><dd>Ambiguous lifecycle writes are deferred, not guessed</dd></div>
     </dl>
     <div class="hero-links">
-      <a class="hero-btn primary" href="https://github.com/prnvh/governed_memory_layer" target="_blank">Reproducible GitHub Repo &nearr;</a>
-      <a class="hero-btn secondary" href="#topology">See Runtime Topology</a>
+      <a class="hero-btn primary" href="https://github.com/prnvh/governed_memory_layer" target="_blank">GitHub Repository &nearr;</a>
+      <a class="hero-btn secondary" href="#topology">Runtime Topology</a>
     </div>
   </div>
 </div>
@@ -211,31 +209,31 @@
     </div>
     <div class="stat">
       <div class="stat-num">1</div>
-      <div class="stat-label">OFFICIAL WRITE PATH</div>
+      <div class="stat-label">SINGLE WRITE PATH</div>
     </div>
   </div>
 </div>
 
 <div class="content-wrap">
 
-  <span class="s-label reveal">// motivation</span>
-  <h2 class="reveal">The problem is not storing notes. It is deciding what a note is allowed to mean.</h2>
+  <span class="s-label reveal">// concept</span>
+  <h2 class="reveal">Shared memory needs a promotion boundary, not a larger notes table</h2>
   <p class="reveal">
-    Multi-agent systems need some kind of shared state. The naive version is obvious: let every agent append whatever it thinks matters into a common store and hope the useful state rises above the noise. In practice, that fails in a very specific way. <strong>Bad memory is durable.</strong> A vague note becomes a tracked issue. A paraphrased lifecycle update closes the wrong row. A malformed result record survives long enough to mislead the next agent.
+    Multi-agent systems need a common operational memory, but an append-only notes store is a weak boundary. A vague observation can become a durable issue. A paraphrased lifecycle update can close the wrong row. A malformed result record can persist long enough to mislead the next agent.
   </p>
   <p class="reveal">
-    Governed Memory Layer is built around a stricter view: raw note text is not canonical state. A note is only a candidate write. Before it becomes durable shared memory, the system has to decide whether it is meaningful, what it refers to, whether the write is structurally safe, and how that write should project into the canonical tables everyone else reads.
+    Governed Memory Layer is built around a stricter model: raw note text is not canonical state. A note is a candidate write. Before it becomes shared memory, the runtime must determine whether the note is meaningful, what entity it refers to, whether the mutation is structurally valid, and how it should project into the canonical tables read by the rest of the system.
   </p>
   <div class="callout reveal">
-    <strong>The core design move:</strong> separate note capture from shared-memory mutation, then turn ambiguity into explicit pending state instead of silent corruption.
+    <strong>Architectural boundary:</strong> separate note capture from shared-memory mutation, then represent ambiguity as pending state instead of silent corruption.
   </div>
 
   <hr class="reveal">
 
   <span class="s-label reveal" id="topology">// architecture</span>
-  <h2 class="reveal">High-level topology</h2>
+  <h2 class="reveal">Promotion pipeline and persistence topology</h2>
   <p class="reveal">
-    The system is deliberately split into narrow stages. Agents can write notes into private working memory, but they cannot write canonical shared state directly. All durable memory changes flow through a governed promotion stack and then through a single persistence path.
+    The runtime is organized as a sequence of narrow gates. Agents can write notes into private working memory, but they cannot write canonical shared state directly. Every durable memory mutation flows through the promotion stack and then through a single persistence path.
   </p>
 
   <div class="diagram reveal">+------------------------------------------------------------+
@@ -245,8 +243,8 @@
                              |
                              v
 +------------------------------------------------------------+
-| WORKING MEMORY                                              |
-| Private, per-agent, per-run note buffer                     |
+| WORKING MEMORY                                             |
+| Private, per-agent, per-run note buffer                    |
 |                                                            |
 | Stores timestamped notes only.                             |
 | No schema enforcement. No shared writes.                   |
@@ -254,7 +252,7 @@
                              |
                              v
 +------------------------------------------------------------+
-| PROMOTION PIPELINE                                          |
+| PROMOTION PIPELINE                                         |
 |                                                            |
 | 1. Interpreter: should this note become shared memory?     |
 | 2. Resolver: what existing thing, if any, does it refer to?|
@@ -346,7 +344,7 @@
   <span class="s-label reveal">// runtime</span>
   <h2 class="reveal">Core runtime responsibilities</h2>
   <p class="reveal">
-    The runtime is not one giant memory object. It is a set of narrow modules, each responsible for one boundary in the note-to-memory path.
+    The runtime is not a monolithic memory object. It is a set of narrow modules, each responsible for one boundary in the note-to-memory path.
   </p>
 
   <div class="workflow reveal">
@@ -382,7 +380,7 @@
       <div class="wf-content">
         <h4>Inputter</h4>
         <p>
-          The only official persistence entry point. It writes to the event ledger first, then asks the deterministic projector to update canonical tables, preserving the committed event even if projection later fails.
+          The sole persistence entry point. It writes to the event ledger first, then asks the deterministic projector to update canonical tables, preserving the committed event even if projection later fails.
         </p>
       </div>
     </div>
@@ -391,7 +389,7 @@
       <div class="wf-content">
         <h4>SharedMemoryWriter plus SharedMemory</h4>
         <p>
-          <code>SharedMemoryWriter</code> projects events into canonical tables with bucket-specific semantics. <code>SharedMemory</code> is the read API the rest of the system is supposed to consume, so agents read current belief from canonical state rather than raw note text.
+          <code>SharedMemoryWriter</code> projects events into canonical tables with bucket-specific semantics. <code>SharedMemory</code> is the read API consumed by the rest of the system, so agents read current belief from canonical state rather than raw note text.
         </p>
       </div>
     </div>
@@ -494,7 +492,7 @@
       <tr>
         <td><code>task_state</code></td>
         <td><code>upsert</code></td>
-        <td>Latest state wins by <code>task_id</code>; optimized for current operational status rather than event history.</td>
+        <td>Latest state is selected by <code>task_id</code>; optimized for current operational status rather than event history.</td>
       </tr>
       <tr>
         <td><code>learnings</code></td>
@@ -603,7 +601,7 @@
       <p style="margin-top:0.2rem;">Ledger-backed shared memory for agents</p>
     </div>
     <div class="pf-right">
-      <a class="pf-link" href="https://github.com/prnvh/governed_memory_layer" target="_blank">Reproducible GitHub Repo &nearr;</a>
+      <a class="pf-link" href="https://github.com/prnvh/governed_memory_layer" target="_blank">GitHub Repository &nearr;</a>
       <a class="pf-link" href="#top">&uarr; Back to top</a>
     </div>
   </div>
