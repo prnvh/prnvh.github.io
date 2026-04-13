@@ -30,7 +30,7 @@
     --mono:    'IBM Plex Mono', 'Courier New', monospace;
 
     --nav-h: 64px;
-    --prose: 760px;
+    --prose: 900px;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -145,6 +145,31 @@
   .check-name { font-weight: 600; color: var(--ink); }
 
   .page-footer { border-top: 1px solid var(--rule); padding: 3rem 2.5rem; background: var(--cream); }
+  .footer-follow {
+    max-width: var(--prose); margin: 0 auto 2rem; padding: 1.5rem 1.7rem;
+    border: 1px solid var(--rule); background: var(--paper);
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+    gap: 1.2rem; align-items: end;
+  }
+  .follow-label { font-family: var(--mono); font-size: 0.62rem; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+  .footer-follow h2 { margin: 0 0 0.35rem; font-size: 1.35rem; }
+  .footer-follow p { margin: 0; font-size: 0.9rem; }
+  .follow-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.55rem; align-items: end; }
+  .follow-form label {
+    grid-column: 1 / -1; font-family: var(--mono); font-size: 0.6rem;
+    color: var(--gold); letter-spacing: 0.08em;
+  }
+  .follow-form input {
+    min-height: 38px; border: 1px solid var(--rule); background: var(--white);
+    color: var(--ink); font: 0.9rem var(--body); padding: 0.5rem 0.65rem;
+  }
+  .follow-form button {
+    min-height: 38px; border: 1px solid var(--ink); background: var(--ink);
+    color: var(--cream); font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.08em; padding: 0.5rem 0.8rem; cursor: pointer;
+  }
+  .follow-form button:hover { background: var(--gold); border-color: var(--gold); }
+  .follow-small-links { display: flex; gap: 0.8rem; margin-top: 0.8rem; flex-wrap: wrap; }
   .page-footer-inner { max-width: var(--prose); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
   .pf-left p { font-family: var(--mono); font-size: 0.68rem; color: var(--mid); letter-spacing: 0.05em; }
   .pf-right { display: flex; gap: 0.8rem; }
@@ -161,6 +186,9 @@
     #top { padding-left: 1.2rem; padding-right: 1.2rem; }
     .hero-meta-row { gap: 1.2rem; }
     .page-footer { padding: 2rem 1.2rem; }
+    .footer-follow { grid-template-columns: 1fr; padding: 1.2rem; }
+    .follow-form { grid-template-columns: 1fr; }
+    .follow-form button { justify-self: start; }
     .page-footer-inner { flex-direction: column; align-items: flex-start; }
   }
 </style>
@@ -596,6 +624,22 @@
 </div>
 
 <div class="page-footer">
+  <div class="footer-follow">
+    <div>
+      <p class="follow-label">FOLLOW THE BLOG</p>
+      <h2>Get new architecture notes by email.</h2>
+      <p>Writing on governed AI systems, memory, reliability, and deterministic execution.</p>
+      <div class="follow-small-links">
+        <a class="pf-link" href="feed.xml">RSS feed</a>
+      </div>
+    </div>
+    <form class="follow-form" action="https://buttondown.com/api/emails/embed-subscribe/prnvvh" method="post" target="popupwindow">
+      <label for="memory-subscribe-email">EMAIL ADDRESS</label>
+      <input id="memory-subscribe-email" type="email" name="email" placeholder="you@example.com" required>
+      <input type="hidden" value="1" name="embed">
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
   <div class="page-footer-inner">
     <div class="pf-left">
       <p>Governed Memory Layer &nbsp;&middot;&nbsp; 2026</p>

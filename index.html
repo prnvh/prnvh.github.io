@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=follow-boxes-parallel">
+<link rel="stylesheet" href="site.css?v=follow-boxes-title">
 <link rel="alternate" type="application/rss+xml" title="Pranav Harikumar Writing" href="feed.xml">
 <script src="site.js" defer></script>
 </head>
@@ -134,13 +134,14 @@
 
       <div class="follow-card follow-card-bottom">
         <div>
-          <p class="follow-label">Follow the blog</p>
-          <h3>Get new architecture notes by email.</h3>
-          <p>Writing on governed AI systems, memory, reliability, and deterministic execution.</p>
+          <p class="follow-label">Writing updates</p>
+          <h3>Follow the blog.</h3>
+          <p>Get new architecture notes on governed AI systems, memory, reliability, and deterministic execution.</p>
         </div>
-        <form class="subscribe-form" action="mailto:prnvvh@gmail.com?subject=Subscribe%20to%20blog%20updates" method="post" enctype="text/plain">
+        <form class="subscribe-form" action="https://buttondown.com/api/emails/embed-subscribe/prnvvh" method="post" target="popupwindow">
           <label for="home-subscribe-email">Email address</label>
           <input id="home-subscribe-email" type="email" name="email" placeholder="you@example.com" required>
+          <input type="hidden" value="1" name="embed">
           <button type="submit">Subscribe</button>
         </form>
         <div class="inline-links">
