@@ -404,11 +404,17 @@ img {
   border: 1px solid rgba(139, 106, 45, 0.24);
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.34);
+  box-shadow: var(--shadow);
 }
 
 .follow-card-hero {
   max-width: 900px;
   margin: 1.5rem 0 0;
+}
+
+.follow-card-wide,
+.follow-card-bottom {
+  margin: 1.25rem 0 0;
 }
 
 .follow-label {
@@ -432,6 +438,11 @@ img {
   margin: 0.45rem 0 0;
   max-width: 58ch;
   color: var(--ink-soft);
+}
+
+.follow-card .inline-links {
+  grid-column: 1 / -1;
+  margin-top: 0;
 }
 
 .subscribe-form {
@@ -486,6 +497,15 @@ img {
   transform: translateY(-2px);
   background: var(--accent-ink);
   border-color: var(--accent-ink);
+}
+
+.clickable-card {
+  cursor: pointer;
+}
+
+.clickable-card:focus-visible {
+  outline: 2px solid rgba(139, 106, 45, 0.58);
+  outline-offset: 4px;
 }
 
 .manifesto-grid,
@@ -698,10 +718,10 @@ img {
 
 .home-page .project-row:hover {
   z-index: 2;
-  transform: translateY(-7px) scale(1.01);
-  border-color: rgba(139, 106, 45, 0.36);
-  background: rgba(252, 247, 239, 0.98);
-  box-shadow: 0 24px 70px rgba(23, 20, 16, 0.14), inset 0 0 0 1px rgba(139, 106, 45, 0.18);
+  transform: translateY(-4px) scale(1.004);
+  border-color: rgba(139, 106, 45, 0.28);
+  background: rgba(252, 247, 239, 0.86);
+  box-shadow: 0 16px 44px rgba(23, 20, 16, 0.09), inset 0 0 0 1px rgba(139, 106, 45, 0.14);
 }
 
 .page-hero {
@@ -829,12 +849,23 @@ img {
   padding: 0 2rem 5rem;
 }
 
+.bottom-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+  align-items: stretch;
+}
+
 .contact-surface {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
   align-items: start;
   padding: 2rem 2.15rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+  box-shadow: var(--shadow);
 }
 
 .contact-main,
@@ -1180,6 +1211,7 @@ img {
   .operating-layout,
   .principle,
   .follow-card,
+  .bottom-card-grid,
   .project-grid-systems,
   .project-grid-compact,
   .project-card-copy,
