@@ -304,6 +304,10 @@ img {
   color: var(--accent);
 }
 
+.panel-label {
+  margin: 0;
+}
+
 .signal-list {
   display: grid;
   gap: 0.85rem;
@@ -422,16 +426,16 @@ img {
 }
 
 .follow-label {
-  margin: 0 0 0.25rem;
+  margin: 0;
   color: var(--accent);
   font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .follow-card h3 {
-  margin: 0;
+  margin: 0.72rem 0 0;
   font-family: var(--display);
   font-size: clamp(2.1rem, 3.4vw, 3.25rem);
   line-height: 0.96;
@@ -630,6 +634,27 @@ img {
   margin-bottom: 0.85rem;
 }
 
+.card-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.card-meta-row .meta-line {
+  margin-bottom: 0;
+}
+
+.card-date {
+  flex: 0 0 auto;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .surface .text-link,
 .detail-card .text-link,
 .writing-card .text-link {
@@ -647,6 +672,23 @@ img {
 .writing-card .text-link {
   margin-top: auto;
   padding-top: 1.15rem;
+}
+
+.about-section {
+  padding-top: 4.5rem;
+}
+
+.about-copy {
+  max-width: 980px;
+}
+
+.about-copy p {
+  font-size: 1.08rem;
+  line-height: 1.78;
+}
+
+.about-copy p + p {
+  margin-top: 1rem;
 }
 
 .project-list {
@@ -875,23 +917,29 @@ img {
   min-height: 100%;
 }
 
+.bottom-card-grid > .contact-surface,
 .bottom-card-grid .follow-card {
   grid-template-columns: 1fr;
-  grid-template-rows: auto minmax(120px, 1fr) auto;
+  grid-template-rows: minmax(250px, auto) minmax(98px, 1fr) auto;
   align-content: stretch;
   align-items: start;
   gap: 1.55rem;
 }
 
+.bottom-card-grid .contact-surface > .actions,
 .bottom-card-grid .follow-card .subscribe-form {
   align-self: end;
   width: 100%;
 }
 
+.bottom-card-grid .actions,
+.bottom-card-grid .inline-links {
+  margin-top: 0;
+}
+
 .contact-surface {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
   align-items: start;
   padding: 2rem 2.15rem;
   border: 1px solid var(--line);
@@ -906,7 +954,7 @@ img {
 }
 
 .contact-main {
-  gap: 0.65rem;
+  gap: 0;
 }
 
 .contact-side {
@@ -916,16 +964,16 @@ img {
 }
 
 .contact-title {
-  margin: 0 0 0.6rem;
+  margin: 0.72rem 0 0;
   font-family: var(--display);
-  font-size: clamp(2.1rem, 4vw, 3.3rem);
+  font-size: clamp(2.1rem, 3.4vw, 3.25rem);
   line-height: 0.96;
   font-weight: 600;
 }
 
 .contact-copy {
   max-width: 42ch;
-  margin: 0;
+  margin: 0.85rem 0 0;
   color: var(--ink-soft);
 }
 
@@ -1221,11 +1269,14 @@ img {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.3rem;
+  align-items: stretch;
 }
 
 .contact-card {
   display: grid;
+  grid-template-rows: auto auto minmax(4.4rem, 1fr) auto;
   gap: 0.9rem;
+  min-height: 260px;
 }
 
 .contact-card-wide {

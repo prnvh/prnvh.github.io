@@ -196,7 +196,7 @@
 <body>
 
 <nav id="nav">
-  <a class="nav-back" href="index.html"><span>&larr;</span> Pranav Harikumar</a>
+  <a class="nav-back" href="index.html" data-history-back><span>&larr;</span> Pranav Harikumar</a>
   <div class="nav-right">
     <a href="writing.html">Writing</a>
     <a href="contact.html">Contact</a>
@@ -655,6 +655,12 @@
 <script>
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 10));
+  document.querySelector('[data-history-back]')?.addEventListener('click', (event) => {
+    if (window.history.length > 1) {
+      event.preventDefault();
+      window.history.back();
+    }
+  });
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
