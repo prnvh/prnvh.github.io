@@ -32,12 +32,7 @@ class AnimatedJellyfish {
       '            ...::::;;;;::::.....       .....              '
     ];
 
-    this.skirt = [
-      '           .:;;:..:;;:..:;;:..:;;:..:;;:..:;;:.          ',
-      '             .;:.  .;:.  .;:.  .;:.  .;:.  .;:.          ',
-      '              :.    :.    :.    :.    :.    :.            '
-    ];
-
+    this.curtainAnchors = [-20, -16, -12, -8, -4, 0, 4, 8, 12, 16, 20];
     this.tentacles = this.createTentacles();
     this.jellyfish = {
       x: 0,
@@ -165,128 +160,118 @@ class AnimatedJellyfish {
     };
   }
 
-  drawAsciiRows(rows, startY, metrics, motion, pulse, alphaScale = 1) {
-    rows.forEach((line, rowIndex) => {
-      const centerOffset = line.length / 2;
-
-      for (let col = 0; col < line.length; col++) {
-        const char = line[col];
-        if (char === ' ') continue;
-
-        const colOffset = col - centerOffset;
-        const rowDepth = rowIndex / Math.max(1, rows.length - 1);
-        const localX = colOffset * metrics.charWidth * (1 + pulse.contraction * rowDepth * 0.035);
-        const localY = startY + rowIndex * metrics.lineHeight * (1 - pulse.contraction * rowDepth * 0.055);
-        const travelPosition = localX * motion.dx + localY * motion.dy;
-        const breathingWidth = pulse.stretchX - rowDepth * pulse.contraction * 0.03;
-        const travelingWave = Math.sin(this.time * 0.052 - travelPosition * 0.055);
-        const bodySway = travelingWave * (0.36 + rowIndex * 0.014);
-        const glide = Math.cos(this.time * 0.04 - travelPosition * 0.045) * 0.25;
-        const bellSnap = rowDepth * pulse.contraction * metrics.lineHeight * -0.32;
-        const x = this.jellyfish.x + localX * breathingWidth + motion.px * bodySway + motion.dx * glide;
-        const y = this.jellyfish.y + localY + bellSnap + motion.py * bodySway + motion.dy * glide;
-        this.ctx.globalAlpha = Math.min(1, this.opacity * alphaScale * this.getCharacterAlpha(char));
-        this.ctx.fillText(char, x, y);
-      }
-    });
-  }
-
-  getUndersideY(metrics, pulse) {
-    return (this.bell.length - 0.38) * metrics.lineHeight - pulse.contraction * metrics.lineHeight * 0.38;
-  }
-
-  drawSkirtRows(metrics, motion, pulse, undersideY) {
-    const startY = undersideY;
-
-    this.skirt.forEach((line, rowIndex) => {
-      const centerOffset = line.length / 2;
-
-      for (let col = 0; col < line.length; col++) {
-        const char = line[col];
-        if (char === ' ') continue;
-
-        const colOffset = col - centerOffset;
-        const localX = colOffset * metrics.charWidth * pulse.stretchX;
-        const localY = startY + rowIndex * metrics.lineHeight * 0.78;
-        const flowY = this.getSkirtFlow(colOffset, metrics, pulse);
-        const travelingWave = Math.sin(this.time * 0.052 - colOffset * 0.2);
-        const x = this.jellyfish.x + localX + motion.px * travelingWave * 0.3;
-        const y = this.jellyfish.y + localY + flowY + motion.py * travelingWave * 0.3;
-
-        this.ctx.globalAlpha = Math.min(1, this.opacity * this.getCharacterAlpha(char));
-        this.ctx.fillText(char, x, y);
-      }
-    });
-  }
-
   getCharacterAlpha(char) {
     if (char === ';') return 1.08;
     if (char === ':') return 1.08;
     if (char === '.') return 1.14;
-    if (char === '*') return 0.62;
     return 1;
   }
 
-  getSkirtFlow(anchor, metrics, pulse) {
-    const pulseLift = -pulse.contraction * metrics.lineHeight * 0.1;
-    const strandFlow = Math.sin(this.time * 0.052 - anchor * 0.24) * metrics.lineHeight * 0.22;
-
-    return pulseLift + strandFlow;
+  getUndersideY(metrics) {
+    return (this.bell.length - 0.55) * metrics.lineHeight;
   }
 
-  getTentacleRoot(tentacle, metrics, pulse, undersideY) {
-    const skirtY = undersideY + metrics.lineHeight * 0.82;
-    const rootLift = pulse.contraction * metrics.lineHeight * 0.08;
-    const rootFlow = this.getSkirtFlow(tentacle.anchor, metrics, pulse);
+  transformPoint(localX, localY, metrics, motion, pulse, swayScale = 1) {
+    const bodyHeight = this.getUndersideY(metrics);
+    const depth = Math.max(0, Math.min(1.4, localY / bodyHeight));
+    const travelPosition = localX * motion.dx + localY * motion.dy;
+    const xScale = pulse.stretchX - Math.min(0.03, depth * 0.02) * pulse.contraction;
+    const yScale = 1 - Math.min(0.08, depth * 0.055) * pulse.contraction;
+    const lowerSnap = -Math.min(1, depth) * pulse.contraction * metrics.lineHeight * 0.3;
+    const travelingWave = Math.sin(this.time * 0.052 - travelPosition * 0.055);
+    const bodySway = travelingWave * (0.32 + Math.min(1.2, depth) * 0.16) * swayScale;
+    const glide = Math.cos(this.time * 0.04 - travelPosition * 0.045) * 0.22;
 
     return {
-      x: this.jellyfish.x + tentacle.anchor * metrics.charWidth * pulse.stretchX,
-      y: this.jellyfish.y + skirtY - rootLift + rootFlow
+      x: this.jellyfish.x + localX * xScale + motion.px * bodySway + motion.dx * glide,
+      y: this.jellyfish.y + localY * yScale + lowerSnap + motion.py * bodySway + motion.dy * glide
     };
   }
 
-  drawTentacles(metrics, motion, pulse, undersideY) {
-    this.ctx.globalAlpha = Math.min(1, this.opacity * 0.98);
+  drawBell(metrics, motion, pulse) {
+    this.bell.forEach((line, rowIndex) => {
+      const centerOffset = line.length / 2;
+
+      for (let col = 0; col < line.length; col++) {
+        const char = line[col];
+        if (char === ' ') continue;
+
+        const rowDepth = rowIndex / Math.max(1, this.bell.length - 1);
+        const localX = (col - centerOffset) * metrics.charWidth * (1 + pulse.contraction * rowDepth * 0.035);
+        const localY = rowIndex * metrics.lineHeight;
+        const point = this.transformPoint(localX, localY, metrics, motion, pulse);
+
+        this.ctx.globalAlpha = Math.min(1, this.opacity * this.getCharacterAlpha(char));
+        this.ctx.fillText(char, point.x, point.y);
+      }
+    });
+  }
+
+  getAnchorFlow(anchor, metrics) {
+    return Math.sin(this.time * 0.052 - anchor * 0.24) * metrics.lineHeight * 0.16;
+  }
+
+  drawUnderside(metrics, motion, pulse) {
+    const undersideY = this.getUndersideY(metrics);
+
+    this.curtainAnchors.forEach((anchor, index) => {
+      const phaseShift = Math.sin(this.time * 0.052 - anchor * 0.24);
+      const rows = index % 2 === 0 ? 3 : 2;
+
+      for (let row = 0; row < rows; row++) {
+        const localX = anchor * metrics.charWidth + phaseShift * row * 0.25;
+        const localY = undersideY + row * metrics.lineHeight * 0.42 + this.getAnchorFlow(anchor, metrics);
+        const point = this.transformPoint(localX, localY, metrics, motion, pulse, 0.9);
+        const char = row === 0 ? ';' : row === 1 ? ':' : '.';
+
+        this.ctx.globalAlpha = Math.min(1, this.opacity * this.getCharacterAlpha(char));
+        this.ctx.fillText(char, point.x, point.y);
+      }
+    });
+  }
+
+  drawTentacles(metrics, motion, pulse) {
+    const undersideY = this.getUndersideY(metrics);
 
     this.tentacles.forEach((tentacle) => {
-      const root = this.getTentacleRoot(tentacle, metrics, pulse, undersideY);
-      const connectorLength = tentacle.inner ? 3 : 2;
-      const anchorFlowPhase = this.time * 0.052 - tentacle.anchor * 0.24;
+      const anchorFlow = this.getAnchorFlow(tentacle.anchor, metrics);
+      const rootY = undersideY + metrics.lineHeight * 0.9 + anchorFlow;
+      const connectorLength = tentacle.inner ? 4 : 3;
 
       for (let segment = 0; segment < connectorLength; segment++) {
-        const wave = Math.sin(this.time * 0.052 - segment * 0.45 + tentacle.phase) * 0.7;
-        const x = root.x + motion.px * wave;
-        const segmentFlow = Math.sin(anchorFlowPhase - segment * 0.08) * metrics.lineHeight * 0.04;
-        const y = root.y + segment * metrics.lineHeight * 0.46 + motion.py * wave + segmentFlow;
+        const wave = Math.sin(this.time * 0.052 - segment * 0.45 + tentacle.phase) * 0.55;
+        const localX = tentacle.anchor * metrics.charWidth + wave;
+        const localY = rootY + segment * metrics.lineHeight * 0.42;
+        const point = this.transformPoint(localX, localY, metrics, motion, pulse, 0.9);
 
-        this.ctx.fillText(';', x, y);
+        this.ctx.globalAlpha = Math.min(1, this.opacity);
+        this.ctx.fillText(';', point.x, point.y);
       }
 
       for (let segment = 0; segment < tentacle.length; segment++) {
         const taper = segment / tentacle.length;
-        const wave = Math.sin(this.time * 0.052 - segment * 0.48 + tentacle.phase) * (1.1 + taper * 6.8) * tentacle.curl;
+        const sideWave = Math.sin(this.time * 0.052 - segment * 0.48 + tentacle.phase) * (1.1 + taper * 6.8) * tentacle.curl;
         const secondary = Math.cos(this.time * 0.026 - segment * 0.34 + tentacle.phase) * taper * 2.6;
         const trail = taper * 10.5;
-        const x = root.x + motion.px * wave - motion.dx * trail + motion.px * secondary;
-        const segmentFlow = Math.sin(anchorFlowPhase - segment * 0.08) * metrics.lineHeight * 0.06;
-        const y = root.y + (segment + connectorLength) * metrics.lineHeight * 0.58 + motion.py * wave - motion.dy * trail + motion.py * secondary + segmentFlow;
+        const localX = tentacle.anchor * metrics.charWidth + sideWave + secondary - motion.dx * trail;
+        const localY = rootY + (segment + connectorLength) * metrics.lineHeight * 0.58;
+        const point = this.transformPoint(localX, localY, metrics, motion, pulse, 1.05);
         const char = taper > 0.78 ? ':' : taper > 0.42 ? ';' : ':';
 
         this.ctx.globalAlpha = Math.min(1, this.opacity * (taper > 0.78 ? 0.98 : 1.08));
-        this.ctx.fillText(char, x, y);
+        this.ctx.fillText(char, point.x, point.y);
       }
 
       if (tentacle.inner) {
         for (let segment = 0; segment < Math.floor(tentacle.length * 0.48); segment++) {
           const taper = segment / tentacle.length;
           const wave = Math.sin(this.time * 0.058 - segment * 0.52 + tentacle.phase + 1.8) * (1 + taper * 4.2);
-          const trail = taper * 6;
-          const x = root.x + tentacle.curl * metrics.charWidth * 1.7 + motion.px * wave - motion.dx * trail;
-          const segmentFlow = Math.sin(anchorFlowPhase - segment * 0.08) * metrics.lineHeight * 0.06;
-          const y = root.y + (segment + 1.2) * metrics.lineHeight * 0.5 + motion.py * wave - motion.dy * trail + segmentFlow;
+          const localX = (tentacle.anchor + tentacle.curl * 1.7) * metrics.charWidth + wave;
+          const localY = rootY + (segment + 1.2) * metrics.lineHeight * 0.5;
+          const point = this.transformPoint(localX, localY, metrics, motion, pulse, 1);
 
           this.ctx.globalAlpha = Math.min(1, this.opacity * 0.96);
-          this.ctx.fillText(segment > 4 ? ':' : ';', x, y);
+          this.ctx.fillText(segment > 4 ? ':' : ';', point.x, point.y);
         }
       }
     });
@@ -296,7 +281,6 @@ class AnimatedJellyfish {
     const metrics = this.getMetrics();
     const motion = this.getMotionVector();
     const pulse = this.getPulse();
-    const undersideY = this.getUndersideY(metrics, pulse);
 
     this.ctx.save();
     this.ctx.fillStyle = this.color;
@@ -304,9 +288,9 @@ class AnimatedJellyfish {
     this.ctx.textBaseline = 'top';
     this.ctx.textAlign = 'center';
 
-    this.drawAsciiRows(this.bell, 0, metrics, motion, pulse, 1);
-    this.drawSkirtRows(metrics, motion, pulse, undersideY);
-    this.drawTentacles(metrics, motion, pulse, undersideY);
+    this.drawBell(metrics, motion, pulse);
+    this.drawUnderside(metrics, motion, pulse);
+    this.drawTentacles(metrics, motion, pulse);
 
     this.ctx.restore();
   }
