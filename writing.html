@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
+<link rel="alternate" type="application/rss+xml" title="Pranav Harikumar Writing" href="feed.xml">
 </head>
 <body class="writing-page">
 <nav class="site-nav">
@@ -28,6 +29,21 @@
       <p class="page-intro">
         Technical notes, architecture writeups, and blog posts.
       </p>
+      <div class="page-actions">
+        <a class="feed-link" href="feed.xml">Follow via RSS</a>
+      </div>
+      <div class="follow-card follow-card-hero">
+        <div>
+          <p class="follow-label">Follow the blog</p>
+          <h3>Get new architecture notes by email.</h3>
+          <p>Writing on governed AI systems, memory, reliability, and deterministic execution.</p>
+        </div>
+        <form class="subscribe-form" action="mailto:prnvvh@gmail.com?subject=Subscribe%20to%20blog%20updates" method="post" enctype="text/plain">
+          <label for="writing-subscribe-email">Email address</label>
+          <input id="writing-subscribe-email" type="email" name="email" placeholder="you@example.com" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
     </div>
   </section>
 

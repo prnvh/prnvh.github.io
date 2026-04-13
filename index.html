@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
+<link rel="alternate" type="application/rss+xml" title="Pranav Harikumar Writing" href="feed.xml">
 </head>
 <body class="home-page">
 <nav class="site-nav">
@@ -44,7 +45,22 @@
           <p class="eyebrow">Latest Writing</p>
           <h2 class="section-title">Latest writing.</h2>
         </div>
-        <a class="section-link" href="writing.html">Open writing page</a>
+        <div class="section-actions">
+          <a class="section-link" href="writing.html">Open writing page</a>
+          <a class="section-link" href="feed.xml">Follow via RSS</a>
+        </div>
+      </div>
+
+      <div class="follow-card">
+        <div>
+          <p class="follow-label">Follow the blog</p>
+          <h3>Get new architecture notes by email.</h3>
+        </div>
+        <form class="subscribe-form" action="mailto:prnvvh@gmail.com?subject=Subscribe%20to%20blog%20updates" method="post" enctype="text/plain">
+          <label for="home-subscribe-email">Email address</label>
+          <input id="home-subscribe-email" type="email" name="email" placeholder="you@example.com" required>
+          <button type="submit">Subscribe</button>
+        </form>
       </div>
 
       <div class="writing-grid">

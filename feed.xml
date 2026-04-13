@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pranav Harikumar Writing</title>
+    <link>https://prnvh.github.io/writing.html</link>
+    <description>Technical notes, architecture writeups, and blog posts on governed AI systems, memory, reliability, and deterministic execution.</description>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 13 Apr 2026 00:00:00 +0530</lastBuildDate>
+    <atom:link href="https://prnvh.github.io/feed.xml" rel="self" type="application/rss+xml" />
+
+    <item>
+      <title>Governed Memory Layer for Multi-Agent Shared State</title>
+      <link>https://prnvh.github.io/governed-memory-layer.html</link>
+      <guid isPermaLink="true">https://prnvh.github.io/governed-memory-layer.html</guid>
+      <pubDate>Mon, 13 Apr 2026 00:00:00 +0530</pubDate>
+      <description>A systems-first writeup on governed memory promotion, append-only events, canonical projections, pending ambiguity, and why shared state should be earned rather than appended.</description>
+    </item>
+
+    <item>
+      <title>Deterministic Compilation for Structured LLM Workflows</title>
+      <link>https://prnvh.github.io/compiler.html</link>
+      <guid isPermaLink="true">https://prnvh.github.io/compiler.html</guid>
+      <pubDate>Mon, 13 Apr 2026 00:00:00 +0530</pubDate>
+      <description>A long-form breakdown of typed node registries, static validation, and why planning should be constrained before codegen begins.</description>
+    </item>
+  </channel>
+</rss>
