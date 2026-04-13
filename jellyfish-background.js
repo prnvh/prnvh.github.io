@@ -8,6 +8,7 @@ class AnimatedJellyfish {
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
     this.color = options.color || '#181a1b';
     this.opacity = options.opacity || 0.9;
+    this.tentacleOpacity = options.tentacleOpacity ?? 0.64;
     this.speed = options.speed || 0.5;
     this.scale = options.scale || 1.12;
     this.time = 0;
@@ -247,7 +248,7 @@ class AnimatedJellyfish {
         const point = this.transformPoint(localX, localY, metrics, motion, pulse, 0.72);
         const char = segment < 2 ? ';' : segment < 5 ? ':' : '.';
 
-        this.ctx.globalAlpha = Math.min(1, this.opacity);
+        this.ctx.globalAlpha = Math.min(1, this.opacity * this.tentacleOpacity * 0.82);
         this.ctx.fillText(char, point.x, point.y);
       }
 
@@ -262,7 +263,8 @@ class AnimatedJellyfish {
         const point = this.transformPoint(localX, localY, metrics, motion, pulse, 1.05);
         const char = taper > 0.82 ? '.' : taper > 0.52 ? ':' : ';';
 
-        this.ctx.globalAlpha = Math.min(1, this.opacity * (taper > 0.78 ? 0.98 : 1.08));
+        const segmentOpacity = 0.82 - taper * 0.28;
+        this.ctx.globalAlpha = Math.min(1, this.opacity * this.tentacleOpacity * segmentOpacity);
         this.ctx.fillText(char, point.x, point.y);
 
         if (segment > 2 && segment % 5 === 1) {
@@ -274,7 +276,7 @@ class AnimatedJellyfish {
             const wispY = localY + wisp * metrics.lineHeight * 0.28;
             const wispPoint = this.transformPoint(wispX, wispY, metrics, motion, pulse, 0.9);
 
-            this.ctx.globalAlpha = Math.min(1, this.opacity * 0.78);
+            this.ctx.globalAlpha = Math.min(1, this.opacity * this.tentacleOpacity * 0.5);
             this.ctx.fillText(wispTaper > 0.5 ? '.' : ':', wispPoint.x, wispPoint.y);
           }
         }
@@ -289,7 +291,7 @@ class AnimatedJellyfish {
           const localY = rootY + (segment + 1.1) * metrics.lineHeight * 0.38;
           const point = this.transformPoint(localX, localY, metrics, motion, pulse, 1);
 
-          this.ctx.globalAlpha = Math.min(1, this.opacity * 0.96);
+          this.ctx.globalAlpha = Math.min(1, this.opacity * this.tentacleOpacity * 0.68);
           this.ctx.fillText(segment > 4 ? ':' : ';', point.x, point.y);
         }
       }
@@ -327,6 +329,7 @@ function mountJellyfish() {
   new AnimatedJellyfish('jellyfishCanvas', {
     color: '#181a1b',
     opacity: 0.9,
+    tentacleOpacity: 0.64,
     speed: 0.5,
     scale: 1.12
   });
