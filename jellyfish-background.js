@@ -191,8 +191,16 @@ class AnimatedJellyfish {
     });
   }
 
-  drawSkirtRows(metrics, motion, pulse) {
-    const startY = (this.bell.length - 0.55) * metrics.lineHeight;
+  getLowerBellOffset(metrics, pulse) {
+    const lastBellRow = this.bell.length - 1;
+    const compressionOffset = -lastBellRow * metrics.lineHeight * pulse.contraction * 0.055;
+    const snapOffset = -pulse.contraction * metrics.lineHeight * 0.32;
+
+    return compressionOffset + snapOffset;
+  }
+
+  drawSkirtRows(metrics, motion, pulse, lowerBellOffset) {
+    const startY = (this.bell.length - 0.55) * metrics.lineHeight + lowerBellOffset;
 
     this.skirt.forEach((line, rowIndex) => {
       const centerOffset = line.length / 2;
@@ -230,8 +238,8 @@ class AnimatedJellyfish {
     return pulseLift + strandFlow;
   }
 
-  getTentacleRoot(tentacle, metrics, pulse) {
-    const skirtY = (this.bell.length + this.skirt.length - 1.9) * metrics.lineHeight;
+  getTentacleRoot(tentacle, metrics, pulse, lowerBellOffset) {
+    const skirtY = (this.bell.length + this.skirt.length - 1.9) * metrics.lineHeight + lowerBellOffset;
     const rootLift = pulse.contraction * metrics.lineHeight * 0.2;
     const rootFlow = this.getSkirtFlow(tentacle.anchor, metrics, pulse);
 
@@ -241,17 +249,18 @@ class AnimatedJellyfish {
     };
   }
 
-  drawTentacles(metrics, motion, pulse) {
+  drawTentacles(metrics, motion, pulse, lowerBellOffset) {
     this.ctx.globalAlpha = Math.min(1, this.opacity * 0.98);
 
     this.tentacles.forEach((tentacle) => {
-      const root = this.getTentacleRoot(tentacle, metrics, pulse);
+      const root = this.getTentacleRoot(tentacle, metrics, pulse, lowerBellOffset);
       const connectorLength = tentacle.inner ? 5 : 4;
+      const anchorFlowPhase = this.time * 0.052 - tentacle.anchor * 0.24;
 
       for (let segment = 0; segment < connectorLength; segment++) {
         const wave = Math.sin(this.time * 0.052 - segment * 0.45 + tentacle.phase) * 0.45;
         const x = root.x + motion.px * wave;
-        const segmentFlow = Math.sin(this.time * 0.052 - segment * 0.24 + tentacle.phase) * metrics.lineHeight * 0.06;
+        const segmentFlow = Math.sin(anchorFlowPhase - segment * 0.08) * metrics.lineHeight * 0.04;
         const y = root.y + segment * metrics.lineHeight * 0.46 + motion.py * wave + segmentFlow;
 
         this.ctx.fillText(';', x, y);
@@ -263,7 +272,7 @@ class AnimatedJellyfish {
         const secondary = Math.cos(this.time * 0.026 - segment * 0.34 + tentacle.phase) * taper * 1.8;
         const trail = taper * 9;
         const x = root.x + motion.px * wave - motion.dx * trail + motion.px * secondary;
-        const segmentFlow = Math.sin(this.time * 0.052 - segment * 0.2 + tentacle.phase) * metrics.lineHeight * 0.08;
+        const segmentFlow = Math.sin(anchorFlowPhase - segment * 0.08) * metrics.lineHeight * 0.06;
         const y = root.y + (segment + connectorLength) * metrics.lineHeight * 0.58 + motion.py * wave - motion.dy * trail + motion.py * secondary + segmentFlow;
         const char = taper > 0.78 ? ':' : taper > 0.42 ? ';' : ':';
 
@@ -277,7 +286,7 @@ class AnimatedJellyfish {
           const wave = Math.sin(this.time * 0.058 - segment * 0.52 + tentacle.phase + 1.8) * (0.8 + taper * 3);
           const trail = taper * 5;
           const x = root.x + tentacle.curl * metrics.charWidth * 1.7 + motion.px * wave - motion.dx * trail;
-          const segmentFlow = Math.sin(this.time * 0.052 - segment * 0.2 + tentacle.phase) * metrics.lineHeight * 0.08;
+          const segmentFlow = Math.sin(anchorFlowPhase - segment * 0.08) * metrics.lineHeight * 0.06;
           const y = root.y + (segment + 1.2) * metrics.lineHeight * 0.5 + motion.py * wave - motion.dy * trail + segmentFlow;
 
           this.ctx.globalAlpha = Math.min(1, this.opacity * 0.96);
@@ -291,6 +300,7 @@ class AnimatedJellyfish {
     const metrics = this.getMetrics();
     const motion = this.getMotionVector();
     const pulse = this.getPulse();
+    const lowerBellOffset = this.getLowerBellOffset(metrics, pulse);
 
     this.ctx.save();
     this.ctx.fillStyle = this.color;
@@ -299,8 +309,8 @@ class AnimatedJellyfish {
     this.ctx.textAlign = 'center';
 
     this.drawAsciiRows(this.bell, 0, metrics, motion, pulse, 1);
-    this.drawSkirtRows(metrics, motion, pulse);
-    this.drawTentacles(metrics, motion, pulse);
+    this.drawSkirtRows(metrics, motion, pulse, lowerBellOffset);
+    this.drawTentacles(metrics, motion, pulse, lowerBellOffset);
 
     this.ctx.restore();
   }
