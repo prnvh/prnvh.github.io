@@ -5,8 +5,16 @@
     <link>https://prnvh.github.io/writing.html</link>
     <description>Technical notes, architecture writeups, and blog posts on governed AI systems, memory, reliability, and deterministic execution.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 13 Apr 2026 00:00:00 +0530</lastBuildDate>
+    <lastBuildDate>Wed, 15 Apr 2026 00:00:00 +0530</lastBuildDate>
     <atom:link href="https://prnvh.github.io/feed.xml" rel="self" type="application/rss+xml" />
+
+    <item>
+      <title>The Basilisk Is the Race, Not the Model.</title>
+      <link>https://prnvh.github.io/basilisk.html</link>
+      <guid isPermaLink="true">https://prnvh.github.io/basilisk.html</guid>
+      <pubDate>Wed, 15 Apr 2026 00:00:00 +0530</pubDate>
+      <description>A piece on why the danger in AI is not one future model or one person, but the race condition that makes governed architecture the realistic safety frontier.</description>
+    </item>
 
     <item>
       <title>Governed Memory Layer for Multi-Agent Shared State</title>
