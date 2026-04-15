@@ -7,7 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=equal-contact-cards">
+<link rel="stylesheet" href="site.css?v=project-buttons-visible">
+<link rel="alternate" type="application/rss+xml" title="Pranav Harikumar Writing" href="feed.xml">
 </head>
 <body class="projects-page">
 <nav class="site-nav">
@@ -164,6 +165,27 @@
             <a href="https://github.com/prnvh/matiks_breaker" target="_blank">GitHub</a>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section projects-follow-section">
+    <div class="shell">
+      <div class="follow-card page-follow-card">
+        <div>
+          <p class="follow-label">Follow the blog</p>
+          <h3>Get new architecture notes by email.</h3>
+          <p>Writing on governed AI systems, memory, reliability, and deterministic execution.</p>
+          <div class="inline-links">
+            <a href="feed.xml">RSS feed</a>
+          </div>
+        </div>
+        <form class="subscribe-form" action="https://buttondown.com/api/emails/embed-subscribe/prnvvh" method="post" target="popupwindow">
+          <label for="projects-subscribe-email">Email address</label>
+          <input id="projects-subscribe-email" type="email" name="email" placeholder="you@example.com" required>
+          <input type="hidden" value="1" name="embed">
+          <button type="submit">Subscribe</button>
+        </form>
       </div>
     </div>
   </section>
