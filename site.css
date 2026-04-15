@@ -678,17 +678,117 @@ img {
   padding-top: 4.5rem;
 }
 
+.about-shell {
+  position: relative;
+}
+
+.about-head {
+  margin-bottom: 1rem;
+}
+
+.about-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.32fr) minmax(230px, 0.48fr);
+  gap: 1.15rem;
+  align-items: stretch;
+}
+
 .about-copy {
-  max-width: 980px;
+  max-width: none;
+  padding: 2rem 2.15rem;
+  border-color: rgba(139, 106, 45, 0.24);
+  background:
+    linear-gradient(90deg, rgba(139, 106, 45, 0.1), transparent 3px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(252, 247, 239, 0.82));
+  animation: about-rise 0.55s ease both;
 }
 
 .about-copy p {
+  max-width: 78ch;
   font-size: 1.08rem;
   line-height: 1.78;
 }
 
+.about-copy p:first-child {
+  max-width: 64ch;
+  color: var(--ink);
+  font-size: 1.42rem;
+  line-height: 1.42;
+}
+
 .about-copy p + p {
   margin-top: 1rem;
+}
+
+.about-rail {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1.35rem;
+  padding: 1.45rem 1.5rem;
+  border: 1px solid rgba(139, 106, 45, 0.22);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(139, 106, 45, 0.08), rgba(255, 255, 255, 0.42));
+  box-shadow: var(--shadow);
+  animation: about-rise 0.6s ease 0.08s both;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background-color 0.22s ease;
+}
+
+.about-rail:hover {
+  transform: translateY(-3px);
+  border-color: rgba(139, 106, 45, 0.36);
+  box-shadow: 0 24px 70px rgba(23, 20, 16, 0.1);
+}
+
+.about-focus-list {
+  counter-reset: focus;
+  display: grid;
+  align-content: end;
+}
+
+.about-focus-list span {
+  counter-increment: focus;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.about-focus-list span::after {
+  content: '0' counter(focus);
+  color: var(--accent);
+}
+
+.about-focus-list span:hover {
+  transform: translateX(4px);
+  border-color: rgba(139, 106, 45, 0.38);
+  color: var(--accent-ink);
+}
+
+@keyframes about-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-copy,
+  .about-rail {
+    animation: none;
+  }
 }
 
 .project-list {
@@ -1293,6 +1393,7 @@ img {
   .project-note-grid,
   .operating-layout,
   .principle,
+  .about-layout,
   .follow-card,
   .bottom-card-grid,
   .project-grid-systems,
