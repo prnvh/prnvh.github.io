@@ -693,87 +693,82 @@ img {
 .about-copy {
   display: block;
   max-width: none;
-  padding: 2.45rem 2.65rem 2.35rem;
-  border-color: rgba(139, 106, 45, 0.24);
+  padding: 0;
+  border-color: rgba(139, 106, 45, 0.2);
   background:
-    linear-gradient(90deg, rgba(139, 106, 45, 0.16), transparent 4px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(252, 247, 239, 0.86));
+    linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(252, 247, 239, 0.84));
   animation: about-rise 0.55s ease both;
 }
 
 .about-copy::before {
-  content: 'about';
+  content: '';
   position: absolute;
-  right: 2rem;
-  bottom: 1rem;
-  color: rgba(139, 106, 45, 0.055);
-  font-family: var(--display);
-  font-size: clamp(7rem, 16vw, 15rem);
-  line-height: 0.8;
-  letter-spacing: -0.06em;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(139, 106, 45, 0.09), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent 52%);
+  opacity: 0.9;
   pointer-events: none;
 }
 
 .about-copy::after {
   content: '';
   position: absolute;
-  inset: 1.25rem;
-  border: 1px solid rgba(139, 106, 45, 0.11);
-  opacity: 1;
+  left: 2rem;
+  right: 2rem;
+  bottom: 1.35rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(139, 106, 45, 0.46), transparent);
+  opacity: 0.55;
   pointer-events: none;
 }
 
 .about-copy-inner {
-  counter-reset: about-paragraph;
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(300px, 1.1fr);
-  gap: 1.6rem 2rem;
-  align-items: start;
+  grid-template-columns: minmax(240px, 0.42fr) minmax(0, 1fr);
+  align-items: stretch;
 }
 
 .about-copy-inner p {
-  counter-increment: about-paragraph;
   position: relative;
-  max-width: 70ch;
+  max-width: 72ch;
   margin: 0;
-  padding-left: 1.8rem;
   font-size: 1.08rem;
   line-height: 1.78;
 }
 
 .about-copy-inner p::before {
-  content: '0' counter(about-paragraph);
-  position: absolute;
-  left: 0;
-  top: 0.45rem;
-  color: var(--accent);
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.12em;
+  content: none;
 }
 
 .about-copy-inner p:first-child {
   grid-row: span 3;
-  max-width: 18ch;
-  padding: 0 1.8rem 0 0;
+  display: flex;
+  align-items: center;
+  max-width: none;
+  padding: 2.25rem 2.1rem 2.75rem;
   border-right: 1px solid var(--line);
-  border-bottom: 0;
   color: var(--ink);
-  font-family: var(--display);
-  font-size: clamp(2.4rem, 4vw, 3.45rem);
-  line-height: 0.98;
-  letter-spacing: -0.035em;
-}
-
-.about-copy-inner p:first-child::before {
-  display: none;
+  font-size: 1.34rem;
+  line-height: 1.52;
+  background: rgba(255, 255, 255, 0.24);
 }
 
 .about-copy-inner p:not(:first-child) {
-  padding-top: 0.95rem;
-  border-top: 1px solid rgba(130, 112, 84, 0.18);
+  margin: 0 2.35rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid rgba(130, 112, 84, 0.2);
+}
+
+.about-copy-inner p:nth-child(2) {
+  border-top: 0;
+  padding-top: 2.1rem;
+}
+
+.about-copy-inner p:last-child {
+  padding-bottom: 2.55rem;
 }
 
 @keyframes about-rise {
@@ -1505,9 +1500,17 @@ img {
   .about-copy-inner p:first-child {
     grid-row: auto;
     max-width: 100%;
-    padding: 0 0 1rem;
+    padding: 1.55rem 1.6rem;
     border-right: 0;
     border-bottom: 1px solid var(--line);
+  }
+
+  .about-copy-inner p:not(:first-child) {
+    margin: 0 1.6rem;
+  }
+
+  .about-copy-inner p:nth-child(2) {
+    padding-top: 1.45rem;
   }
 }
 
