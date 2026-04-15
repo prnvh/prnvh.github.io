@@ -687,89 +687,123 @@ img {
 }
 
 .about-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.32fr) minmax(230px, 0.48fr);
-  gap: 1.15rem;
-  align-items: stretch;
+  display: block;
 }
 
 .about-copy {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
+  gap: 2rem;
+  align-items: stretch;
   max-width: none;
-  padding: 2rem 2.15rem;
+  padding: 2.15rem 2.25rem;
   border-color: rgba(139, 106, 45, 0.24);
   background:
-    linear-gradient(90deg, rgba(139, 106, 45, 0.1), transparent 3px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(252, 247, 239, 0.82));
+    linear-gradient(90deg, rgba(139, 106, 45, 0.12), transparent 4px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(252, 247, 239, 0.86));
   animation: about-rise 0.55s ease both;
 }
 
-.about-copy p {
+.about-copy::after {
+  content: '';
+  position: absolute;
+  inset: 1.5rem 1.5rem auto auto;
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 106, 45, 0.5));
+  opacity: 1;
+  pointer-events: none;
+}
+
+.about-copy-inner {
+  counter-reset: about-paragraph;
+  position: relative;
+  z-index: 1;
+}
+
+.about-copy-inner p {
+  counter-increment: about-paragraph;
+  position: relative;
   max-width: 78ch;
+  padding-left: 2rem;
   font-size: 1.08rem;
   line-height: 1.78;
 }
 
-.about-copy p:first-child {
+.about-copy-inner p::before {
+  content: '0' counter(about-paragraph);
+  position: absolute;
+  left: 0;
+  top: 0.45rem;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+}
+
+.about-copy-inner p:first-child {
   max-width: 64ch;
+  margin-bottom: 1.2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--line);
   color: var(--ink);
   font-size: 1.42rem;
   line-height: 1.42;
 }
 
-.about-copy p + p {
+.about-copy-inner p + p {
   margin-top: 1rem;
 }
 
-.about-rail {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 1.35rem;
-  padding: 1.45rem 1.5rem;
-  border: 1px solid rgba(139, 106, 45, 0.22);
-  border-radius: 6px;
-  background:
-    linear-gradient(180deg, rgba(139, 106, 45, 0.08), rgba(255, 255, 255, 0.42));
-  box-shadow: var(--shadow);
-  animation: about-rise 0.6s ease 0.08s both;
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background-color 0.22s ease;
-}
-
-.about-rail:hover {
-  transform: translateY(-3px);
-  border-color: rgba(139, 106, 45, 0.36);
-  box-shadow: 0 24px 70px rgba(23, 20, 16, 0.1);
-}
-
-.about-focus-list {
-  counter-reset: focus;
+.about-notes {
   display: grid;
   align-content: end;
+  gap: 1.1rem;
+  padding-left: 1.65rem;
+  border-left: 1px solid var(--line);
+  position: relative;
+  z-index: 1;
 }
 
-.about-focus-list span {
-  counter-increment: focus;
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.9rem 0;
+.about-note-grid {
+  display: grid;
+  gap: 0;
+}
+
+.about-note {
+  padding: 0.95rem 0;
   border-top: 1px solid var(--line);
-  color: var(--ink);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.about-note:hover {
+  transform: translateX(4px);
+  border-color: rgba(139, 106, 45, 0.42);
+}
+
+.about-note span {
+  display: block;
+  color: var(--accent);
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: 0.6rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  transition: color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
 }
 
-.about-focus-list span::after {
-  content: '0' counter(focus);
-  color: var(--accent);
+.about-note strong {
+  display: block;
+  margin: 0.2rem 0 0.28rem;
+  font-family: var(--display);
+  font-size: 1.45rem;
+  line-height: 1.02;
+  font-weight: 600;
 }
 
-.about-focus-list span:hover {
-  transform: translateX(4px);
-  border-color: rgba(139, 106, 45, 0.38);
-  color: var(--accent-ink);
+.about-note p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.93rem;
+  line-height: 1.55;
 }
 
 @keyframes about-rise {
@@ -785,8 +819,7 @@ img {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .about-copy,
-  .about-rail {
+  .about-copy {
     animation: none;
   }
 }
@@ -1394,6 +1427,7 @@ img {
   .operating-layout,
   .principle,
   .about-layout,
+  .about-copy,
   .follow-card,
   .bottom-card-grid,
   .project-grid-systems,
@@ -1421,6 +1455,13 @@ img {
   .contact-surface {
     grid-template-columns: 1fr;
     gap: 1.2rem;
+  }
+
+  .about-notes {
+    padding-left: 0;
+    padding-top: 1.25rem;
+    border-left: 0;
+    border-top: 1px solid var(--line);
   }
 }
 
