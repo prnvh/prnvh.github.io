@@ -737,6 +737,19 @@ img {
   padding-top: 1.15rem;
 }
 
+.card-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 1.1rem;
+  margin-top: auto;
+  padding-top: 1.15rem;
+}
+
+.writing-card .card-link-row .text-link {
+  margin-top: 0;
+  padding-top: 0;
+}
+
 .about-section {
   padding-top: 4rem;
 }
@@ -875,6 +888,18 @@ img {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding-top: 0.35rem;
+}
+
+.project-row-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.85rem;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.project-row-links a {
+  white-space: nowrap;
 }
 
 .home-page .project-row {
