@@ -5,8 +5,16 @@
     <link>https://prnvh.github.io/writing.html</link>
     <description>Technical notes, architecture writeups, and blog posts on governed AI systems, memory, reliability, and deterministic execution.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 15 Apr 2026 00:00:00 +0530</lastBuildDate>
+    <lastBuildDate>Sat, 25 Apr 2026 00:00:00 +0530</lastBuildDate>
     <atom:link href="https://prnvh.github.io/feed.xml" rel="self" type="application/rss+xml" />
+
+    <item>
+      <title>Diagnostic Engine: Registry-Driven Knee Symptom Reasoning</title>
+      <link>https://prnvh.github.io/diagnostic-engine.html</link>
+      <guid isPermaLink="true">https://prnvh.github.io/diagnostic-engine.html</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 +0530</pubDate>
+      <description>A technical writeup on a bounded knee symptom engine with registry-defined evidence, safety-first escalation, deterministic scoring, and an inspectable session ledger.</description>
+    </item>
 
     <item>
       <title>The Basilisk Is the Race, Not the Model.</title>
