@@ -225,7 +225,7 @@
     <dl class="hero-meta-row">
       <div class="hmeta"><dt>Type</dt><dd>Systems build</dd></div>
       <div class="hmeta"><dt>Scope</dt><dd>Knee-only beta</dd></div>
-      <div class="hmeta"><dt>Runtime</dt><dd>Static web UI + Vercel handlers</dd></div>
+      <div class="hmeta"><dt>Runtime</dt><dd>Serverless handlers + persistent sessions</dd></div>
       <div class="hmeta"><dt>Mode</dt><dd>Bounded reasoning, not diagnosis</dd></div>
     </dl>
     <div class="hero-links">
@@ -276,7 +276,7 @@
   <span class="s-label reveal" id="runtime-loop">// architecture</span>
   <h2 class="reveal">Complaint in, evidence mapped, one question out</h2>
   <p class="reveal">
-    The runtime follows a small governed loop. A static browser UI captures the complaint and displays state, but the reasoning itself lives behind the route layer. After the first complaint is parsed, the engine decides between safety escalation, candidate scoring, and the next single question. The browser never performs medical reasoning on its own.
+    The runtime follows a governed evidence loop rather than an open-ended chat loop. After the first complaint is parsed, the engine decides between safety escalation, candidate scoring, and the next single discriminating question. The important architectural move is that everything after intake runs on the same bounded symptom state instead of on fresh free-text interpretation each round.
   </p>
 
   <div class="diagram reveal">+------------------------------------------------------------+
@@ -328,7 +328,7 @@
 
   <h3 class="reveal">The core boundaries</h3>
   <ul class="checks reveal">
-    <li><span class="check-num">01</span><div><span class="check-name">Registry-first medical logic.</span> Symptoms, questions, and condition definitions live in JSON registries instead of UI text or prompt-only behavior.</div></li>
+    <li><span class="check-num">01</span><div><span class="check-name">Registry-first medical logic.</span> Symptoms, questions, and condition definitions live in JSON registries instead of being buried in copy or prompt-only behavior.</div></li>
     <li><span class="check-num">02</span><div><span class="check-name">Controlled evidence.</span> Downstream logic runs on symptom keys and evidence status, not on raw complaint text.</div></li>
     <li><span class="check-num">03</span><div><span class="check-name">Safety outside ranking.</span> Red-flag patterns can interrupt the normal candidate loop before the scorer pretends the problem is just another ranking exercise.</div></li>
     <li><span class="check-num">04</span><div><span class="check-name">Inspectable state.</span> Sessions, asked questions, parser output, and ledger entries are persisted so the same reasoning path can be reloaded later.</div></li>
@@ -337,41 +337,48 @@
   <hr class="reveal">
 
   <span class="s-label reveal">// implementation</span>
-  <h2 class="reveal">Most of the real work lives in registries and route orchestration</h2>
+  <h2 class="reveal">The system works because every later decision is anchored to structured evidence</h2>
   <p class="reveal">
-    The browser layer is intentionally thin. The more important part of the project is the way the route layer composes parser output, safety checks, deterministic scoring, question selection, session persistence, and ledger appends into one reusable loop.
+    The core design is not "ask an LLM what the complaint sounds like" over and over. The core design is to convert the opening story into controlled evidence once, then keep all later reasoning tied to the same bounded state. That makes the system auditable and also changes what a question is for. A question is not there to continue the conversation. It is there to confirm, negate, or separate concrete symptom signals that matter to the scorer.
   </p>
-<pre class="reveal"><code>diagnostic_engine/
-  core/
-    engine/
-      intake-parser.js
-      parser.js
-      safety.js
-      scorer.js
-      selector.js
-      compiler.js
-    registry/
-      symptoms/knee.json
-      questions/knee.json
-      diseases/knee/*.json
-  http/routes.js
-  storage/
-    session.js
-    ledger.js
-    store.js
 
-api/
-  health.mjs
-  session/start.mjs
-  session/answer.mjs
+  <table class="arch-table reveal">
+    <thead>
+      <tr>
+        <th>System surface</th>
+        <th>What it represents</th>
+        <th>Why it exists</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>symptom registry</code></td>
+        <td>Canonical symptom IDs, value types, categories, and scale labels.</td>
+        <td>The system needs one stable vocabulary so every later step talks about the same evidence model.</td>
+      </tr>
+      <tr>
+        <td><code>question bank</code></td>
+        <td>Authored follow-up prompts, gating rules, and answer-to-symptom mappings.</td>
+        <td>Questions become deterministic evidence updates rather than loose conversational turns.</td>
+      </tr>
+      <tr>
+        <td><code>disease definitions</code></td>
+        <td>Supports, anti-symptoms, contradiction logic, and stage-specific weighting.</td>
+        <td>Fit scoring stays in explicit rules that can be inspected, edited, and benchmarked.</td>
+      </tr>
+      <tr>
+        <td><code>session symptom state</code></td>
+        <td>The live evidence map for the current interview.</td>
+        <td>Free-text intake and form answers converge into one shared state instead of two competing interpretations.</td>
+      </tr>
+    </tbody>
+  </table>
 
-web/
-  index.html
-  knee/index.html
-  home.js
-  app.js</code></pre>
   <p class="reveal">
-    That split matters because it keeps the UI replaceable. The same engine can run locally or on Vercel, the same request paths drive both the static site and direct API testing, and the reasoning rules are auditable without digging through presentation code.
+    This is what gives the system its shape. The intake parser can infer or tentatively map evidence, but it still has to land inside the same bounded symptom vocabulary as the rest of the engine. The scorer can only rank against what has been earned into that state. The selector can only ask about unknown or weakly-supported signals that exist in the registry. The whole loop stays narrow because every component is constrained by the same evidence model.
+  </p>
+  <p class="reveal">
+    Evidence status is also part of the design. The session distinguishes between explicit evidence, inferred evidence, and low-confidence evidence. That matters because it lets the engine treat the opening complaint as useful but provisional, then let later answers overwrite weaker assumptions with cleaner signals. In practice, that is what makes the follow-up rounds feel purposeful instead of repetitive.
   </p>
 
   <hr class="reveal">
@@ -379,7 +386,7 @@ web/
   <span class="s-label reveal">// runtime</span>
   <h2 class="reveal">One complaint becomes one session, then one question at a time</h2>
   <p class="reveal">
-    Session start and answer submission both run through the same evaluation loop. The system parses or merges evidence, appends ledger events, checks safety, scores candidates, and either returns a single compiled question or one of the final outcomes. That makes free-text evidence and question evidence converge into one state model instead of two loosely related surfaces.
+    Session start and answer submission both run through the same evaluation loop. The system parses or merges evidence, appends ledger events, checks safety, scores candidates, and either returns a single compiled question or one of the final outcomes. That matters because the engine never switches reasoning modes halfway through. The opening story and the later answers are both just ways of updating the same session state.
   </p>
 
   <div class="workflow reveal">
@@ -388,7 +395,7 @@ web/
       <div class="wf-content">
         <h4>Start from complaint text</h4>
         <p>
-          The intake layer maps only justified details into structured symptom evidence and produces a UI-facing summary. Unclear facts are left unresolved instead of being silently guessed.
+          The intake layer maps only justified details into structured symptom evidence and produces a compact summary of what the system thinks it heard. Unclear facts are left unresolved instead of being silently guessed.
         </p>
       </div>
     </div>
@@ -415,7 +422,7 @@ web/
       <div class="wf-content">
         <h4>Select the next useful question</h4>
         <p>
-          The selector chooses the smallest next question set that best separates the remaining candidates. In the current UI and route layer, that means exactly one active question at a time.
+          The selector chooses the smallest next question set that best separates the remaining candidates. In the current engine, that means exactly one active question at a time, which keeps each round tied to one specific clarification goal.
         </p>
       </div>
     </div>
@@ -424,7 +431,7 @@ web/
       <div class="wf-content">
         <h4>Stop with a bounded result</h4>
         <p>
-          The loop ends with a shortlist, fallback, or escalation. The important product choice is that fallback is treated as a real answer state, not as an embarrassing failure the UI tries to hide.
+          The loop ends with a shortlist, fallback, or escalation. The important product choice is that fallback is treated as a real answer state, not as something the system tries to smooth over with fake confidence.
         </p>
       </div>
     </div>
@@ -464,6 +471,9 @@ web/
   <p class="reveal">
     The strongest architectural choice here is not the scorer itself. It is the decision to keep safety logic outside disease ranking. In a lot of lightweight diagnostic demos, urgency is just another score feature, which means the same surface is expected to do both differential reasoning and red-flag triage. This engine avoids that. A hot, red knee with fever does not need to win a candidate race before the system can say the user needs urgent in-person review.
   </p>
+  <p class="reveal">
+    The second useful decision is that the engine is allowed to fail cleanly. A shortlist is only one of the permitted endings. Fallback is equally part of the architecture. That keeps the system honest under weak evidence and prevents the scorer from being forced into fake confidence just because the product needs a satisfying ending.
+  </p>
 
   <div class="finding reveal">
     <div class="finding-label">ARCHITECTURAL TAKEAWAY</div>
@@ -489,7 +499,7 @@ web/
   <ul class="checks reveal">
     <li><span class="check-num">01</span><div><span class="check-name">Reusable sessions.</span> A complaint can continue as one evolving reasoning trail instead of a disconnected sequence of form posts.</div></li>
     <li><span class="check-num">02</span><div><span class="check-name">Evidence status priority.</span> Explicit evidence can replace weaker inferred or low-confidence evidence when the user answers follow-up questions.</div></li>
-    <li><span class="check-num">03</span><div><span class="check-name">Dedicated ledger path.</span> The reasoning trail is inspectable through a separate endpoint rather than being hidden behind the main UI state.</div></li>
+    <li><span class="check-num">03</span><div><span class="check-name">Dedicated ledger path.</span> The reasoning trail is inspectable through a separate endpoint rather than being flattened into only the latest session response.</div></li>
   </ul>
 
   <hr class="reveal">
@@ -504,7 +514,7 @@ web/
   </p>
   <ul class="checks reveal">
     <li><span class="check-num">-</span><div>The scope is limited to knee complaints and a small modeled condition set.</div></li>
-    <li><span class="check-num">-</span><div>The browser experience is intentionally thin; most of the substance lives in the route layer and registries.</div></li>
+    <li><span class="check-num">-</span><div>The scope is narrow by design, so expanding beyond knee complaints would require more registry coverage rather than just more interface work.</div></li>
     <li><span class="check-num">-</span><div>Some range-based scoring behavior still deserves tightening, especially around how explicit zero values should influence weak support.</div></li>
     <li><span class="check-num">-</span><div>The questioning loop can continue past the minimum floor when the shortlist is not decisive enough, which is useful for rigor but can feel long on vague inputs.</div></li>
     <li><span class="check-num">-</span><div>The system is built for bounded symptom reasoning and triage support, not diagnosis or treatment advice.</div></li>
