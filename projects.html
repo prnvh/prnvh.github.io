@@ -4,26 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Projects - Pranav Harikumar</title>
-<meta name="description" content="Selected projects by Pranav Harikumar across governed AI infrastructure, workflow compilation, multi-agent memory, reliability systems, and operations.">
+<meta name="description" content="Selected projects across artificial memory, EBMs, Hopfield-style cognition, wiki memory, LongMemEval retrieval, and workflow compilation.">
 <link rel="canonical" href="https://prnvh.github.io/projects.html">
 <meta property="og:site_name" content="Pranav Harikumar">
 <meta property="og:title" content="Projects - Pranav Harikumar">
-<meta property="og:description" content="Selected systems, research, and operating projects around governed AI infrastructure, memory, and deterministic execution.">
+<meta property="og:description" content="Selected systems and research projects around artificial memory, EBMs, Hopfield-style cognition, wiki memory, and experimental artificial brains.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://prnvh.github.io/projects.html">
 <meta property="og:image" content="https://prnvh.github.io/assets/social/pranav-social-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Pranav Harikumar - governed systems, writing, and reliability.">
+<meta property="og:image:alt" content="Artificial memory, writing, and cognitive systems.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Projects - Pranav Harikumar">
-<meta name="twitter:description" content="Selected systems, research, and operating projects around governed AI infrastructure, memory, and deterministic execution.">
+<meta name="twitter:description" content="Selected systems and research projects around artificial memory, EBMs, Hopfield-style cognition, wiki memory, and experimental artificial brains.">
 <meta name="twitter:image" content="https://prnvh.github.io/assets/social/pranav-social-card.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css?v=plancompiler-arxiv">
-<link rel="alternate" type="application/rss+xml" title="Pranav Harikumar Writing" href="feed.xml">
 </head>
 <body class="projects-page">
 <nav class="site-nav">
@@ -40,9 +39,9 @@
   <section class="page-hero">
     <div class="shell">
       <p class="eyebrow">Projects</p>
-      <h1 class="page-display">Selected <em>projects</em>.</h1>
+      <h1 class="page-display">Artificial memory and <em>brains</em>.</h1>
       <p class="page-intro">
-        Systems work, research, and operating projects arranged as a cleaner archive instead of a long stack of notes.
+        Projects around EBMs, Hopfield-style memory, source-backed recall, neuromorphic hardware, and deterministic execution.
       </p>
     </div>
   </section>
@@ -51,44 +50,57 @@
     <div class="shell">
       <div class="section-head">
         <div>
-          <p class="eyebrow">Systems Work</p>
-          <h2 class="section-title">Reliability, memory, and execution.</h2>
+          <p class="eyebrow">Current Direction</p>
+          <h2 class="section-title">Memory systems and cognitive stacks.</h2>
         </div>
         <p class="section-copy">
-          The systems work that sits closest to governed state, deterministic execution, and reliability under pressure.
+          Short notes on what each system does, why I tried it, how it works, and what proof exists.
         </p>
       </div>
 
       <div class="project-grid project-grid-systems">
-        <article class="surface project-card project-card-wide" id="compiler-project">
-          <span class="meta-line">Research Build &middot; 2025-2026</span>
-          <h3>LLM Code Graph Compiler</h3>
-          <p>Compile workflows through a typed node registry and static validation before anything executes.</p>
-          <div class="project-card-copy">
-            <p><strong>Architecture</strong>The planner emits a constrained JSON graph from a typed registry, and validation checks node wiring, arguments, and graph integrity before codegen.</p>
-            <p><strong>What mattered</strong>The system treats deterministic execution as the goal and removes the model's room to improvise once runtime begins.</p>
-          </div>
+        <article class="surface project-card project-card-wide" id="lucid-model-project">
+          <span class="meta-line">Cognitive Architecture &middot; 2026</span>
+          <h3>Lucid Model</h3>
+          <p>Artificial-brain prototype using EBMs, Hopfield-style attractor memory, lazy collapse, binding, interference, projection, and lucidity.</p>
+          <p>The goal is inspectable reasoning and cheaper continual learning than weight-only models. Memory stays explicit; the system commits only when its state is stable enough.</p>
+          <p>Proof: repo, constitution notes, audit/checkpoint machinery, CLI stage coverage, and 212 pytest tests in the training suite.</p>
           <div class="detail-stack">
             <span class="pill">Python</span>
-            <span class="pill">DAG Execution</span>
-            <span class="pill">Static Validation</span>
-            <span class="pill">CLI Tooling</span>
+            <span class="pill">EBMs</span>
+            <span class="pill">Hopfield Networks</span>
+            <span class="pill">Continual Learning</span>
           </div>
           <div class="project-card-links">
-            <a href="compiler.html">Technical writeup</a>
-            <a href="https://arxiv.org/abs/2604.13092" target="_blank" rel="noopener noreferrer">arXiv</a>
-            <a href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub</a>
+            <a href="https://github.com/svmp-systems/lucid-model" target="_blank" rel="noopener noreferrer">GitHub</a>
+          </div>
+        </article>
+
+        <article class="surface project-card" id="wiki-memory-project">
+          <span class="meta-line">Memory Infrastructure &middot; 2026</span>
+          <h3>Wiki Memory / RAW SOURCES</h3>
+          <p>Long-running memory layer that turns immutable raw sources into canonical wiki pages, relation graphs, temporal facts, and answer-ready context.</p>
+          <p>Built so agents can recall sourced, revisable memory instead of replaying transcripts.</p>
+          <ul class="project-card-list">
+            <li>LongMemEval-S wiki-index run: 470 cases, hit@1 88.7%, hit@5 97.9%, hit@10 99.1%, MRR 0.924.</li>
+            <li>Temporal and aggregation paths compute date/order/count/sum/list support in code where possible.</li>
+          </ul>
+          <div class="detail-stack">
+            <span class="pill">TypeScript</span>
+            <span class="pill">Supabase</span>
+            <span class="pill">Wiki Memory</span>
+            <span class="pill">LongMemEval</span>
           </div>
         </article>
 
         <article class="surface project-card" id="memory-project">
           <span class="meta-line">Research Build &middot; 2026</span>
           <h3>Governed Memory Layer</h3>
-          <p>A ledger-backed memory runtime where agents write privately and only resolved, validated state is promoted into canonical shared memory.</p>
+          <p>Ledger-backed shared memory for agents.</p>
+          <p>Built to stop uncertain private notes from directly corrupting shared state.</p>
           <ul class="project-card-list">
-            <li>Working memory and canonical memory stay separate.</li>
-            <li>Notes are interpreted, resolved, validated, and written through one governed path.</li>
-            <li>Ambiguous lifecycle updates stay pending until the system can bind them safely.</li>
+            <li>Private notes promote through interpretation, resolution, validation, and projection.</li>
+            <li>Proof: technical writeup, GitHub repo, benchmark harness with trajectory families.</li>
           </ul>
           <div class="detail-stack">
             <span class="pill">Python</span>
@@ -102,14 +114,49 @@
           </div>
         </article>
 
+        <article class="surface project-card" id="neuromorphic-memory-project">
+          <span class="meta-line">Current Research Direction &middot; 2026</span>
+          <h3>Neuromorphic Memory Substrates</h3>
+          <p>Early work on memristors, in-memory computation, and hardware-aware artificial memory.</p>
+          <p>The bet is that cognitive memory may need storage, weighting, and computation to sit physically closer together.</p>
+          <ul class="project-card-list">
+            <li>Current focus: memristor-style persistence, adaptive weights, and low-power cognitive hardware.</li>
+          </ul>
+          <div class="detail-stack">
+            <span class="pill">Memristors</span>
+            <span class="pill">Neuromorphic Hardware</span>
+            <span class="pill">In-Memory Compute</span>
+            <span class="pill">Artificial Memory</span>
+          </div>
+        </article>
+
+        <article class="surface project-card project-card-wide" id="compiler-project">
+          <span class="meta-line">Research Build &middot; 2025-2026</span>
+          <h3>LLM Code Graph Compiler</h3>
+          <p>Typed compiler for LLM workflow graphs.</p>
+          <p>Free-form plans become brittle when they turn into executable code too early. Here the model plans inside a typed registry, then execution starts after static validation.</p>
+          <p>Proof: arXiv paper, technical writeup, GitHub repo, and 300-task benchmark.</p>
+          <div class="detail-stack">
+            <span class="pill">Python</span>
+            <span class="pill">DAG Execution</span>
+            <span class="pill">Static Validation</span>
+            <span class="pill">CLI Tooling</span>
+          </div>
+          <div class="project-card-links">
+            <a href="compiler.html">Technical writeup</a>
+            <a href="https://arxiv.org/abs/2604.13092" target="_blank" rel="noopener noreferrer">arXiv</a>
+            <a href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub</a>
+          </div>
+        </article>
+
         <article class="surface project-card" id="diagnostic-engine-project">
           <span class="meta-line">Systems Build &middot; 2026</span>
           <h3>Diagnostic Engine</h3>
-          <p>A bounded knee symptom reasoning service with registry-driven questions, deterministic scoring, and three explicit endings: shortlist, fallback, or safety escalation.</p>
+          <p>Bounded knee symptom reasoning with deterministic endings.</p>
+          <p>A narrow diagnostic assistant should use controlled evidence and hard safety exits, not broad medical improvisation.</p>
           <ul class="project-card-list">
-            <li>Free text is mapped into controlled symptom evidence instead of flowing straight into ranking.</li>
-            <li>Safety rules interrupt the candidate loop instead of being treated as just another score feature.</li>
-            <li>Sessions and ledger entries persist so the reasoning path can be reloaded and inspected.</li>
+            <li>Free text maps into controlled symptom evidence before ranking.</li>
+            <li>Proof: technical writeup, GitHub repo, live demo, 53 symptom signals / 28 prompts.</li>
           </ul>
           <div class="detail-stack">
             <span class="pill">Node.js</span>
@@ -125,26 +172,6 @@
           </div>
         </article>
 
-        <article class="surface project-card" id="svmp-project">
-          <span class="meta-line">Systems Build &middot; 2026</span>
-          <h3>SVMP Governance Layer</h3>
-          <p>A multi-tenant customer-service reliability layer with routing, tenant isolation, escalation controls, and operator-facing safeguards.</p>
-          <ul class="project-card-list">
-            <li>Async workflows split ingestion, processing, and cleanup.</li>
-            <li>Lock queues and debouncing merge fragmented messages before model calls.</li>
-            <li>Isolation and uncertain-query routing were treated as product constraints.</li>
-          </ul>
-          <div class="detail-stack">
-            <span class="pill">FastAPI</span>
-            <span class="pill">MongoDB Atlas</span>
-            <span class="pill">Motor</span>
-            <span class="pill">APScheduler</span>
-            <span class="pill">Fernet</span>
-          </div>
-          <div class="project-card-links">
-            <a href="https://github.com/svmp-systems/SVMP-CS" target="_blank">GitHub</a>
-          </div>
-        </article>
       </div>
     </div>
   </section>
@@ -153,11 +180,11 @@
     <div class="shell">
       <div class="section-head">
         <div>
-          <p class="eyebrow">Research &amp; Operations</p>
-          <h2 class="section-title">Research and operations.</h2>
+          <p class="eyebrow">Earlier Work</p>
+          <h2 class="section-title">Systems and operating context.</h2>
         </div>
         <p class="section-copy">
-          Fieldwork, GTM, and operating work that influenced how I think about systems once they leave the whiteboard.
+          A smaller context section for work that shaped the memory/cognition direction without diluting the main archive.
         </p>
       </div>
 
@@ -165,43 +192,15 @@
         <article class="surface project-card compact">
           <span class="meta-line">Field Research &middot; 2026</span>
           <h3>Kerala Wage Asymmetry Study</h3>
-          <p>Structured field research on wage differences between inter-state migrant workers and local labourers in Kerala.</p>
-          <ul class="project-card-list">
-            <li>Designed the interview structure and ran 150-plus field interviews.</li>
-            <li>Started turning the work into a paper instead of leaving it as anecdote.</li>
-          </ul>
+          <p>150+ field interviews on wage differences between inter-state migrant workers and local labourers in Kerala.</p>
         </article>
 
         <article class="surface project-card compact">
-          <span class="meta-line">Operations &middot; 2025-Present</span>
-          <h3>Niyomilan</h3>
-          <p>Pre-launch labour marketplace work shaped by early ops, GTM framing, and field-informed product questions.</p>
-          <ul class="project-card-list">
-            <li>Worked on growth framing and operating questions around trust and information gaps.</li>
-            <li>The Kerala research fed directly into how I thought about product assumptions.</li>
-          </ul>
-        </article>
-
-        <article class="surface project-card compact">
-          <span class="meta-line">Venture &middot; 2024-2025</span>
-          <h3>Student Marketing Venture</h3>
-          <p>A small-team content and marketing operation serving international clients while I was still in school.</p>
-          <ul class="project-card-list">
-            <li>Handled client management, revisions, delivery, and operational throughput.</li>
-            <li>It made process quality real because delivery and reputation were tightly coupled.</li>
-          </ul>
-        </article>
-
-        <article class="surface project-card compact">
-          <span class="meta-line">Side Project &middot; 2026</span>
-          <h3>Matiks Breaker</h3>
-          <p>A reverse-engineering and solver project built outward from the Matiks daily puzzle GraphQL endpoint.</p>
-          <ul class="project-card-list">
-            <li>Turned raw game state into structured constraints.</li>
-            <li>Built a verified backtracking solver from the extracted puzzle logic.</li>
-          </ul>
+          <span class="meta-line">Systems Build &middot; 2026</span>
+          <h3>SVMP Governance Layer</h3>
+          <p>Multi-tenant customer-support governance with tenant isolation, auditability, escalation controls, and debounce architecture.</p>
           <div class="project-card-links">
-            <a href="https://github.com/prnvh/matiks_breaker" target="_blank">GitHub</a>
+            <a href="https://github.com/svmp-systems/SVMP-CS" target="_blank">GitHub</a>
           </div>
         </article>
       </div>
@@ -214,10 +213,7 @@
         <div>
           <p class="follow-label">Follow the blog</p>
           <h3>Get new architecture notes by email.</h3>
-          <p>Writing on governed AI systems, memory, reliability, and deterministic execution.</p>
-          <div class="inline-links">
-            <a href="feed.xml">RSS feed</a>
-          </div>
+          <p>Writing on memory systems, artificial cognition, persistent recall, and deterministic execution.</p>
         </div>
         <form class="subscribe-form" action="https://buttondown.com/api/emails/embed-subscribe/prnvvh" method="post" target="popupwindow">
           <label for="projects-subscribe-email">Email address</label>
