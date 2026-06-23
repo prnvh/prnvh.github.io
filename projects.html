@@ -4,233 +4,46 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Projects - Pranav Harikumar</title>
-<meta name="description" content="Selected projects across artificial memory, EBMs, Hopfield-style cognition, wiki memory, LongMemEval retrieval, and workflow compilation.">
+<meta name="description" content="Selected projects by Pranav Harikumar across artificial memory, EBMs, Hopfield networks, neuromorphic hardware, compiler pipelines, and governed memory systems.">
 <link rel="canonical" href="https://prnvh.github.io/projects.html">
 <meta property="og:site_name" content="Pranav Harikumar">
 <meta property="og:title" content="Projects - Pranav Harikumar">
-<meta property="og:description" content="Selected systems and research projects around artificial memory, EBMs, Hopfield-style cognition, wiki memory, and experimental artificial brains.">
+<meta property="og:description" content="Selected projects across artificial memory, EBMs, Hopfield networks, neuromorphic hardware, compiler pipelines, and governed memory systems.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://prnvh.github.io/projects.html">
 <meta property="og:image" content="https://prnvh.github.io/assets/social/pranav-social-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Artificial memory, writing, and cognitive systems.">
+<meta property="og:image:alt" content="Pranav Harikumar - artificial memory and cognitive systems.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Projects - Pranav Harikumar">
-<meta name="twitter:description" content="Selected systems and research projects around artificial memory, EBMs, Hopfield-style cognition, wiki memory, and experimental artificial brains.">
+<meta name="twitter:description" content="Selected projects across artificial memory, EBMs, Hopfield networks, neuromorphic hardware, compiler pipelines, and governed memory systems.">
 <meta name="twitter:image" content="https://prnvh.github.io/assets/social/pranav-social-card.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=plancompiler-arxiv">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="site.css?v=minimal-portfolio">
 </head>
-<body class="projects-page">
-<nav class="site-nav">
-  <a class="brand" href="index.html">Pranav <span>Harikumar</span></a>
-  <div class="nav-links">
-    <a class="nav-link" href="index.html">Home</a>
-    <a class="nav-link" href="projects.html" aria-current="page">Projects</a>
-    <a class="nav-link" href="writing.html">Writing</a>
-    <a class="nav-link" href="contact.html">Contact</a>
+<body class="home-page minimal-home">
+<main class="plain-page">
+  <header class="plain-header">
+    <a href="index.html">Pranav Harikumar</a>
+    <span><a href="index.html">home</a> / <a href="writing.html">writing</a> / <a href="contact.html">contact</a></span>
+  </header>
+
+  <h1>Projects</h1>
+
+  <p class="intro">Short notes on the systems I have built or am actively exploring.</p>
+
+  <hr>
+
+  <div class="work-list">
+    <p><span>01</span> <strong>Lucid Model.</strong> EBM/Hopfield-inspired artificial-brain prototype with explicit memory, lazy collapse, binding, interference, projection, and lucidity. Proof: <a href="https://github.com/svmp-systems/lucid-model" target="_blank" rel="noopener noreferrer">GitHub repo</a>, 212 pytest tests, constitution notes.</p>
+    <p><span>02</span> <strong>PlanCompiler.</strong> Typed compiler for LLM workflow graphs. Beat GPT-4.1 while using GPT-4.1 by constraining planning before execution. Proof: <a href="https://arxiv.org/abs/2604.13092" target="_blank" rel="noopener noreferrer">arXiv paper</a>, <a href="compiler.html">technical writeup</a>, <a href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank" rel="noopener noreferrer">GitHub repo</a>, 300-task benchmark.</p>
+    <p><span>03</span> <strong>Governed Memory Layer.</strong> Gated append-only memory pipeline for multi-agent shared state. Proof: <a href="governed-memory-layer.html">technical writeup</a>, <a href="https://github.com/prnvh/governed_memory_layer" target="_blank" rel="noopener noreferrer">GitHub repo</a>, benchmark harness.</p>
+    <p><span>04</span> <strong>Wiki Memory / RAW SOURCES.</strong> Universal memory layer that turns raw sources into canonical wiki memory with retrieval, temporal facts, and aggregation support. Proof: LongMemEval-S run, 470 cases, hit@1 88.7%, hit@5 97.9%, hit@10 99.1%, MRR 0.924.</p>
+    <p><span>05</span> <strong>Diagnostic Engine.</strong> Bounded knee symptom reasoning with controlled evidence and deterministic safety exits. Proof: <a href="diagnostic-engine.html">technical writeup</a>, <a href="https://diagnostic-engine-ten.vercel.app" target="_blank" rel="noopener noreferrer">live demo</a>, <a href="https://github.com/prnvh/diagnostic-engine" target="_blank" rel="noopener noreferrer">GitHub repo</a>, 53 symptom signals / 28 prompts.</p>
+    <p><span>06</span> <strong>Neuromorphic hardware.</strong> Current exploration around memristors, SNNs, Dynamic Vision Sensors, in-memory computation, and hardware-local representation.</p>
+    <p><span>07</span> <strong>SVMP Systems.</strong> Customer-support governance layer with tenant isolation, auditability, escalation controls, and debounce architecture. Proof: <a href="https://github.com/svmp-systems/SVMP-CS" target="_blank" rel="noopener noreferrer">GitHub repo</a>.</p>
   </div>
-</nav>
-
-<main class="page">
-  <section class="page-hero">
-    <div class="shell">
-      <p class="eyebrow">Projects</p>
-      <h1 class="page-display">Artificial memory and <em>brains</em>.</h1>
-      <p class="page-intro">
-        Projects around EBMs, Hopfield-style memory, source-backed recall, neuromorphic hardware, and deterministic execution.
-      </p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="shell">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Current Direction</p>
-          <h2 class="section-title">Memory systems and cognitive stacks.</h2>
-        </div>
-        <p class="section-copy">
-          Short notes on what each system does, why I tried it, how it works, and what proof exists.
-        </p>
-      </div>
-
-      <div class="project-grid project-grid-systems">
-        <article class="surface project-card project-card-wide" id="lucid-model-project">
-          <span class="meta-line">Cognitive Architecture &middot; 2026</span>
-          <h3>Lucid Model</h3>
-          <p>Artificial-brain prototype using EBMs, Hopfield-style attractor memory, lazy collapse, binding, interference, projection, and lucidity.</p>
-          <p>The goal is inspectable reasoning and cheaper continual learning than weight-only models. Memory stays explicit; the system commits only when its state is stable enough.</p>
-          <p>Proof: repo, constitution notes, audit/checkpoint machinery, CLI stage coverage, and 212 pytest tests in the training suite.</p>
-          <div class="detail-stack">
-            <span class="pill">Python</span>
-            <span class="pill">EBMs</span>
-            <span class="pill">Hopfield Networks</span>
-            <span class="pill">Continual Learning</span>
-          </div>
-          <div class="project-card-links">
-            <a href="https://github.com/svmp-systems/lucid-model" target="_blank" rel="noopener noreferrer">GitHub</a>
-          </div>
-        </article>
-
-        <article class="surface project-card" id="wiki-memory-project">
-          <span class="meta-line">Memory Infrastructure &middot; 2026</span>
-          <h3>Wiki Memory / RAW SOURCES</h3>
-          <p>Long-running memory layer that turns immutable raw sources into canonical wiki pages, relation graphs, temporal facts, and answer-ready context.</p>
-          <p>Built so agents can recall sourced, revisable memory instead of replaying transcripts.</p>
-          <ul class="project-card-list">
-            <li>LongMemEval-S wiki-index run: 470 cases, hit@1 88.7%, hit@5 97.9%, hit@10 99.1%, MRR 0.924.</li>
-            <li>Temporal and aggregation paths compute date/order/count/sum/list support in code where possible.</li>
-          </ul>
-          <div class="detail-stack">
-            <span class="pill">TypeScript</span>
-            <span class="pill">Supabase</span>
-            <span class="pill">Wiki Memory</span>
-            <span class="pill">LongMemEval</span>
-          </div>
-        </article>
-
-        <article class="surface project-card" id="memory-project">
-          <span class="meta-line">Research Build &middot; 2026</span>
-          <h3>Governed Memory Layer</h3>
-          <p>Ledger-backed shared memory for agents.</p>
-          <p>Built to stop uncertain private notes from directly corrupting shared state.</p>
-          <ul class="project-card-list">
-            <li>Private notes promote through interpretation, resolution, validation, and projection.</li>
-            <li>Proof: technical writeup, GitHub repo, benchmark harness with trajectory families.</li>
-          </ul>
-          <div class="detail-stack">
-            <span class="pill">Python</span>
-            <span class="pill">SQLite</span>
-            <span class="pill">Shared Memory</span>
-            <span class="pill">Event Projection</span>
-          </div>
-          <div class="project-card-links">
-            <a href="governed-memory-layer.html">Technical writeup</a>
-            <a href="https://github.com/prnvh/governed_memory_layer" target="_blank">GitHub</a>
-          </div>
-        </article>
-
-        <article class="surface project-card" id="neuromorphic-memory-project">
-          <span class="meta-line">Current Research Direction &middot; 2026</span>
-          <h3>Neuromorphic Memory Substrates</h3>
-          <p>Early work on memristors, in-memory computation, and hardware-aware artificial memory.</p>
-          <p>The bet is that cognitive memory may need storage, weighting, and computation to sit physically closer together.</p>
-          <ul class="project-card-list">
-            <li>Current focus: memristor-style persistence, adaptive weights, and low-power cognitive hardware.</li>
-          </ul>
-          <div class="detail-stack">
-            <span class="pill">Memristors</span>
-            <span class="pill">Neuromorphic Hardware</span>
-            <span class="pill">In-Memory Compute</span>
-            <span class="pill">Artificial Memory</span>
-          </div>
-        </article>
-
-        <article class="surface project-card project-card-wide" id="compiler-project">
-          <span class="meta-line">Research Build &middot; 2025-2026</span>
-          <h3>LLM Code Graph Compiler</h3>
-          <p>Typed compiler for LLM workflow graphs.</p>
-          <p>Free-form plans become brittle when they turn into executable code too early. Here the model plans inside a typed registry, then execution starts after static validation.</p>
-          <p>Proof: arXiv paper, technical writeup, GitHub repo, and 300-task benchmark.</p>
-          <div class="detail-stack">
-            <span class="pill">Python</span>
-            <span class="pill">DAG Execution</span>
-            <span class="pill">Static Validation</span>
-            <span class="pill">CLI Tooling</span>
-          </div>
-          <div class="project-card-links">
-            <a href="compiler.html">Technical writeup</a>
-            <a href="https://arxiv.org/abs/2604.13092" target="_blank" rel="noopener noreferrer">arXiv</a>
-            <a href="https://github.com/prnvh/llm-code-graph-compiler" target="_blank">GitHub</a>
-          </div>
-        </article>
-
-        <article class="surface project-card" id="diagnostic-engine-project">
-          <span class="meta-line">Systems Build &middot; 2026</span>
-          <h3>Diagnostic Engine</h3>
-          <p>Bounded knee symptom reasoning with deterministic endings.</p>
-          <p>A narrow diagnostic assistant should use controlled evidence and hard safety exits, not broad medical improvisation.</p>
-          <ul class="project-card-list">
-            <li>Free text maps into controlled symptom evidence before ranking.</li>
-            <li>Proof: technical writeup, GitHub repo, live demo, 53 symptom signals / 28 prompts.</li>
-          </ul>
-          <div class="detail-stack">
-            <span class="pill">Node.js</span>
-            <span class="pill">Vercel</span>
-            <span class="pill">Supabase</span>
-            <span class="pill">JSON Registries</span>
-            <span class="pill">Static Web UI</span>
-          </div>
-          <div class="project-card-links">
-            <a href="diagnostic-engine.html">Technical writeup</a>
-            <a href="https://github.com/prnvh/diagnostic-engine" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a href="https://diagnostic-engine-ten.vercel.app" target="_blank" rel="noopener noreferrer">Live demo</a>
-          </div>
-        </article>
-
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="shell">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Earlier Work</p>
-          <h2 class="section-title">Systems and operating context.</h2>
-        </div>
-        <p class="section-copy">
-          A smaller context section for work that shaped the memory/cognition direction without diluting the main archive.
-        </p>
-      </div>
-
-      <div class="project-grid project-grid-compact">
-        <article class="surface project-card compact">
-          <span class="meta-line">Field Research &middot; 2026</span>
-          <h3>Kerala Wage Asymmetry Study</h3>
-          <p>150+ field interviews on wage differences between inter-state migrant workers and local labourers in Kerala.</p>
-        </article>
-
-        <article class="surface project-card compact">
-          <span class="meta-line">Systems Build &middot; 2026</span>
-          <h3>SVMP Governance Layer</h3>
-          <p>Multi-tenant customer-support governance with tenant isolation, auditability, escalation controls, and debounce architecture.</p>
-          <div class="project-card-links">
-            <a href="https://github.com/svmp-systems/SVMP-CS" target="_blank">GitHub</a>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section projects-follow-section">
-    <div class="shell">
-      <div class="follow-card page-follow-card">
-        <div>
-          <p class="follow-label">Follow the blog</p>
-          <h3>Get new architecture notes by email.</h3>
-          <p>Writing on memory systems, artificial cognition, persistent recall, and deterministic execution.</p>
-        </div>
-        <form class="subscribe-form" action="https://buttondown.com/api/emails/embed-subscribe/prnvvh" method="post" target="popupwindow">
-          <label for="projects-subscribe-email">Email address</label>
-          <input id="projects-subscribe-email" type="email" name="email" placeholder="you@example.com" required>
-          <input type="hidden" value="1" name="embed">
-          <button type="submit">Subscribe</button>
-        </form>
-      </div>
-    </div>
-  </section>
 </main>
-
-<footer class="footer">
-  <div class="shell footer-inner">
-    <p class="footer-copy">Pranav <span>Harikumar</span></p>
-    <p class="footer-copy">Projects page &middot; selected archive</p>
-  </div>
-</footer>
 </body>
 </html>
